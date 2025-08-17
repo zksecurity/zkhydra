@@ -1,0 +1,6 @@
+[submodule "zksec/bugs/zkbugs"]
+	path = zksec/bugs/zkbugs
+	url = https://github.com/zksecurity/zkbugs.git
+[submodule "zksec/tools/Picus"]
+	path = zksec/tools/Picus
+	url = https://github.com/Veridise/Picus.git
