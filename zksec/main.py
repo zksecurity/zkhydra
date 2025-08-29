@@ -1,5 +1,4 @@
 import argparse
-from json import tool
 import logging
 import os
 
@@ -29,7 +28,7 @@ def parse_args():
 
 def read_lines(file_path: Path):
     with file_path.open("r", encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip()]
+        return [line.strip() for line in f if line.strip() and not line.strip().startswith('#')]
 
 
 def main():
