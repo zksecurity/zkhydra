@@ -8,12 +8,13 @@ from bugs.zkbugs import setup as setup_zkbug
 from bugs.zkbugs import cleanup as cleanup_zkbug
 
 from tools.circomspect import execute as execute_circomspect
-# from tools.coda import execute as execute_coda
+from tools.coda import execute as execute_coda
 from tools.picus import execute as execute_picus
 from tools.zkfuzz import execute as execute_zkfuzz
 
 
 BASE_DIR = Path.cwd()
+REPO_DIR = BASE_DIR.parent
 
 
 def parse_args():
@@ -42,11 +43,12 @@ def main():
     bugs = read_lines(bugs_file)
     tools = read_lines(tools_file)
 
+    print(tools)
+
     for bug in bugs:
-        bug_path = Path(bug)
+        bug_path = REPO_DIR / bug
         bug_name = bug_path.name
         bug_output = Path(BASE_DIR) / output_dir / f"{bug_name}.log"
-        logging.debug(f"{bug_name=}")
 
         # Setup bug environment
         setup_zkbug(bug_path)
@@ -56,9 +58,9 @@ def main():
                 logging.info(f"Running {tool=} on {bug_name=}")
                 result = execute_circomspect(bug_path)
                 write_output(bug_output, tool, result)
-            # if tool.lower() == "coda":
-            #     logging.info(f"Running {tool=} on {bug_name=}")
-            #     result = execute_coda(bug_path)
+            if tool.lower() == "coda":
+                logging.info(f"Running {tool=} on {bug_name=}")
+                result = execute_coda(bug_path)
                 write_output(bug_output, tool, result)
             if tool.lower() == "picus":
                 logging.info(f"Running {tool=} on {bug_name=}")
