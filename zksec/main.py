@@ -1,10 +1,16 @@
 import argparse
 import logging
+import os
+
 from pathlib import Path
 
 from bugs.zkbugs import setup as setup_zkbug
 from bugs.zkbugs import cleanup as cleanup_zkbug 
 from tools.picus import execute as execute_picus
+from tools.circomspect import execute as execute_circomspect
+
+
+BASE_DIR = Path.cwd()
 
 
 def parse_args():
@@ -36,7 +42,7 @@ def main():
     for bug in bugs:
         bug_path = Path(bug)
         bug_name = bug_path.name
-        bug_output = output_dir / f"{bug_name}.log"
+        bug_output = Path(BASE_DIR) / output_dir / f"{bug_name}.log"
         logging.debug(f"{bug_name=}")
 
         # Setup bug environment
@@ -45,18 +51,37 @@ def main():
         for tool in tools:
             if tool.lower() == "picus":
                 logging.info(f"Running {tool=} on {bug_name=}")
-                execute_picus(bug_path)
-                logging.info(f"Writing {tool} results to '{bug_output}'")
-                # TODO: Write results to file
+                result = execute_picus(bug_path)
+                write_output(bug_output, tool, result)
+            if tool.lower() == "circomspect":
+                logging.info(f"Running {tool=} on {bug_name=}")
+                result = execute_circomspect(bug_path)
+                write_output(bug_output, tool, result)
 
         # Cleanup bug environment
         cleanup_zkbug(bug_path)
 
 
+def write_output(output_file: Path, tool: str, content: str):
+    logging.info(f"Writing {tool} results to '{output_file}'")
+    # Check if file exists
+    if not os.path.exists(output_file):
+        logging.debug(f"Output file does not exist. Creating: {output_file}")
+        # Create the file
+        with open(output_file, 'w') as f:
+            pass  # Create an empty file
+
+    # Write the output to the file
+    with open(output_file, 'a') as f:
+        f.write(f"=== {tool} ===\n")
+        f.write(str(content))
+        f.write("\n\n")
+
+
 if __name__ == "__main__":
     logging.basicConfig(
         level=logging.DEBUG,
-        format="%(asctime)s: [%(filename)s]: \t[%(levelname)s]: \t%(message)s",
+        format="%(asctime)s: [%(filename)s:%(lineno)d]: \t[%(levelname)s]: \t%(message)s",
         datefmt="%H:%M:%S"
     )
     main()
