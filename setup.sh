@@ -57,3 +57,7 @@ raco pkg install
 raco pkg install --auto rosette
 raco pkg install --auto csv-reading
 
+
+# zkFuzz Installation
+cd zksec/tools/zkFuzz
+cargo build --release

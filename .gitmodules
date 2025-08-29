@@ -21,3 +21,7 @@
 [submodule "zksec/helpers/rewriter"]
 	path = zksec/helpers/rewriter
 	url = https://github.com/mit-plv/rewriter.git
+
+[submodule "zksec/tools/zkFuzz"]
+	path = zksec/tools/zkFuzz
+	url = https://github.com/Koukyosyumei/zkFuzz.git
