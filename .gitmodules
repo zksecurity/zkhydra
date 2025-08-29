@@ -13,3 +13,11 @@
 [submodule "zksec/tools/circomspect"]
 	path = zksec/tools/circomspect
 	url = https://github.com/trailofbits/circomspect.git
+
+[submodule "zksec/tools/Coda"]
+	path = zksec/tools/Coda
+	url = https://github.com/Veridise/Coda.git
+
+[submodule "zksec/helpers/rewriter"]
+	path = zksec/helpers/rewriter
+	url = https://github.com/mit-plv/rewriter.git

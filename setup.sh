@@ -3,7 +3,8 @@
 ### This script hasn't been tested yet and is currenlty just a note to remember the commands that should be needed.
 
 # Initialize and update git submodules
-git submodule init
+# git submodule init
+git submodule update --init --recursive
 git submodule update
 
 # Install uv for python package management
@@ -26,6 +27,17 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 . "$HOME/.cargo/env"
 cargo install --path cli
 
+
+
+# Coda Installation
+cd zksec/tools/Coda
+## Install OCaml and OPAM
+sudo apt install opam
+## Install Coq Platform 2022.04.1
+sudo snap install coq-prover --channel=2022.04/stable
+##
+cd zksec/helpers/rewriter
+make
 
 
 # Picus Installation
