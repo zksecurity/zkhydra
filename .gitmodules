@@ -9,3 +9,7 @@
 [submodule "zksec/helpers/cvc5"]
 	path = zksec/helpers/cvc5
 	url = https://github.com/cvc5/cvc5.git
+
+[submodule "zksec/tools/circomspect"]
+	path = zksec/tools/circomspect
+	url = https://github.com/trailofbits/circomspect.git

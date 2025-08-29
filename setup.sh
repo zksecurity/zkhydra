@@ -1,5 +1,7 @@
 #!/bin/bash
 
+### This script hasn't been tested yet and is currenlty just a note to remember the commands that should be needed.
+
 # Initialize and update git submodules
 git submodule init
 git submodule update
@@ -8,13 +10,23 @@ git submodule update
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install circom
-## Install Rust
+## Install Rust (rather use commands from circomspect installation)
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source $HOME/.cargo/env
 ## Install npm
 sudo apt install nodejs npm -y
 sudo npm -g install snarkjs
 ## Install circom
 ./zksec/bugs/zkbugs/scripts/install_circom.sh
+
+
+# circomspect Installation
+cd zksec/tools/circomspect
+# Install Rust (https://www.rust-lang.org/tools/install)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+. "$HOME/.cargo/env"
+cargo install --path cli
+
+
 
 # Picus Installation
 cd zksec/tools/Picus
@@ -30,3 +42,6 @@ cd build/
 make -j4 install
 ## Install Picus
 raco pkg install
+raco pkg install --auto rosette
+raco pkg install --auto csv-reading
+
