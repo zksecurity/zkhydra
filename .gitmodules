@@ -25,3 +25,7 @@
 [submodule "zksec/tools/zkFuzz"]
 	path = zksec/tools/zkFuzz
 	url = https://github.com/Koukyosyumei/zkFuzz.git
+
+[submodule "zksec/tools/garden"]
+	path = zksec/tools/garden
+	url = https://github.com/formal-land/garden.git
