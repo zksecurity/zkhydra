@@ -1,4 +1,4 @@
-circumspect
+circomspect
 # Coda
 # garden
 # Picus
