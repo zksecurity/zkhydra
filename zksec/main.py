@@ -11,6 +11,7 @@ from bugs.zkbugs import cleanup as cleanup_zkbug
 from tools.circomspect import execute as execute_circomspect
 # from tools.coda import execute as execute_coda
 from tools.picus import execute as execute_picus
+from tools.zkfuzz import execute as execute_zkfuzz
 
 
 BASE_DIR = Path.cwd()
@@ -63,6 +64,10 @@ def main():
             if tool.lower() == "picus":
                 logging.info(f"Running {tool=} on {bug_name=}")
                 result = execute_picus(bug_path)
+                write_output(bug_output, tool, result)
+            if tool.lower() == "zkfuzz":
+                logging.info(f"Running {tool=} on {bug_name=}")
+                result = execute_zkfuzz(bug_path)
                 write_output(bug_output, tool, result)
 
         # Cleanup bug environment
