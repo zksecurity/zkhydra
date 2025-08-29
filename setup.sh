@@ -31,7 +31,7 @@ cargo install --path cli
 
 # Coda Installation
 cd zksec/tools/Coda
-## Install OCaml and OPAM
+## Install OPAM
 sudo apt install opam
 ## Install Coq Platform 2022.04.1
 sudo snap install coq-prover --channel=2022.04/stable
@@ -61,3 +61,25 @@ raco pkg install --auto csv-reading
 # zkFuzz Installation
 cd zksec/tools/zkFuzz
 cargo build --release
+
+
+# Install Garden -- needs rust installed
+## Install OPAM
+sudo apt install opam
+opam init
+opam switch create garden --packages=ocaml-variants.4.14.0+options,ocaml-option-flambda
+eval $(opam env --switch=garden)
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam install -y --deps-only Garden/coq-garden.opam
+cd third-party/circom
+cargo install --path circom
+cd ../circomlib
+find . -name '*.circom' -execdir circom {} \;
+cd ../..
+## Alias needed due to script itself as well
+sudo ln -s $(which python3) /usr/bin/python
+python scripts/coq_of_circom_ci.py
+cd Garden
+make
+cd ..
+opam pin add -y vscoq-language-server.2.2.3 https://github.com/rocq-prover/vscoq/releases/download/v2.2.3/vscoq-language-server-2.2.3.tar.gz
