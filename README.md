@@ -57,5 +57,5 @@ cd zksec
 Execute `main.py` with parameters for the `bugs` and `tools` that should be used, as well as an `output` directory:
 
 ```Bash
-uv run main.py --bugs ./input-bugs.txt --tools ./input-tools.txt --output ./output
+uv run main.py
 ```

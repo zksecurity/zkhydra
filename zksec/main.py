@@ -1,6 +1,8 @@
 import argparse
 import logging
+from logging import config
 import os
+import tomllib
 
 from pathlib import Path
 
@@ -15,15 +17,26 @@ from tools.zkfuzz import execute as execute_zkfuzz
 
 BASE_DIR = Path.cwd()
 REPO_DIR = BASE_DIR.parent
+VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 def parse_args():
+    # parser = argparse.ArgumentParser(
+    #     description="Run bugs with specified tools and store outputs."
+    # )
+    # parser.add_argument("--bugs", required=True, help="Path to input-bugs.txt")
+    # parser.add_argument("--tools", required=True, help="Path to input-tools.txt")
+    # parser.add_argument("--output", required=True, help="Output directory")
+    # return parser.parse_args()
     parser = argparse.ArgumentParser(
-        description="Run bugs with specified tools and store outputs."
+        description="Tool runner with config file support"
     )
-    parser.add_argument("--bugs", required=True, help="Path to input-bugs.txt")
-    parser.add_argument("--tools", required=True, help="Path to input-tools.txt")
-    parser.add_argument("--output", required=True, help="Output directory")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=Path("config.toml"),
+        help="Path to the configuration file (default: config.toml)"
+    )
     return parser.parse_args()
 
 
@@ -31,19 +44,46 @@ def read_lines(file_path: Path):
     with file_path.open("r", encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip() and not line.strip().startswith('#')]
 
+def configuration(path: Path = Path("config.toml")) -> tuple[list[str], list[str], Path]:
+    # Verify config file exists
+    if not path.exists():
+        raise FileNotFoundError(f"Config file not found: {path}")
+    # Load config file
+    with open(path, "rb") as f:
+        config = tomllib.load(f)
+
+    # Validate log level
+    log_level = config.get("log_level", "INFO").upper()
+    if log_level not in VALID_LOG_LEVELS:
+        raise ValueError(
+            f"Config error: Invalid log_level '{log_level}'. "
+            f"Must be one of {', '.join(VALID_LOG_LEVELS)}."
+        )
+
+    # Setup logging
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s: [%(filename)s:%(lineno)d]: \t[%(levelname)s]: \t%(message)s",
+        datefmt="%H:%M:%S"
+    )
+
+    # Validate tools & bugs
+    tools = config.get("tools", [])
+    bugs = config.get("bugs", [])
+    if not tools:
+        raise ValueError("Config error: 'tools' list must not be empty.")
+    if not bugs:
+        raise ValueError("Config error: 'bugs' list must not be empty.")
+
+    # Ensure output directory exists
+    output_dir = Path(config.get("output", "./output"))
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    return tools, bugs, output_dir
 
 def main():
     args = parse_args()
-
-    bugs_file = Path(args.bugs)
-    tools_file = Path(args.tools)
-    output_dir = Path(args.output)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    bugs = read_lines(bugs_file)
-    tools = read_lines(tools_file)
-
-    print(tools)
+    tools, bugs, output_dir = configuration(args.config)
 
     for bug in bugs:
         bug_path = REPO_DIR / bug
@@ -92,9 +132,4 @@ def write_output(output_file: Path, tool: str, content: str):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)s: [%(filename)s:%(lineno)d]: \t[%(levelname)s]: \t%(message)s",
-        datefmt="%H:%M:%S"
-    )
     main()
