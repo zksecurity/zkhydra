@@ -1,0 +1,59 @@
+# List of tools to use
+tools = [
+    "circomspect",
+    # "Coda",
+    # "garden",
+    # "Picus",
+    # "zkFuzz"
+]
+
+# List of bugs to analyze
+bugs = [
+    ## 0xbok
+    "zksec/bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+    # ## darkforest-eth
+    # "zksec/bugs/zkbugs/dataset/circom/darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
+    # ## iden3
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
+    # ## personaelabs
+    # "zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+    # "zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_Knowledge_of_any_member_signature_allow_to_generate_proof_of_membership",
+    # "zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+    # ## privacy-scaling-explorations
+    # "zksec/bugs/zkbugs/dataset/circom/privacy-scaling-explorations/maci/hashcloak_data_are_not_fully_verified_during_state_update",
+    # "zksec/bugs/zkbugs/dataset/circom/privacy-scaling-explorations/maci/ProcessMessages_circuit_to_prevent_message_censorship_by_the_coordinator",
+    # ## reclaimprotocol
+    # "zksec/bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Potentially_Easy_to_Misuse_Interface",
+    # "zksec/bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_Addition_Gadget",
+    # "zksec/bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
+    # "zksec/bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_XOR_gadget",
+    # ## semaphore-protocol
+    # "zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+    # ## succinctlabs
+    # "zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+    # "zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+    # "zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+    # "zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained",
+    # "zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+    # "zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+    # ## Unirep
+    # "zksec/bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+    # "zksec/bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+    # ## zkopru-network
+    # "zksec/bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_Circuit_Does_Not_Check_the_ERC_20_Sum_Correctly_",
+    # "zksec/bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+]
+
+# Output directory
+output = "./output"
+
+# Log level (one of: DEBUG, INFO, WARNING, ERROR, CRITICAL)
+log_level = "DEBUG"

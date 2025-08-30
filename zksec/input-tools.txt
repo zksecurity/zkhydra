@@ -1,5 +1,0 @@
-circomspect
-# Coda
-# garden
-# Picus
-# zkFuzz
