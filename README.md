@@ -42,11 +42,17 @@ error[P1014]:  The file ../../../dependencies/circomlib/circuits/comparators.cir
 
 ## Installation
 
+> [!WARNING]
+> Under development.
+
 ```Bash
 ./setup/setup.sh
 ```
 
 ## Execution
+
+> [!WARNING]
+> Under development.
 
 Navigate into the source code:
 
