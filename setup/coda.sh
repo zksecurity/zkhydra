@@ -23,6 +23,13 @@ fi
 
 # Build Rewriter
 cd ../zksec/helpers/rewriter
+
+sudo apt install opam m4 pkg-config ocaml-findlib
+opam install coq coq-core
+
+make clean
+rm -f Makefile.coq Makefile.coq.conf
+
 make
 
 # TODO: Fix Coda installation
