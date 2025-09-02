@@ -33,7 +33,7 @@ def setup(bug_dir: str):
     # Change to the bug directory
     os.chdir(bug_dir)
     # Run setup script
-    cmd = ["./zkbugs_setup.sh"]
+    cmd = ["./zkbugs_compile_setup.sh"]
     logging.debug(f"Running Command: ${shlex.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     # Log each line separately
