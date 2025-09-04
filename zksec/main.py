@@ -1,24 +1,28 @@
 import argparse
 import logging
-from logging import config
 import os
 import tomllib
-
+import importlib
 from pathlib import Path
-
 from bugs.zkbugs import setup as setup_zkbug
 from bugs.zkbugs import cleanup as cleanup_zkbug
-
-from tools.circom_civer import execute as execute_circom_civer
-from tools.circomspect import execute as execute_circomspect
-from tools.coda import execute as execute_coda
-from tools.picus import execute as execute_picus
-from tools.zkfuzz import execute as execute_zkfuzz
 
 
 BASE_DIR = Path.cwd()
 REPO_DIR = BASE_DIR.parent
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+TOOL_LIST = {
+    "circom_civer",
+    "circomspect",
+    "coda",
+    "ecneproject",
+    "garden",
+    "picus",
+    "r1cs_solver",
+    "snarkprobe",
+    "zkap",
+    "zkfuzz",
+}
 
 
 def parse_args():
@@ -80,6 +84,12 @@ def main():
     args = parse_args()
     tools, bugs, output_dir = configuration(args.config)
 
+    # Dynamically import execute functions and store in a dict
+    tool_functions = {}
+    for tool_name in TOOL_LIST:
+        module = importlib.import_module(f"tools.{tool_name}")
+        tool_functions[tool_name] = getattr(module, "execute")
+
     for bug in bugs:
         bug_path = REPO_DIR / bug
         bug_name = bug_path.name
@@ -89,27 +99,12 @@ def main():
         setup_zkbug(bug_path)
 
         for tool in tools:
-            if tool.lower() == "circom_civer":
+            tool_key = tool.lower()
+            if tool_key in tool_functions:
                 logging.info(f"Running {tool=} on {bug_name=}")
-                result = execute_circom_civer(bug_path)
+                result = tool_functions[tool_key](bug_path)
                 write_output(bug_output, tool, result)
-            if tool.lower() == "circomspect":
-                logging.info(f"Running {tool=} on {bug_name=}")
-                result = execute_circomspect(bug_path)
-                write_output(bug_output, tool, result)
-            if tool.lower() == "coda":
-                logging.info(f"Running {tool=} on {bug_name=}")
-                result = execute_coda(bug_path)
-                write_output(bug_output, tool, result)
-            if tool.lower() == "picus":
-                logging.info(f"Running {tool=} on {bug_name=}")
-                result = execute_picus(bug_path)
-                write_output(bug_output, tool, result)
-            if tool.lower() == "zkfuzz":
-                logging.info(f"Running {tool=} on {bug_name=}")
-                result = execute_zkfuzz(bug_path)
-                write_output(bug_output, tool, result)
-
+        
         # Cleanup bug environment
         cleanup_zkbug(bug_path)
 
