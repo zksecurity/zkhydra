@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[info] Installing circomspect..."
+echo "[info] Installing circom..."
 
 # Ensure we’re running from the script’s directory
 cd "$(dirname "$0")"
 
 # Install Rust
 ./rust.sh
-
-# Install circomspect
-cd ../zksec/tools/circomspect
 
 # Install Node.js & npm
 if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then

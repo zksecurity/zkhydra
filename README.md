@@ -1,49 +1,27 @@
-# state-of-zk-security-tools
-
-## Notes
-
-- Picus
-  - has issues when running, I think issues due to zkbug again
-- Coda
-  - issue with `rewriter` installation
-- circomspect
-  - seems to run
-- garden
-  - installed, but how do i use it?
-- zkFuzz
-  - installed, I think issues due to zkbug again
-
-## Questions
-
-In `zksec/bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod/zkbugs_vars.sh` it didn't find the PTAU file, so I adjusted the script.
-Changed this line:
-
-```sh
-ROOT_PATH=$(dirname "$(dirname "$(dirname "$(dirname "$(dirname "$SCRIPT_PATH")")")")")
-```
-
-to:
-
-```sh
-ROOT_PATH=$(dirname "$(dirname "$(dirname "$(dirname "$(dirname "$(dirname "$SCRIPT_PATH")")")")")")
-```
-
-(One dir further up; else it was always looking in the `dataset` dir. Is this an error in the script or how should I use it?)
-
-OR
-
-copy pasted the scripts folder in the development folder; still getting an error that files are not found:
-
-```txt
-Compiling the target circuit: circuits/circuit.circom
-error[P1014]:  The file ../../../dependencies/circomlib/circuits/comparators.circom to be included has not been found
- = Consider using compilation option -l to indicate include paths
-```
-
-## Installation
+# State of ZK Security Tools
 
 > [!WARNING]
 > Under development.
+
+## Notes
+
+- **Implemented**
+  - circomspect
+  - zkFuzz
+  - Picus
+- **Testing**
+  - xxx
+- **Issues**  
+  - Coda (installation issues)
+  - Garden (execution issues)
+- **TODO**
+  - circom_civer
+  - EcneProject
+  - r1cs-solver
+  - SNARKProbe
+  - ZKAP
+
+## Installation
 
 ```Bash
 ./setup/setup.sh
@@ -51,16 +29,13 @@ error[P1014]:  The file ../../../dependencies/circomlib/circuits/comparators.cir
 
 ## Execution
 
-> [!WARNING]
-> Under development.
-
 Navigate into the source code:
 
 ```Bash
 cd zksec
 ```
 
-Execute `main.py` with parameters for the `bugs` and `tools` that should be used, as well as an `output` directory:
+Execute `main.py`, by default it uses the `config.toml` specifying the bugs, tools, and output:
 
 ```Bash
 uv run main.py
