@@ -80,6 +80,7 @@ def configuration(path: Path = Path("config.toml")) -> tuple[list[str], list[str
 
     return tools, bugs, output_dir
 
+
 def main():
     args = parse_args()
     tools, bugs, output_dir = configuration(args.config)
