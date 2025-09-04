@@ -9,6 +9,7 @@ from pathlib import Path
 from bugs.zkbugs import setup as setup_zkbug
 from bugs.zkbugs import cleanup as cleanup_zkbug
 
+from tools.circom_civer import execute as execute_circom_civer
 from tools.circomspect import execute as execute_circomspect
 from tools.coda import execute as execute_coda
 from tools.picus import execute as execute_picus
@@ -21,13 +22,6 @@ VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 def parse_args():
-    # parser = argparse.ArgumentParser(
-    #     description="Run bugs with specified tools and store outputs."
-    # )
-    # parser.add_argument("--bugs", required=True, help="Path to input-bugs.txt")
-    # parser.add_argument("--tools", required=True, help="Path to input-tools.txt")
-    # parser.add_argument("--output", required=True, help="Output directory")
-    # return parser.parse_args()
     parser = argparse.ArgumentParser(
         description="Tool runner with config file support"
     )
@@ -44,6 +38,7 @@ def read_lines(file_path: Path):
     with file_path.open("r", encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip() and not line.strip().startswith('#')]
 
+
 def configuration(path: Path = Path("config.toml")) -> tuple[list[str], list[str], Path]:
     # Verify config file exists
     if not path.exists():
@@ -53,7 +48,7 @@ def configuration(path: Path = Path("config.toml")) -> tuple[list[str], list[str
         config = tomllib.load(f)
 
     # Validate log level
-    log_level = config.get("log_level", "INFO").upper()
+    log_level = config.get("log_level", "WARNING").upper()
     if log_level not in VALID_LOG_LEVELS:
         raise ValueError(
             f"Config error: Invalid log_level '{log_level}'. "
@@ -94,6 +89,10 @@ def main():
         setup_zkbug(bug_path)
 
         for tool in tools:
+            if tool.lower() == "circom_civer":
+                logging.info(f"Running {tool=} on {bug_name=}")
+                result = execute_circom_civer(bug_path)
+                write_output(bug_output, tool, result)
             if tool.lower() == "circomspect":
                 logging.info(f"Running {tool=} on {bug_name=}")
                 result = execute_circomspect(bug_path)

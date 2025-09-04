@@ -1,14 +1,17 @@
+# Bugs
+# [submodule "zksec/bugs/zkbugs"]
+# 	path = zksec/bugs/zkbugs
+# 	url = https://github.com/zksecurity/zkbugs.git
+
 [submodule "zksec/bugs/zkbugs"]
 	path = zksec/bugs/zkbugs
-	url = https://github.com/zksecurity/zkbugs.git
+	url = https://github.com/t-sorger/zkbugs.git
+	branch = fix-paths
 
-[submodule "zksec/tools/Picus"]
-	path = zksec/tools/Picus
-	url = https://github.com/Veridise/Picus.git
-
-[submodule "zksec/helpers/cvc5"]
-	path = zksec/helpers/cvc5
-	url = https://github.com/cvc5/cvc5.git
+# Tools
+[submodule "zksec/tools/circom_civer"]
+	path = zksec/tools/circom_civer
+	url = https://github.com/costa-group/circom_civer.git
 
 [submodule "zksec/tools/circomspect"]
 	path = zksec/tools/circomspect
@@ -18,14 +21,39 @@
 	path = zksec/tools/Coda
 	url = https://github.com/Veridise/Coda.git
 
-[submodule "zksec/helpers/rewriter"]
-	path = zksec/helpers/rewriter
-	url = https://github.com/mit-plv/rewriter.git
+[submodule "zksec/tools/EcneProject"]
+	path = zksec/tools/EcneProject
+	url = https://github.com/franklynwang/EcneProject.git
+
+[submodule "zksec/tools/garden"]
+	path = zksec/tools/garden
+	url = https://github.com/formal-land/garden.git
+
+[submodule "zksec/tools/Picus"]
+	path = zksec/tools/Picus
+	url = https://github.com/Veridise/Picus.git
+
+[submodule "zksec/tools/r1cs-solver"]
+	path = zksec/tools/r1cs-solver
+	url = https://github.com/faulhornlabs/r1cs-solver.git
+
+[submodule "zksec/tools/SNARKProbe"]
+	path = zksec/tools/SNARKProbe
+	url = https://github.com/BARC-Purdue/SNARKProbe.git
+
+[submodule "zksec/tools/ZKAP"]
+	path = zksec/tools/ZKAP
+	url = https://github.com/whbjzzwjxq/ZKAP.git
 
 [submodule "zksec/tools/zkFuzz"]
 	path = zksec/tools/zkFuzz
 	url = https://github.com/Koukyosyumei/zkFuzz.git
 
-[submodule "zksec/tools/garden"]
-	path = zksec/tools/garden
-	url = https://github.com/formal-land/garden.git
+# Helpers
+[submodule "zksec/helpers/cvc5"]
+	path = zksec/helpers/cvc5
+	url = https://github.com/cvc5/cvc5.git
+
+[submodule "zksec/helpers/rewriter"]
+	path = zksec/helpers/rewriter
+	url = https://github.com/mit-plv/rewriter.git

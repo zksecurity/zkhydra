@@ -1,6 +1,8 @@
 import logging
 import sys
 import os
+import random
+import string
 import subprocess, shlex
 from pathlib import Path
 
@@ -11,7 +13,7 @@ SCRIPT_DIR = Path(ZKBUGS_DIR) / "scripts"
 
 
 def setup(bug_dir: str):
-    logging.info(f"Setting up bug environment.")
+    logging.info(f"Setting up bug environment for '{bug_dir}'.")
 
     # Check if PTAU file exists
     ptau_file = Path(ZKBUGS_DIR) / "misc" / "circom" / "bn128_pot12_0001.ptau"
@@ -34,14 +36,30 @@ def setup(bug_dir: str):
     os.chdir(bug_dir)
     # Run setup script
     cmd = ["./zkbugs_compile_setup.sh"]
-    logging.debug(f"Running Command: ${shlex.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-    # Log each line separately
-    for line in result.stdout.splitlines():
-        logging.debug(f"${shlex.join(cmd)}:\t{line}")
+    random_text = generate_random_text()
+    logging.info(f"Running Command: '${shlex.join(cmd)}', with random text (entropy): '{random_text}'")
+
+    # Run the command and provide random text as input
+    with subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+        stdout, stderr = proc.communicate(input=random_text + "\n")
+
+        if proc.returncode != 0:
+            logging.error(f"Command '${shlex.join(cmd)}' failed with return code {proc.returncode}")
+            logging.error(stderr)
+        else:
+            logging.debug(f"Command '${shlex.join(cmd)}' completed successfully.")
+            logging.debug(stdout)
 
     # Change back to the base directory
     os.chdir(BASE_DIR)
+
+
+def generate_random_text(min_len=8, max_len=25) -> str:
+    """Generate a random string of random length."""
+    length = random.randint(min_len, max_len)
+    characters = string.ascii_letters + string.digits + string.punctuation
+    random_text = ''.join(random.choice(characters) for _ in range(length))
+    return random_text
 
 
 def generate_ptau():
