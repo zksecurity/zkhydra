@@ -1,4 +1,6 @@
-# Bugs
+##############################
+# Bugs                       #
+##############################
 # [submodule "zksec/bugs/zkbugs"]
 # 	path = zksec/bugs/zkbugs
 # 	url = https://github.com/zksecurity/zkbugs.git
@@ -8,7 +10,9 @@
 	url = https://github.com/t-sorger/zkbugs.git
 	branch = fix-paths
 
-# Tools
+##############################
+# Tools 					 #
+##############################
 [submodule "zksec/tools/circom_civer"]
 	path = zksec/tools/circom_civer
 	url = https://github.com/costa-group/circom_civer.git
@@ -49,7 +53,9 @@
 	path = zksec/tools/zkFuzz
 	url = https://github.com/Koukyosyumei/zkFuzz.git
 
-# Helpers
+##############################
+# Helpers                    #
+##############################
 [submodule "zksec/helpers/cvc5"]
 	path = zksec/helpers/cvc5
 	url = https://github.com/cvc5/cvc5.git
