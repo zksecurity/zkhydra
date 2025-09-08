@@ -23,7 +23,7 @@ def execute(bug_path: str):
     os.chdir(CIRCOM_CIVER_DIR)
     logging.debug(f"Changed directory to: {Path.cwd()}")
     # Run Circom Civer
-    cmd = ["./target/release/civer_circom", str(circuit_file)]
+    cmd = ["./target/release/civer_circom", str(circuit_file), "--check_safety"]
     logging.debug(f"Running: {shlex.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True, check=True)
     last_line = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
