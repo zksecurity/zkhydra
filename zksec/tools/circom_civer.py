@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 import os
+import re
 import subprocess, shlex
 
 
@@ -22,14 +23,19 @@ def execute(bug_path: str):
     os.chdir(CIRCOM_CIVER_DIR)
     logging.debug(f"Changed directory to: {Path.cwd()}")
     # Run Circom Civer
-    # cmd = ["./run-circom-civer", str(circuit_file)]
-    # logging.debug(f"Running: {shlex.join(cmd)}")
-    # result = subprocess.run(cmd, capture_output=False, text=True, check=True)
-    result = 'not implemented'
+    cmd = ["./target/release/civer_circom", str(circuit_file)]
+    logging.debug(f"Running: {shlex.join(cmd)}")
+    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    last_line = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
+
+    # Remove ANSI escape sequences from last line only
+    ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+    last_line_clean = ansi_escape.sub('', last_line)
 
     # Change back to the original directory
     base_dir = Path.cwd().parent.parent
     logging.debug(f"Changing back to base directory: {base_dir}")
     os.chdir(base_dir)
 
-    return result.stdout
+    # TODO: See what to return
+    return last_line_clean
