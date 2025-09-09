@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from .utils import run_command, change_directory, check_files_exist
+from ..utils import run_command, change_directory, check_files_exist
 
 
 TOOL_DIR = Path(__file__).resolve().parent / "EcneProject"
