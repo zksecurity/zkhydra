@@ -1,14 +1,9 @@
 ##############################
 # Bugs                       #
 ##############################
-# [submodule "zksec/bugs/zkbugs"]
-# 	path = zksec/bugs/zkbugs
-# 	url = https://github.com/zksecurity/zkbugs.git
-
 [submodule "zksec/bugs/zkbugs"]
 	path = zksec/bugs/zkbugs
-	url = https://github.com/t-sorger/zkbugs.git
-	branch = fix-paths
+	url = https://github.com/zksecurity/zkbugs.git
 
 ##############################
 # Tools 					 #
