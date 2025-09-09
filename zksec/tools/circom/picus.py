@@ -3,7 +3,7 @@ from pathlib import Path
 from ..utils import run_command, change_directory, check_files_exist
 
 
-TOOL_DIR = Path(__file__).resolve().parent / "Picus"
+TOOL_DIR = Path(__file__).resolve().parent / "picus"
 
 
 def execute(bug_path: str, timeout: int) -> str:
@@ -18,8 +18,6 @@ def execute(bug_path: str, timeout: int) -> str:
     
     cmd = ["./run-picus", str(circuit_file)]
     result = run_command(cmd, timeout, tool="picus", bug=bug_path)
-
-    change_directory(TOOL_DIR.parent.parent.parent)
 
     return result
 
