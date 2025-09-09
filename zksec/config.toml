@@ -1,12 +1,14 @@
 # List of tools to use
 tools = [
     # "circom_civer",
-    "circomspect",
-    # "Coda",
-    # "garden",
-    "Picus",
-    # "zkFuzz"
+    # "circomspect",
+    # "EcneProject",
+    # "Picus",
+    "zkFuzz"
 ]
+
+# Timeout for each execution (per tool per bug) in seconds
+timeout = 300
 
 # List of bugs to analyze
 bugs = [

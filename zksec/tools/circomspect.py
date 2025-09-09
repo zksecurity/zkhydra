@@ -1,19 +1,19 @@
 import logging
 from pathlib import Path
-import subprocess, shlex
+from .utils import run_command, check_files_exist
 
 
-def execute(bug_path: str):
-    # Verify the circuit file exists
+def execute(bug_path: str, timeout: int) -> str:
+    logging.debug(f"bug_path='{bug_path}'")
+
     circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
-    if circuit_file.is_file():
-        logging.debug(f"Found circuit file: {circuit_file}")
-    else:
-        logging.warning(f"Circuit file not found: {circuit_file}")
+    if not check_files_exist(circuit_file):
+        return "[Circuit file not found]"
 
-    # Run circomspect
     cmd = ["circomspect", str(circuit_file)]
-    logging.debug(f"Running: {shlex.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    result = run_command(cmd, timeout, tool="circomspect", bug=bug_path)
 
-    return result.stdout
+    return result
+
+def parse_output(file: str) -> str:
+    logging.warning("Not implemented.")

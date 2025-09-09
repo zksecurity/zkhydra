@@ -16,17 +16,9 @@
 	path = zksec/tools/circomspect
 	url = https://github.com/trailofbits/circomspect.git
 
-[submodule "zksec/tools/Coda"]
-	path = zksec/tools/Coda
-	url = https://github.com/Veridise/Coda.git
-
 [submodule "zksec/tools/EcneProject"]
 	path = zksec/tools/EcneProject
 	url = https://github.com/franklynwang/EcneProject.git
-
-[submodule "zksec/tools/garden"]
-	path = zksec/tools/garden
-	url = https://github.com/formal-land/garden.git
 
 [submodule "zksec/tools/Picus"]
 	path = zksec/tools/Picus
@@ -35,14 +27,6 @@
 [submodule "zksec/tools/r1cs-solver"]
 	path = zksec/tools/r1cs-solver
 	url = https://github.com/faulhornlabs/r1cs-solver.git
-
-[submodule "zksec/tools/SNARKProbe"]
-	path = zksec/tools/SNARKProbe
-	url = https://github.com/BARC-Purdue/SNARKProbe.git
-
-[submodule "zksec/tools/ZKAP"]
-	path = zksec/tools/ZKAP
-	url = https://github.com/whbjzzwjxq/ZKAP.git
 
 [submodule "zksec/tools/zkFuzz"]
 	path = zksec/tools/zkFuzz

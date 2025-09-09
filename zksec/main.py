@@ -14,13 +14,8 @@ VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 TOOL_LIST = {
     "circom_civer",
     "circomspect",
-    "coda",
     "ecneproject",
-    "garden",
     "picus",
-    "r1cs_solver",
-    "snarkprobe",
-    "zkap",
     "zkfuzz",
 }
 
@@ -78,12 +73,14 @@ def configuration(path: Path = Path("config.toml")) -> tuple[list[str], list[str
     output_dir = Path(config.get("output", "./output"))
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    return tools, bugs, output_dir
+    timeout = config.get("timeout", 300)
+
+    return tools, bugs, output_dir, timeout
 
 
 def main():
     args = parse_args()
-    tools, bugs, output_dir = configuration(args.config)
+    tools, bugs, output_dir, timeout = configuration(args.config)
 
     # Dynamically import execute functions and store in a dict
     tool_functions = {}
@@ -94,34 +91,35 @@ def main():
     for bug in bugs:
         bug_path = REPO_DIR / bug
         bug_name = bug_path.name
-        bug_output = Path(BASE_DIR) / output_dir / f"{bug_name}.log"
 
         # Setup bug environment
         setup_zkbug(bug_path)
 
         for tool in tools:
             tool_key = tool.lower()
+            output = Path(BASE_DIR) / output_dir / f"{tool_key}.log"
+
             if tool_key in tool_functions:
                 logging.info(f"Running {tool=} on {bug_name=}")
-                result = tool_functions[tool_key](bug_path)
-                write_output(bug_output, tool, result)
+                result = tool_functions[tool_key](bug_path, timeout)
+                write_output(output, tool_key, bug_name, result)
         
         # Cleanup bug environment
         cleanup_zkbug(bug_path)
 
 
-def write_output(output_file: Path, tool: str, content: str):
-    logging.info(f"Writing {tool} results to '{output_file}'")
+def write_output(output_file: Path, tool: str, bug_name: str, content: str):
+    logging.info(f"Writing {tool} results for {bug_name} to '{output_file}'")
     # Check if file exists
     if not os.path.exists(output_file):
         logging.debug(f"Output file does not exist. Creating: {output_file}")
         # Create the file
         with open(output_file, 'w') as f:
             pass  # Create an empty file
-
+            
     # Write the output to the file
     with open(output_file, 'a') as f:
-        f.write(f"=== {tool} ===\n")
+        f.write(f"========== {bug_name} ==========\n")
         f.write(str(content))
         f.write("\n\n")
 
