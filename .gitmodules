@@ -32,6 +32,22 @@
 	path = zksec/tools/circom/zkfuzz
 	url = https://github.com/Koukyosyumei/zkFuzz.git
 
+[submodule "korrekt"]
+	path = zksec/tools/halo2/korrekt
+	url = https://github.com/quantstamp/halo2-analyzer.git
+
+[submodule "gnark-lean-extractor"]
+	path = zksec/tools/gnark/gnark-lean-extractor
+	url = https://github.com/reilabs/gnark-lean-extractor.git
+
+[submodule "pilspector"]
+	path = zksec/tools/pil/pilspector
+	url = https://github.com/Schaeff/pilspector.git
+
+[submodule "sierra-analyzer"]
+	path = zksec/tools/cairo/sierra-analyzer
+	url = https://github.com/FuzzingLabs/sierra-analyzer.git
+
 ##############################
 # Helpers                    #
 ##############################
