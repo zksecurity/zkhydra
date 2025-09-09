@@ -3,7 +3,7 @@ from pathlib import Path
 from ..utils import run_command, change_directory, check_files_exist
 
 
-TOOL_DIR = Path(__file__).resolve().parent / "zkFuzz"
+TOOL_DIR = Path(__file__).resolve().parent / "zkfuzz"
 
 
 def execute(bug_path: str, timeout: int) -> str:
@@ -18,8 +18,6 @@ def execute(bug_path: str, timeout: int) -> str:
 
     cmd = ["./target/release/zkfuzz", str(circuit_file)]
     result = run_command(cmd, timeout, tool="zkfuzz", bug=bug_path)
-
-    change_directory(TOOL_DIR.parent.parent.parent)
 
     return result
 

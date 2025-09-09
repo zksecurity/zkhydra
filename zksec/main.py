@@ -84,9 +84,9 @@ def main():
 
     # Dynamically import execute functions and store in a dict
     tool_functions = {}
-    for tool_name in TOOL_LIST:
-        module = importlib.import_module(f"tools.{tool_name}")
-        tool_functions[tool_name] = getattr(module, "execute")
+    for dsl, tool in TOOL_LIST:
+        module = importlib.import_module(f"tools.{dsl}.{tool}")
+        tool_functions[tool] = getattr(module, "execute")
 
     for bug in bugs:
         bug_path = REPO_DIR / bug
