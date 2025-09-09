@@ -97,7 +97,7 @@ def main():
 
         for tool in tools:
             tool_key = tool.lower()
-            output = Path(BASE_DIR) / output_dir / f"{tool_key}.log"
+            output = Path(BASE_DIR) / output_dir / f"{dsl}" / f"{tool_key}.log"
 
             if tool_key in tool_functions:
                 logging.info(f"Running {tool=} on {bug_name=}")
@@ -110,13 +110,10 @@ def main():
 
 def write_output(output_file: Path, tool: str, bug_name: str, content: str):
     logging.info(f"Writing {tool} results for {bug_name} to '{output_file}'")
-    # Check if file exists
-    if not os.path.exists(output_file):
-        logging.debug(f"Output file does not exist. Creating: {output_file}")
-        # Create the file
-        with open(output_file, 'w') as f:
-            pass  # Create an empty file
-            
+
+    # Ensure the parent directory exists
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
     # Write the output to the file
     with open(output_file, 'a') as f:
         f.write(f"========== {bug_name} ==========\n")
