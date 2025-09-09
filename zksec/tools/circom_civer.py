@@ -2,40 +2,29 @@ import logging
 from pathlib import Path
 import os
 import re
-import subprocess, shlex
+from .utils import run_command, change_directory, check_files_exist
 
 
-CIRCOM_CIVER_DIR = Path(__file__).resolve().parent / "circom_civer"
+TOOL_DIR = Path(__file__).resolve().parent / "circom_civer"
 
 
-def execute(bug_path: str):
-    logging.debug(f"CIRCOM_CIVER_DIR='{CIRCOM_CIVER_DIR}'")
+def execute(bug_path: str, timeout: int) -> str:
+    logging.debug(f"CIRCOM_CIVER_DIR='{TOOL_DIR}'")
     logging.debug(f"bug_path='{bug_path}'")
     
     # Verify the circuit file exists
     circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
-    if circuit_file.is_file():
-        logging.debug(f"Found circuit file: {circuit_file}")
-    else:
-        logging.warning(f"Circuit file not found: {circuit_file}")
+    if not check_files_exist(circuit_file):
+        return "[Circuit file not found]"
 
-    # Change to the Circom Civer directory
-    os.chdir(CIRCOM_CIVER_DIR)
-    logging.debug(f"Changed directory to: {Path.cwd()}")
-    # Run Circom Civer
+    change_directory(TOOL_DIR)
+    
     cmd = ["./target/release/civer_circom", str(circuit_file), "--check_safety"]
-    logging.debug(f"Running: {shlex.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-    last_line = result.stdout.strip().splitlines()[-1] if result.stdout.strip() else ""
+    result = run_command(cmd, timeout, tool="circom_civer", bug=bug_path)
 
-    # Remove ANSI escape sequences from last line only
-    ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
-    last_line_clean = ansi_escape.sub('', last_line)
+    change_directory(TOOL_DIR.parent.parent.parent)
 
-    # Change back to the original directory
-    base_dir = Path.cwd().parent.parent
-    logging.debug(f"Changing back to base directory: {base_dir}")
-    os.chdir(base_dir)
+    return result
 
-    # TODO: See what to return
-    return last_line_clean
+def parse_output(file: str) -> str:
+    logging.warning("Not implemented.")

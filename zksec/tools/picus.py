@@ -1,37 +1,28 @@
 import logging
 from pathlib import Path
 import os
-import subprocess, shlex
+from .utils import run_command, change_directory, check_files_exist
 
 
-PICUS_DIR = Path(__file__).resolve().parent / "Picus"
+TOOL_DIR = Path(__file__).resolve().parent / "Picus"
 
 
-def execute(bug_path: str):
-    logging.debug(f"PICUS_DIR='{PICUS_DIR}'")
+def execute(bug_path: str, timeout: int) -> str:
+    logging.debug(f"PICUS_DIR='{TOOL_DIR}'")
     logging.debug(f"bug_path='{bug_path}'")
     
-    # Verify the circuit file exists
     circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
-    if circuit_file.is_file():
-        logging.debug(f"Found circuit file: {circuit_file}")
-    else:
-        logging.warning(f"Circuit file not found: {circuit_file}")
+    if not check_files_exist(circuit_file):
+        return "[Circuit file not found]"
 
-    # Change to the Picus directory
-    os.chdir(PICUS_DIR)
-    logging.debug(f"Changed directory to: {Path.cwd()}")
-    # Run Picus
+    change_directory(TOOL_DIR)
+    
     cmd = ["./run-picus", str(circuit_file)]
-    logging.debug(f"Running: {shlex.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    result = run_command(cmd, timeout, tool="picus", bug=bug_path)
 
-    # TODO: Parse output for relevant information
-    output =  result.stdout
+    change_directory(TOOL_DIR.parent.parent.parent)
 
-    # Change back to the original directory
-    base_dir = Path.cwd().parent.parent
-    logging.debug(f"Changing back to base directory: {base_dir}")
-    os.chdir(base_dir)
+    return result
 
-    return output
+def parse_output(file: str) -> str:
+    logging.warning("Not implemented.")
