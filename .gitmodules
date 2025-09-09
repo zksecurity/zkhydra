@@ -9,27 +9,27 @@
 # Tools 					 #
 ##############################
 [submodule "zksec/tools/circom_civer"]
-	path = zksec/tools/circom_civer
+	path = zksec/tools/circom/circom_civer
 	url = https://github.com/costa-group/circom_civer.git
 
 [submodule "zksec/tools/circomspect"]
-	path = zksec/tools/circomspect
+	path = zksec/tools/circom/circomspect
 	url = https://github.com/trailofbits/circomspect.git
 
 [submodule "zksec/tools/EcneProject"]
-	path = zksec/tools/EcneProject
+	path = zksec/tools/circom/ecneproject
 	url = https://github.com/franklynwang/EcneProject.git
 
 [submodule "zksec/tools/Picus"]
-	path = zksec/tools/Picus
+	path = zksec/tools/circom/picus
 	url = https://github.com/Veridise/Picus.git
 
 [submodule "zksec/tools/r1cs-solver"]
-	path = zksec/tools/r1cs-solver
+	path = zksec/tools/circom/r1cs-solver
 	url = https://github.com/faulhornlabs/r1cs-solver.git
 
 [submodule "zksec/tools/zkFuzz"]
-	path = zksec/tools/zkFuzz
+	path = zksec/tools/circom/zkfuzz
 	url = https://github.com/Koukyosyumei/zkFuzz.git
 
 ##############################
