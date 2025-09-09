@@ -12,11 +12,11 @@ BASE_DIR = Path.cwd()
 REPO_DIR = BASE_DIR.parent
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 TOOL_LIST = {
-    "circom_civer",
-    "circomspect",
-    "ecneproject",
-    "picus",
-    "zkfuzz",
+    ("circom", "circom_civer"),
+    ("circom", "circomspect",),
+    ("circom", "ecneproject",),
+    ("circom", "picus",),
+    ("circom", "zkfuzz",),
 }
 
 
