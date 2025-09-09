@@ -23,6 +23,7 @@ def execute(bug_path: str, timeout: int) -> str:
 
     return result
 
+
 def parse_output(file: str) -> str:
     logging.warning("Not implemented.")
     
