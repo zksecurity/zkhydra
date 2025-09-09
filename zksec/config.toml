@@ -1,9 +1,9 @@
 # List of tools to use
 tools = [
-    # "circom_civer",
-    # "circomspect",
-    # "EcneProject",
-    # "Picus",
+    "circom_civer",
+    "circomspect",
+    "EcneProject",
+    "Picus",
     "zkFuzz"
 ]
 
@@ -59,4 +59,4 @@ bugs = [
 output = "./output"
 
 # Log level (one of: DEBUG, INFO, WARNING, ERROR, CRITICAL)
-log_level = "INFO"
+log_level = "WARNING"

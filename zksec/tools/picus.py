@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-import os
 from .utils import run_command, change_directory, check_files_exist
 
 
@@ -23,6 +22,7 @@ def execute(bug_path: str, timeout: int) -> str:
     change_directory(TOOL_DIR.parent.parent.parent)
 
     return result
+
 
 def parse_output(file: str) -> str:
     logging.warning("Not implemented.")
