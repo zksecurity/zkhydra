@@ -56,3 +56,9 @@ Execute `main.py`, by default it uses the `config.toml` specifying the bugs, too
 ```Bash
 uv run main.py
 ```
+
+## Development
+
+```Bash
+uv run black . && uv run isort . --profile black
+```
