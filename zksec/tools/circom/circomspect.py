@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
-from ..utils import run_command, check_files_exist
+
+from ..utils import check_files_exist, run_command
 
 
 def execute(bug_path: str, timeout: int):

@@ -1,29 +1,27 @@
-import subprocess
 import logging
-import shlex
-from pathlib import Path
 import os
+import shlex
+import subprocess
+from pathlib import Path
 
 
-def run_command(cmd: list[str], timeout: int, tool: str, bug: str) -> subprocess.CompletedProcess | str:
+def run_command(
+    cmd: list[str], timeout: int, tool: str, bug: str
+) -> subprocess.CompletedProcess | str:
     logging.info(f"Running: '{shlex.join(cmd)}'")
 
     try:
         result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=timeout
+            cmd, capture_output=True, text=True, check=True, timeout=timeout
         )
         return result
-    
+
     except subprocess.TimeoutExpired as e:
         logging.warning(
             f"Process for '{tool}' analysing '{bug}' exceeded {timeout} seconds and timed out. Partial output: {e.stdout}"
         )
         return "[Timed out]"
-    
+
     except subprocess.CalledProcessError as e:
         # Circomspect returns exit code 1
         return e.stdout
