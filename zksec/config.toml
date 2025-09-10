@@ -1,3 +1,14 @@
+[app]
+# Log level (one of: DEBUG, INFO, WARNING, ERROR, CRITICAL)
+log_level = "INFO"
+
+# Timeout for each execution (per tool per bug) in seconds
+timeout = 600
+
+# Output directory
+output = "./output"
+
+[circom]
 # List of tools to use
 tools = [
     "circom_civer",
@@ -7,9 +18,6 @@ tools = [
     "zkFuzz"
 ]
 
-# Timeout for each execution (per tool per bug) in seconds
-timeout = 300
-
 # List of bugs to analyze
 bugs = [
     ## 0xbok
@@ -17,7 +25,7 @@ bugs = [
     # ## darkforest-eth
     "zksec/bugs/zkbugs/dataset/circom/darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
     # ## iden3
-    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+    "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
     # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
     # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
     # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_window4",
@@ -54,9 +62,3 @@ bugs = [
     # "zksec/bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_Circuit_Does_Not_Check_the_ERC_20_Sum_Correctly_",
     # "zksec/bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
 ]
-
-# Output directory
-output = "./output"
-
-# Log level (one of: DEBUG, INFO, WARNING, ERROR, CRITICAL)
-log_level = "WARNING"
