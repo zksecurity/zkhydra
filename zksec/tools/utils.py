@@ -41,3 +41,7 @@ def check_files_exist(*files: Path) -> bool:
             logging.error(f"File not found: {file_path}")
             return False
     return True
+
+
+def ensure_dir(path: Path):
+    path.mkdir(parents=True, exist_ok=True)
