@@ -1,11 +1,11 @@
 import logging
-import sys
 import os
 import random
+import shlex
 import string
-import subprocess, shlex
+import subprocess
+import sys
 from pathlib import Path
-
 
 BASE_DIR = Path.cwd()
 ZKBUGS_DIR = Path(__file__).resolve().parent / "zkbugs"
@@ -37,14 +37,24 @@ def setup(bug_dir: str):
     # Run setup script
     cmd = ["./zkbugs_compile_setup.sh"]
     random_text = generate_random_text()
-    logging.info(f"Running Command: '${shlex.join(cmd)}', with random text (entropy): '{random_text}'")
+    logging.info(
+        f"Running Command: '${shlex.join(cmd)}', with random text (entropy): '{random_text}'"
+    )
 
     # Run the command and provide random text as input
-    with subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+    with subprocess.Popen(
+        cmd,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    ) as proc:
         stdout, stderr = proc.communicate(input=random_text + "\n")
 
         if proc.returncode != 0:
-            logging.error(f"Command '${shlex.join(cmd)}' failed with return code {proc.returncode}")
+            logging.error(
+                f"Command '${shlex.join(cmd)}' failed with return code {proc.returncode}"
+            )
             logging.error(stderr)
         else:
             logging.debug(f"Command '${shlex.join(cmd)}' completed successfully.")
@@ -58,7 +68,7 @@ def generate_random_text(min_len=8, max_len=25) -> str:
     """Generate a random string of random length."""
     length = random.randint(min_len, max_len)
     characters = string.ascii_letters + string.digits + string.punctuation
-    random_text = ''.join(random.choice(characters) for _ in range(length))
+    random_text = "".join(random.choice(characters) for _ in range(length))
     return random_text
 
 
@@ -78,7 +88,7 @@ def generate_ptau():
 
 def cleanup(bug_dir: str):
     logging.debug(f"Cleaning up bug environment. bug_dir='{bug_dir}'")
-    
+
     # Verify the cleanup script exists
     cleanup_script = Path(bug_dir) / "zkbugs_clean.sh"
     if cleanup_script.is_file():
@@ -93,6 +103,6 @@ def cleanup(bug_dir: str):
     cmd = ["./zkbugs_clean.sh"]
     logging.debug(f"Running Command: ${shlex.join(cmd)}")
     subprocess.run(cmd, check=True)
-    
+
     # Change back to the base directory
     os.chdir(BASE_DIR)
