@@ -1,0 +1,32 @@
+{
+  "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Unsafe Reuse of Circuit",
+    "Location": {
+      "Path": "circuits/range_proof/circuit.circom",
+      "Function": "RangeProof",
+      "Line": "16-22"
+    }
+  },
+  "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Arithmetic Field Errors",
+    "Location": {
+      "Path": "circuits/bigint.circom",
+      "Function": "BigMod",
+      "Line": "363-417"
+    }
+  },
+  "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Assigned but Unconstrained",
+    "Location": {
+      "Path": "circuits/mimcsponge.circom",
+      "Function": "MiMCSponge",
+      "Line": "28"
+    }
+  }
+}

@@ -7,14 +7,14 @@ from pathlib import Path
 
 def run_command(
     cmd: list[str], timeout: int, tool: str, bug: str
-) -> subprocess.CompletedProcess | str:
+) -> str:
     logging.info(f"Running: '{shlex.join(cmd)}'")
 
     try:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=True, timeout=timeout
         )
-        return result
+        return "stdout:\n" + result.stdout + "\nstderr:\n" + result.stderr
 
     except subprocess.TimeoutExpired as e:
         logging.warning(
