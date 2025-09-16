@@ -1,0 +1,46 @@
+{
+    "circom": {
+        "circom_civer": {
+            "correct": [
+                "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
+                "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery",
+                "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards",
+                "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd"
+            ],
+            "false": [
+                {
+                    "bug_name": "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+                    "reason": "tool found no module"
+                },
+                {
+                    "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+                    "reason": "tool found no module"
+                },
+                {
+                    "bug_name": "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
+                    "reason": "tool found correct module, but lines didn't match (tool found lines: 4-4; buggy lines: 10-11)"
+                },
+                {
+                    "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+                    "reason": "tool found wrong module (tool found: MontgomeryAdd; buggy module: BitElementMulAny)"
+                },
+                {
+                    "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+                    "reason": "tool found wrong module (tool found: MontgomeryAdd; buggy module: Window4)"
+                },
+                {
+                    "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+                    "reason": "tool found wrong module (tool found: MontgomeryAdd; buggy module: WindowMulFix)"
+                },
+                {
+                    "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
+                    "reason": "tool found no module"
+                }
+            ],
+            "count": {
+                "correct": 4,
+                "false": 7
+            }
+        }
+    }
+}
