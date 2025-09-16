@@ -1,5 +1,5 @@
-import logging
 import json
+import logging
 from pathlib import Path
 
 from tools.utils import ensure_dir
@@ -14,7 +14,7 @@ def run_tool_on_bug(
     base_dir: Path,
     output_dir: Path,
     tool_info: ToolInfo,
-    sbug_path
+    sbug_path,
 ) -> None:
     dsl = tool_info.dsl
     execute_fn = tool_info.execute
@@ -38,7 +38,6 @@ def run_tool_on_bug(
 #         f.write(f"========== {bug_name} ==========\n")
 #         f.write(str(content))
 #         f.write("\n\n")
-
 
 
 def write_output(output_file: Path, tool: str, bug_name: str, content: str) -> None:
@@ -74,4 +73,3 @@ def write_output(output_file: Path, tool: str, bug_name: str, content: str) -> N
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     logging.info(f"Entry for '{bug_name}' {action} in {json_file}")
-
