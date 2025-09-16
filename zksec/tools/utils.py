@@ -5,9 +5,7 @@ import subprocess
 from pathlib import Path
 
 
-def run_command(
-    cmd: list[str], timeout: int, tool: str, bug: str
-) -> str:
+def run_command(cmd: list[str], timeout: int, tool: str, bug: str) -> str:
     logging.info(f"Running: '{shlex.join(cmd)}'")
 
     try:

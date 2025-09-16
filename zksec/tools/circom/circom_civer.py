@@ -17,7 +17,13 @@ def execute(bug_path: str, timeout: int) -> str:
 
     change_directory(TOOL_DIR)
 
-    cmd = ["./target/release/civer_circom", str(circuit_file), "--check_safety", "--verbose", "--O0"]
+    cmd = [
+        "./target/release/civer_circom",
+        str(circuit_file),
+        "--check_safety",
+        "--verbose",
+        "--O0",
+    ]
     result = run_command(cmd, timeout, tool="circom_civer", bug=bug_path)
 
     return result

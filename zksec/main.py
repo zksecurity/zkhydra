@@ -1,15 +1,16 @@
 import argparse
-import logging
-from multiprocessing import context
-import os
-from pathlib import Path
-import re
 import json
+import logging
+import os
+import re
+from multiprocessing import context
+from pathlib import Path
 
+import config
 from bugs.zkbugs import cleanup as cleanup_zkbug_environment
+from bugs.zkbugs import generate_ground_truth
 from bugs.zkbugs import setup as setup_zkbug_environment
 from config import load_config
-import config
 from runner import run_tool_on_bug
 from tools_resolver import resolve_tools
 
@@ -39,12 +40,12 @@ def main():
 
         for bug in config.bugs[dsl]:
             bug_path = REPO_DIR / bug
+            # TODO: bugname should be sbug_path
+            # TODO: Clean up sbug_path
+            sbug_path = remove_first_n_dirs(bug, 5)
             bug_name = bug_path.name
 
             # setup_zkbug_environment(bug_path)
-
-            # # TODO: Clean up sbug_path
-            sbug_path = remove_first_n_dirs(bug, 5)
 
             # for tool in config.tools[dsl]:
             #     if tool not in tool_registry:
@@ -63,99 +64,26 @@ def main():
 
             # cleanup_zkbug_environment(bug_path)
 
-            # # TODO: Separate in a different method
-            # ################################################################
-            # # Generate ground truth JSON
-            # ################################################################
-            # sbug_path = remove_first_n_dirs(bug, 5)
-
-            # # TODO: Instead of dir, add dsl as separate field in json
-            output = BASE_DIR / config.output_dir / f"{dsl}" / "bug_info_ground_truth.json"
-            # logging.error(output)
-
-            # readme_file = bug_path / "README.md"
-            # logging.error(readme_file)
-
-            # update_bug_info_json(sbug_path, readme_file, output)
+            ################################################################
+            output = BASE_DIR / config.output_dir / "bug_info_ground_truth.json"
+            generate_ground_truth(sbug_path, bug_path, dsl, output)
+            #################################################################
 
             # ################################################################
             # # Analyze tool results against ground truth
             # ################################################################
             # TODO: 1. Parse tool results/output to extract buggy components
-            for tool in config.tools[dsl]:
-                input = BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
-                output_structured = BASE_DIR / config.output_dir / f"{dsl}" / "tool_output_parsed.json"
-                # if tool == 'circom_civer': get_buggy_component_circom_civer(input, output_structured)
-                # else:
-                #     logging.error(f"Tool '{tool}' not yet supported for result analysis")
+            # for tool in config.tools[dsl]:
+            #     input = BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
+            #     output_structured = BASE_DIR / config.output_dir / f"{dsl}" / "tool_output_parsed.json"
+            #     # if tool == 'circom_civer': get_buggy_component_circom_civer(input, output_structured)
+            #     # else:
+            #     #     logging.error(f"Tool '{tool}' not yet supported for result analysis")
 
+            #     # TODO: 2. Compare extracted buggy components with ground truth
+            #     result_json = BASE_DIR / config.output_dir / f"{dsl}" / "results.json"
+            #     compare_tool_output_with_ground_truth(tool, ground_truth=output, tool_output=output_structured, output_file=result_json, bug_name=sbug_path)
 
-                # TODO: 2. Compare extracted buggy components with ground truth
-                result_json = BASE_DIR / config.output_dir / f"{dsl}" / "results.json"
-                compare_tool_output_with_ground_truth(tool, ground_truth=output, tool_output=output_structured, output_file=result_json, bug_name=sbug_path)
-
-def extract_vulnerability_info_from_file(file_path):
-    """Extract vulnerability info from a single Markdown file."""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
-
-    # Patterns
-    vuln_pattern = r"\* Vulnerability:\s*(.*)"
-    impact_pattern = r"\* Impact:\s*(.*)"
-    root_cause_pattern = r"\* Root Cause:\s*(.*)"
-    location_pattern = (
-        r"\* Location\s*\n"
-        r"\s*- Path:\s*(.*)\n"
-        r"\s*- Function:\s*(.*)\n"
-        r"\s*- Line:\s*(.*)"
-    )
-
-    vulnerability = re.search(vuln_pattern, content)
-    impact = re.search(impact_pattern, content)
-    root_cause = re.search(root_cause_pattern, content)
-    location_match = re.search(location_pattern, content)
-
-    if not (vulnerability and impact and root_cause and location_match):
-        raise ValueError(f"Required fields not found in {file_path}")
-
-    return {
-        "Vulnerability": vulnerability.group(1).strip(),
-        "Impact": impact.group(1).strip(),
-        "Root Cause": root_cause.group(1).strip(),
-        "Location": {
-            "Path": location_match.group(1).strip(),
-            "Function": location_match.group(2).strip(),
-            "Line": location_match.group(3).strip()
-        }
-    }
-
-
-# TODO: Clean up sbug_path
-def update_bug_info_json(sbug_path, file_path, output_json_path, ) -> None:
-    """Update or add a single bug entry in the JSON file."""
-    # Extract data
-    bug_data = extract_vulnerability_info_from_file(file_path)
-    bug_key = sbug_path
-
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(output_json_path), exist_ok=True)
-
-    # Load existing JSON if it exists
-    if os.path.exists(output_json_path):
-        with open(output_json_path, 'r', encoding='utf-8') as f:
-            bug_info = json.load(f)
-    else:
-        bug_info = {}
-
-    # Determine if created or updated
-    action = "updated" if bug_key in bug_info else "created"
-    bug_info[bug_key] = bug_data
-
-    # Write back to JSON
-    with open(output_json_path, 'w', encoding='utf-8') as f:
-        json.dump(bug_info, f, indent=2)
-
-    logging.error(f"Bug entry '{bug_key}' {action} in {output_json_path}")
 
 def remove_first_n_dirs(path, n=5):
     # Normalize path separators
@@ -164,7 +92,6 @@ def remove_first_n_dirs(path, n=5):
     new_path_parts = path_parts[n:]
     # Join the remaining parts back
     return os.path.join(*new_path_parts)
-
 
 
 def get_buggy_component_circom_civer(input_json: Path, output_json: Path) -> None:
@@ -202,11 +129,7 @@ def get_buggy_component_circom_civer(input_json: Path, output_json: Path) -> Non
                 if comp_match:
                     comp_name, numbers = comp_match.groups()
                     nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
-                    buggy_components.append({
-                        "name": comp_name,
-                        "params": nums
-                    })
-
+                    buggy_components.append({"name": comp_name, "params": nums})
 
             # --- Stats parsing ---
             if "Number of verified components" in line:
@@ -217,14 +140,14 @@ def get_buggy_component_circom_civer(input_json: Path, output_json: Path) -> Non
                 stats["timeout"] = int(re.search(r"(\d+)$", line).group(1))
 
         # TODO: make generic in a different method
-        if 'circom' not in structured_info:
-            structured_info['circom'] = {}
-        if 'circom_civer' not in structured_info['circom']:
-            structured_info['circom']['circom_civer'] = {}
+        if "circom" not in structured_info:
+            structured_info["circom"] = {}
+        if "circom_civer" not in structured_info["circom"]:
+            structured_info["circom"]["circom_civer"] = {}
 
-        structured_info['circom']['circom_civer'][bug_name]  = {
+        structured_info["circom"]["circom_civer"][bug_name] = {
             "stats": stats,
-            "buggy_components": buggy_components
+            "buggy_components": buggy_components,
         }
 
     os.makedirs(os.path.dirname(output_json), exist_ok=True)
@@ -235,8 +158,9 @@ def get_buggy_component_circom_civer(input_json: Path, output_json: Path) -> Non
     print(f"Structured bug info written to {output_json}")
 
 
-
-def compare_tool_output_with_ground_truth(tool: str, ground_truth: Path, tool_output: Path, output_file: Path, bug_name: str) -> None:    
+def compare_tool_output_with_ground_truth(
+    tool: str, ground_truth: Path, tool_output: Path, output_file: Path, bug_name: str
+) -> None:
     # Load existing output or initialize
     if os.path.exists(output_file):
         with open(output_file, "r", encoding="utf-8") as f:
@@ -248,37 +172,43 @@ def compare_tool_output_with_ground_truth(tool: str, ground_truth: Path, tool_ou
     output.setdefault("circom", {}).setdefault(tool, {}).setdefault("correct", [])
     output.setdefault("circom", {}).setdefault(tool, {}).setdefault("false", [])
 
-
-
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
         ground_truth_data = json.load(f)
-    
+
     bug_location = ground_truth_data.get(bug_name, {}).get("Location", {})
     if not bug_location:
         logging.error(f"Location data for bug '{bug_name}' not found in ground truth.")
         return
-    
+
     buggy_function = bug_location.get("Function")
     buggy_line = bug_location.get("Line")
     if "-" in buggy_line:
         startline, endline = map(int, buggy_line.split("-", 1))
     else:
         startline = endline = int(buggy_line)
-    logging.error(f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}")
-
+    logging.error(
+        f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
+    )
 
     # Get tool output data
     with open(tool_output, "r", encoding="utf-8") as f:
         tool_output_data = json.load(f)
 
-    buggy_components = tool_output_data.get('circom', {}).get(tool, {}).get(bug_name, {}).get("buggy_components", [])
+    buggy_components = (
+        tool_output_data.get("circom", {})
+        .get(tool, {})
+        .get(bug_name, {})
+        .get("buggy_components", [])
+    )
 
     is_correct = False
     for component in buggy_components:
         comp_name = component.get("name")
         comp_params = component.get("params", [])
-        logging.error(f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}")
+        logging.error(
+            f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
+        )
 
         params = component.get("params", [])
         if not params:
@@ -290,24 +220,27 @@ def compare_tool_output_with_ground_truth(tool: str, ground_truth: Path, tool_ou
             endline_tool = params[1]
         else:
             raise ValueError("params should have at most 2 values")
-        logging.error(f"Component lines: startline={startline_tool}, endline={endline_tool}")
-
-
+        logging.error(
+            f"Component lines: startline={startline_tool}, endline={endline_tool}"
+        )
 
         # Compare with ground truth
         if comp_name == buggy_function:
-                logging.error(f"Component name matches buggy function: {comp_name}")
+            logging.error(f"Component name matches buggy function: {comp_name}")
 
-                # Check lines
-                if startline_tool == endline_tool == 0:
-                    logging.error(f"Component lines not provided by tool")
-                    is_correct = True
-                if startline_tool <= startline and endline_tool >= endline:
-                    logging.error(f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}")
-                    is_correct = True
-                else:
-                    logging.error(f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}")
-
+            # Check lines
+            if startline_tool == endline_tool == 0:
+                logging.error(f"Component lines not provided by tool")
+                is_correct = True
+            if startline_tool <= startline and endline_tool >= endline:
+                logging.error(
+                    f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}"
+                )
+                is_correct = True
+            else:
+                logging.error(
+                    f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}"
+                )
 
         logging.warning(f"Component '{comp_name}' correctness: {is_correct}")
 
@@ -329,9 +262,9 @@ def compare_tool_output_with_ground_truth(tool: str, ground_truth: Path, tool_ou
     # Update counts dynamically
     output["circom"][tool]["count"] = {
         "correct": len(output["circom"][tool]["correct"]),
-        "false": len(output["circom"][tool]["false"])
+        "false": len(output["circom"][tool]["false"]),
     }
-    
+
     # Write back to file
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=4)
@@ -339,10 +272,3 @@ def compare_tool_output_with_ground_truth(tool: str, ground_truth: Path, tool_ou
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
