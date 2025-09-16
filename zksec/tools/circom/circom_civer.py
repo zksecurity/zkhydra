@@ -32,58 +32,54 @@ def execute(bug_path: str, timeout: int) -> str:
     return result
 
 
-def parse_output(tool_result_raw: Path, output_file: Path) -> None:
+def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> None:
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info = json.load(f)
+        bug_info = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
 
     structured_info = {}
 
-    for bug_name, lines in bug_info.items():
-        stats = {"verified": None, "failed": None, "timeout": None}
-        buggy_components = []
+    stats = {"verified": None, "failed": None, "timeout": None}
+    buggy_components = []
 
-        context = None  # track section
+    context = None  # track section
 
-        for raw_line in lines:
-            line = raw_line.strip().rstrip(",")
+    for line in bug_info:
+        # --- Track context (which section we are in) ---
+        if line.startswith("Components that do not satisfy weak safety"):
+            context = "buggy"
+            continue
+        elif line.startswith("Components timeout when checking weak-safety"):
+            context = "timeout"
+            continue
+        # TODO: verify string
+        elif line.startswith("Components that failed verification"):
+            context = "failed"
+            continue
+        elif line == "":
+            context = None  # reset only on empty line
 
-            # --- Track context (which section we are in) ---
-            if line.startswith("Components that do not satisfy weak safety"):
-                context = "buggy"
-                continue
-            elif line.startswith("Components timeout when checking weak-safety"):
-                context = "timeout"
-                continue
-            # TODO: verify string
-            elif line.startswith("Components that failed verification"):
-                context = "failed"
-                continue
-            elif line == "":
-                context = None  # reset only on empty line
+        # --- Match component lines only if inside "buggy" context ---
+        if context == "buggy" and line.strip().startswith("-"):
+            comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line.strip())
+            if comp_match:
+                comp_name, numbers = comp_match.groups()
+                nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
+                buggy_components.append({"name": comp_name, "params": nums})
 
-            # --- Match component lines only if inside "buggy" context ---
-            if context == "buggy" and line.startswith("-"):
-                comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line)
-                if comp_match:
-                    comp_name, numbers = comp_match.groups()
-                    nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
-                    buggy_components.append({"name": comp_name, "params": nums})
+        # --- Stats parsing ---
+        if "Number of verified components" in line:
+            stats["verified"] = int(re.search(r"(\d+)$", line).group(1))
+        elif "Number of failed components" in line:
+            stats["failed"] = int(re.search(r"(\d+)$", line).group(1))
+        elif "Number of timeout components" in line:
+            stats["timeout"] = int(re.search(r"(\d+)$", line).group(1))
 
-            # --- Stats parsing ---
-            if "Number of verified components" in line:
-                stats["verified"] = int(re.search(r"(\d+)$", line).group(1))
-            elif "Number of failed components" in line:
-                stats["failed"] = int(re.search(r"(\d+)$", line).group(1))
-            elif "Number of timeout components" in line:
-                stats["timeout"] = int(re.search(r"(\d+)$", line).group(1))
+        if dsl not in structured_info:
+            structured_info[dsl] = {}
+        if tool not in structured_info[dsl]:
+            structured_info[dsl][tool] = {}
 
-        # TODO: make generic in a different method
-        if "circom" not in structured_info:
-            structured_info["circom"] = {}
-        if "circom_civer" not in structured_info["circom"]:
-            structured_info["circom"]["circom_civer"] = {}
-
-        structured_info["circom"]["circom_civer"][bug_name] = {
+        structured_info[dsl][tool][bug_name] = {
             "stats": stats,
             "buggy_components": buggy_components,
         }
@@ -112,9 +108,9 @@ def compare_zkbugs_ground_truth(
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
-        ground_truth_data = json.load(f)
+        ground_truth_data = json.load(f).get(dsl, {}).get(bug_name, {})
 
-    bug_location = ground_truth_data.get(dsl, {}).get(bug_name, {}).get("Location", {})
+    bug_location = ground_truth_data.get("Location", {})
     if not bug_location:
         logging.error(f"Location data for bug '{bug_name}' not found in ground truth.")
         return
@@ -131,14 +127,9 @@ def compare_zkbugs_ground_truth(
 
     # Get tool output data
     with open(tool_result_parsed, "r", encoding="utf-8") as f:
-        tool_output_data = json.load(f)
+        tool_output_data = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, {})
 
-    buggy_components = (
-        tool_output_data.get(dsl, {})
-        .get(tool, {})
-        .get(bug_name, {})
-        .get("buggy_components", [])
-    )
+    buggy_components = tool_output_data.get("buggy_components", [])
 
     is_correct = False
     for component in buggy_components:

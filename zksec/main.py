@@ -54,7 +54,7 @@ def main():
                 generate_ground_truth(config, dsl, bug_path, bug_name)
 
             if config.parse_raw_tool_output:
-                parse_raw_tool_output(config, dsl, tool_registry)
+                parse_raw_tool_output(config, dsl, tool_registry, bug_name)
 
             if config.analyze_tool_results:
                 analyze_tool_results(
@@ -65,8 +65,8 @@ def main():
                 )
 
 
-def get_tool_results_raw(tool, dsl, config):
-    return BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
+def get_tool_results_raw(config):
+    return BASE_DIR / config.output_dir / "tool_output_raw.json"
 
 
 def get_output_ground_truth(config):
@@ -87,7 +87,7 @@ def execute_bug(config, dsl, bug_path, bug_name, tool_registry):
             logging.warning(f"Skipping {tool} because it failed to load")
             continue
 
-        tool_results_raw = get_tool_results_raw(tool, dsl, config)
+        tool_results_raw = get_tool_results_raw(config)
 
         execute_tool_on_bug(
             tool,
@@ -104,16 +104,16 @@ def generate_ground_truth(config, dsl, bug_path, bug_name):
     generate_ground_truth_zkbugs(bug_name, bug_path, dsl, output_ground_truth)
 
 
-def parse_raw_tool_output(config, dsl, tool_registry):
+def parse_raw_tool_output(config, dsl, tool_registry, bug_name):
     for tool in config.tools[dsl]:
         if tool not in tool_registry:
             logging.warning(f"Skipping {tool} because it failed to load")
             continue
 
         output_structured = get_output_structured(config)
-        tool_results_raw = get_tool_results_raw(tool, dsl, config)
+        tool_results_raw = get_tool_results_raw(config)
         parse_tool_output(
-            tool, tool_registry[tool], tool_results_raw, output_structured
+            tool, tool_registry[tool], tool_results_raw, output_structured, bug_name
         )
 
 
