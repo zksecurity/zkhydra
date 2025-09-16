@@ -88,13 +88,6 @@ def parse_output(tool_result_raw: Path, output_file: Path) -> None:
             "buggy_components": buggy_components,
         }
 
-    # os.makedirs(os.path.dirname(output_file), exist_ok=True)
-
-    # with open(output_file, "w", encoding="utf-8") as f:
-    #     json.dump(structured_info, f, indent=2, ensure_ascii=False)
-
-    # print(f"Structured bug info written to {output_file}")
-
     return structured_info
 
 
@@ -201,9 +194,7 @@ def compare_zkbugs_ground_truth(
         else:
             reason = f"tool found correct module, but lines didn't match (tool found lines: {startline_tool}-{endline_tool}; buggy lines: {startline}-{endline})"
 
-        # Append dictionary with reason
-        # output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
-        # Only append if not already recorded
+        # Append dictionary with reason if not already recorded
         existing_false = output[dsl][tool]["false"]
         if not any(entry["bug_name"] == bug_name for entry in existing_false):
             output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
@@ -214,7 +205,4 @@ def compare_zkbugs_ground_truth(
         "false": len(output[dsl][tool]["false"]),
     }
 
-    # # Write back to file
-    # with open(output_file, "w", encoding="utf-8") as f:
-    #     json.dump(output, f, indent=4)
     return output

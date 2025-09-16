@@ -21,9 +21,9 @@ fi
 ./circom.sh
 
 # Install tools
+./circom_civer.sh
 ./circomspect.sh
-# ./coda.sh
-./garden.sh
+./ecneproject.sh
 ./picus.sh
 ./zkfuzz.sh
 

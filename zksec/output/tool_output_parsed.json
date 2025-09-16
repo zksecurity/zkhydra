@@ -1,6 +1,14 @@
 {
   "circom": {
     "circom_civer": {
+      "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+        "stats": {
+          "verified": 10,
+          "failed": 0,
+          "timeout": 7
+        },
+        "buggy_components": []
+      },
       "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
         "stats": {
           "verified": 2,
@@ -22,6 +30,107 @@
           "verified": 0,
           "failed": 0,
           "timeout": 2
+        },
+        "buggy_components": []
+      },
+      "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "Decoder",
+            "params": [
+              4
+            ]
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 1
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 1
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 1
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "Edwards2Montgomery",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "Montgomery2Edwards",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+        "stats": {
+          "verified": 0,
+          "failed": 0,
+          "timeout": 1
         },
         "buggy_components": []
       }
