@@ -8,6 +8,13 @@ timeout = 600
 # Output directory
 output = "./output"
 
+setup_bug_environment = false
+execute_tools = false
+cleanup_bug_environment = false
+generate_ground_truth = true
+parse_raw_tool_output = true
+analyze_tool_results = true
+
 [circom]
 # List of tools to use
 tools = [
