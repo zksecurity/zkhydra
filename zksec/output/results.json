@@ -1,0 +1,19 @@
+{
+  "circom": {
+    "circom_civer": {
+      "correct": [
+        "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check"
+      ],
+      "false": [
+        {
+          "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+          "reason": "tool found no module"
+        }
+      ],
+      "count": {
+        "correct": 1,
+        "false": 1
+      }
+    }
+  }
+}

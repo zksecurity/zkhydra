@@ -210,6 +210,7 @@ def compare_zkbugs_ground_truth(
         "false": len(output["circom"][tool]["false"]),
     }
 
-    # Write back to file
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(output, f, indent=4)
+    # # Write back to file
+    # with open(output_file, "w", encoding="utf-8") as f:
+    #     json.dump(output, f, indent=4)
+    return output

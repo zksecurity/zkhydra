@@ -81,12 +81,29 @@ def parse_tool_output(
 
 def write_parsed_output(output_file: Path, tool: str, content) -> None:
     logging.info(f"Writing parsed {tool} results to '{output_file}'")
-
     # Ensure directory exists
     ensure_dir(output_file.parent)
-
     # Write to JSON
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(content, f, indent=2, ensure_ascii=False)
-
     logging.info(f"Parsed output written to {output_file}")
+
+
+def compare_tool_output_with_zkbugs_ground_truth(
+    tool: str,
+    tool_info: ToolInfo,
+    bug_name: str,
+    ground_truth: Path,
+    tool_result_parsed: Path,
+    output_file: Path,
+) -> None:
+    compare_fn = tool_info.compare_zkbugs_ground_truth
+    logging.debug(f"Comparing output for tool '{tool}' in DSL '{tool_info.dsl}'")
+    try:
+        result = compare_fn(
+            tool, tool_info.dsl, bug_name, ground_truth, tool_result_parsed, output_file
+        )
+    except Exception as e:
+        logging.error(f"Comparison with ground truth failed for tool '{tool}': {e}")
+        return
+    write_parsed_output(output_file, tool, result)
