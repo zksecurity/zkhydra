@@ -6,7 +6,7 @@ from tools.utils import ensure_dir
 from tools_resolver import ToolInfo
 
 
-def run_tool_on_bug(
+def execute_tool_on_bug(
     tool: str,
     bug_path: Path,
     bug_name: str,
@@ -26,18 +26,6 @@ def run_tool_on_bug(
         logging.error(f"{tool} failed on {bug_name}: {e}")
         result = f"Error: {e}"
     write_output(output, tool, sbug_path, result)
-
-
-# def write_output(output_file: Path, tool: str, bug_name: str, content: str) -> None:
-#     logging.info(f"Writing {tool} results for {bug_name} to '{output_file}'")
-
-#     ensure_dir(output_file.parent)
-
-#     # Write the output to the file
-#     with open(output_file, "a") as f:
-#         f.write(f"========== {bug_name} ==========\n")
-#         f.write(str(content))
-#         f.write("\n\n")
 
 
 def write_output(output_file: Path, tool: str, bug_name: str, content: str) -> None:
@@ -73,3 +61,32 @@ def write_output(output_file: Path, tool: str, bug_name: str, content: str) -> N
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     logging.info(f"Entry for '{bug_name}' {action} in {json_file}")
+
+
+def parse_tool_output(
+    tool: str,
+    tool_info: ToolInfo,
+    tool_result_raw: Path,
+    output: Path,
+):
+    parse_output_fn = tool_info.parse_output
+    logging.debug(f"Parsing output for tool '{tool}' in DSL '{tool_info.dsl}'")
+    try:
+        parsed_result = parse_output_fn(tool_result_raw, output)
+    except Exception as e:
+        logging.error(f"Parsing output failed for tool '{tool}': {e}")
+        return
+    write_parsed_output(output, tool, parsed_result)
+
+
+def write_parsed_output(output_file: Path, tool: str, content) -> None:
+    logging.info(f"Writing parsed {tool} results to '{output_file}'")
+
+    # Ensure directory exists
+    ensure_dir(output_file.parent)
+
+    # Write to JSON
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(content, f, indent=2, ensure_ascii=False)
+
+    logging.info(f"Parsed output written to {output_file}")

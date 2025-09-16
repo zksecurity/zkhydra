@@ -17,5 +17,18 @@ def execute(bug_path: str, timeout: int):
     return result
 
 
-def parse_output(file: str) -> str:
+def parse_output(tool_result_raw: Path, output_file: Path) -> None:
     logging.warning("Not implemented.")
+    return
+
+
+def compare_zkbugs_ground_truth(
+    tool: str,
+    dsl: str,
+    bug_name: str,
+    ground_truth: Path,
+    tool_result_parsed: Path,
+    output_file: Path,
+) -> None:
+    logging.warning("Not implemented.")
+    return
