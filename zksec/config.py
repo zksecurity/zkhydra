@@ -14,6 +14,12 @@ class AppConfig:
     output_dir: Path
     timeout: int
     log_level: str
+    setup_bug_environment: bool
+    execute_tools: bool
+    cleanup_bug_environment: bool
+    generate_ground_truth: bool
+    parse_raw_tool_output: bool
+    analyze_tool_results: bool
 
 
 def load_config(
@@ -36,12 +42,25 @@ def load_config(
 
     timeout = int(config["app"].get("timeout", 300))
 
+    setup_bug_environment = config["app"].get("setup_bug_environment", True)
+    execute_tools = config["app"].get("execute_tools", True)
+    cleanup_bug_environment = config["app"].get("cleanup_bug_environment", True)
+    generate_ground_truth = config["app"].get("generate_ground_truth", True)
+    parse_raw_tool_output = config["app"].get("parse_raw_tool_output", True)
+    analyze_tool_results = config["app"].get("analyze_tool_results", True)
+
     return AppConfig(
         tools=tools,
         bugs=bugs,
         output_dir=output_dir,
         timeout=timeout,
         log_level=log_level,
+        setup_bug_environment=setup_bug_environment,
+        execute_tools=execute_tools,
+        cleanup_bug_environment=cleanup_bug_environment,
+        generate_ground_truth=generate_ground_truth,
+        parse_raw_tool_output=parse_raw_tool_output,
+        analyze_tool_results=analyze_tool_results,
     )
 
 

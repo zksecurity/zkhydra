@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 from bugs.zkbugs import cleanup as cleanup_zkbug_environment
-from bugs.zkbugs import generate_ground_truth
+from bugs.zkbugs import generate_ground_truth as generate_ground_truth_zkbugs
 from bugs.zkbugs import setup as setup_zkbug_environment
 from config import load_config
 from runner import (
@@ -31,7 +31,6 @@ def parse_args() -> argparse.Namespace:
 
 def main():
     args = parse_args()
-
     config = load_config(args.config)
 
     for dsl in config.tools:
@@ -42,62 +41,97 @@ def main():
             bug_path = REPO_DIR / bug
             bug_name = remove_first_n_dirs(bug, 5)
 
-            setup_zkbug_environment(bug_path)
+            if config.setup_bug_environment:
+                setup_zkbug_environment(bug_path)
 
-            for tool in config.tools[dsl]:
-                if tool not in tool_registry:
-                    logging.warning(f"Skipping {tool} because it failed to load")
-                    continue
-            # TODO: use this in function below
-            tool_results_raw = (
-                BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
-            )
-            execute_tool_on_bug(
-                tool,
-                bug_path,
-                bug_name,
-                config.timeout,
-                tool_results_raw,
-                tool_registry[tool],
-            )
+            if config.execute_tools:
+                execute_bug(config, dsl, bug_path, bug_name, tool_registry)
 
-            cleanup_zkbug_environment(bug_path)
+            if config.cleanup_bug_environment:
+                cleanup_zkbug_environment(bug_path)
 
-            ################################################################
-            # Generate ground truth
-            ################################################################
-            output_ground_truth = (
-                BASE_DIR / config.output_dir / "bug_info_ground_truth.json"
-            )
-            generate_ground_truth(bug_name, bug_path, dsl, output_ground_truth)
+            if config.generate_ground_truth:
+                generate_ground_truth(config, dsl, bug_path, bug_name)
 
-            ################################################################
-            # Parse raw tool outputs
-            ################################################################
-            for tool in config.tools[dsl]:
-                if tool not in tool_registry:
-                    logging.warning(f"Skipping {tool} because it failed to load")
-                    continue
+            if config.parse_raw_tool_output:
+                parse_raw_tool_output(config, dsl, tool_registry)
 
-                output_structured = (
-                    BASE_DIR / config.output_dir / "tool_output_parsed.json"
-                )
-                parse_tool_output(
-                    tool, tool_registry[tool], tool_results_raw, output_structured
-                )
-
-                ################################################################
-                # Analyze tool results against ground truth
-                ################################################################
-                output_result = BASE_DIR / config.output_dir / "results.json"
-                compare_tool_output_with_zkbugs_ground_truth(
-                    tool,
-                    tool_registry[tool],
+            if config.analyze_tool_results:
+                analyze_tool_results(
+                    config,
+                    dsl,
+                    tool_registry,
                     bug_name,
-                    output_ground_truth,
-                    output_structured,
-                    output_result,
                 )
+
+
+def get_tool_results_raw(tool, dsl, config):
+    return BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
+
+
+def get_output_ground_truth(config):
+    return BASE_DIR / config.output_dir / "bug_info_ground_truth.json"
+
+
+def get_output_structured(config):
+    return BASE_DIR / config.output_dir / "tool_output_parsed.json"
+
+
+def get_output_result(config):
+    return BASE_DIR / config.output_dir / "results.json"
+
+
+def execute_bug(config, dsl, bug_path, bug_name, tool_registry):
+    for tool in config.tools[dsl]:
+        if tool not in tool_registry:
+            logging.warning(f"Skipping {tool} because it failed to load")
+            continue
+
+        tool_results_raw = get_tool_results_raw(tool, dsl, config)
+
+        execute_tool_on_bug(
+            tool,
+            bug_path,
+            bug_name,
+            config.timeout,
+            tool_results_raw,
+            tool_registry[tool],
+        )
+
+
+def generate_ground_truth(config, dsl, bug_path, bug_name):
+    output_ground_truth = get_output_ground_truth(config)
+    generate_ground_truth_zkbugs(bug_name, bug_path, dsl, output_ground_truth)
+
+
+def parse_raw_tool_output(config, dsl, tool_registry):
+    for tool in config.tools[dsl]:
+        if tool not in tool_registry:
+            logging.warning(f"Skipping {tool} because it failed to load")
+            continue
+
+        output_structured = get_output_structured(config)
+        tool_results_raw = get_tool_results_raw(tool, dsl, config)
+        parse_tool_output(
+            tool, tool_registry[tool], tool_results_raw, output_structured
+        )
+
+
+def analyze_tool_results(config, dsl, tool_registry, bug_name):
+    for tool in config.tools[dsl]:
+        if tool not in tool_registry:
+            logging.warning(f"Skipping {tool} because it failed to load")
+            continue
+
+        output_result = get_output_result(config)
+        compare_tool_output_with_zkbugs_ground_truth(
+            tool,
+            tool_registry[tool],
+            bug_name,
+            get_output_ground_truth(config),
+            get_output_structured(config),
+            output_result,
+        )
 
 
 def remove_first_n_dirs(path, n=5):
