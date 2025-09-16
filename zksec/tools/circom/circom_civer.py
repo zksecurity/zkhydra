@@ -32,8 +32,8 @@ def execute(bug_path: str, timeout: int) -> str:
     return result
 
 
-def parse_output(input_json: Path, output_json: Path) -> None:
-    with open(input_json, "r", encoding="utf-8") as f:
+def parse_output(tool_result_raw: Path, output_file: Path) -> None:
+    with open(tool_result_raw, "r", encoding="utf-8") as f:
         bug_info = json.load(f)
 
     structured_info = {}
@@ -88,21 +88,23 @@ def parse_output(input_json: Path, output_json: Path) -> None:
             "buggy_components": buggy_components,
         }
 
-    os.makedirs(os.path.dirname(output_json), exist_ok=True)
+    # os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    with open(output_json, "w", encoding="utf-8") as f:
-        json.dump(structured_info, f, indent=2, ensure_ascii=False)
+    # with open(output_file, "w", encoding="utf-8") as f:
+    #     json.dump(structured_info, f, indent=2, ensure_ascii=False)
 
-    print(f"Structured bug info written to {output_json}")
+    # print(f"Structured bug info written to {output_file}")
+
+    return structured_info
 
 
 def compare_zkbugs_ground_truth(
     tool: str,
     dsl: str,
-    ground_truth: Path,
-    tool_output: Path,
-    output_file: Path,
     bug_name: str,
+    ground_truth: Path,
+    tool_result_parsed: Path,
+    output_file: Path,
 ) -> None:
     # Load existing output or initialize
     if os.path.exists(output_file):
@@ -135,7 +137,7 @@ def compare_zkbugs_ground_truth(
     )
 
     # Get tool output data
-    with open(tool_output, "r", encoding="utf-8") as f:
+    with open(tool_result_parsed, "r", encoding="utf-8") as f:
         tool_output_data = json.load(f)
 
     buggy_components = (
