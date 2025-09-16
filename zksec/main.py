@@ -1,12 +1,8 @@
 import argparse
-import json
 import logging
 import os
-import re
-from multiprocessing import context
 from pathlib import Path
 
-import config
 from bugs.zkbugs import cleanup as cleanup_zkbug_environment
 from bugs.zkbugs import generate_ground_truth
 from bugs.zkbugs import setup as setup_zkbug_environment
@@ -16,7 +12,6 @@ from runner import (
     execute_tool_on_bug,
     parse_tool_output,
 )
-from tools.circom.circom_civer import compare_zkbugs_ground_truth, parse_output
 from tools_resolver import resolve_tools
 
 BASE_DIR = Path.cwd()
@@ -45,10 +40,7 @@ def main():
 
         for bug in config.bugs[dsl]:
             bug_path = REPO_DIR / bug
-            # TODO: bugname should be sbug_path
-            # TODO: Clean up sbug_path
-            sbug_path = remove_first_n_dirs(bug, 5)
-            bug_name = bug_path.name
+            bug_name = remove_first_n_dirs(bug, 5)
 
             setup_zkbug_environment(bug_path)
 
@@ -56,19 +48,17 @@ def main():
                 if tool not in tool_registry:
                     logging.warning(f"Skipping {tool} because it failed to load")
                     continue
-                # TODO: use this in function below
+            # TODO: use this in function below
             tool_results_raw = (
-                BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.log"
+                BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
             )
             execute_tool_on_bug(
                 tool,
                 bug_path,
                 bug_name,
                 config.timeout,
-                BASE_DIR,
-                config.output_dir,
+                tool_results_raw,
                 tool_registry[tool],
-                sbug_path,
             )
 
             cleanup_zkbug_environment(bug_path)
@@ -79,7 +69,7 @@ def main():
             output_ground_truth = (
                 BASE_DIR / config.output_dir / "bug_info_ground_truth.json"
             )
-            generate_ground_truth(sbug_path, bug_path, dsl, output_ground_truth)
+            generate_ground_truth(bug_name, bug_path, dsl, output_ground_truth)
 
             ################################################################
             # Parse raw tool outputs
@@ -88,11 +78,6 @@ def main():
                 if tool not in tool_registry:
                     logging.warning(f"Skipping {tool} because it failed to load")
                     continue
-
-                # TODO: remove just for testing here
-                tool_results_raw = (
-                    BASE_DIR / config.output_dir / f"{dsl}" / "raw" / f"{tool}.json"
-                )
 
                 output_structured = (
                     BASE_DIR / config.output_dir / "tool_output_parsed.json"
@@ -108,7 +93,7 @@ def main():
                 compare_tool_output_with_zkbugs_ground_truth(
                     tool,
                     tool_registry[tool],
-                    sbug_path,
+                    bug_name,
                     output_ground_truth,
                     output_structured,
                     output_result,

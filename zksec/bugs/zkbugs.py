@@ -122,12 +122,11 @@ def generate_ground_truth(
     return
 
 
-# TODO: Clean up sbug_path
-def update_bug_info_json(sbug_path, dsl: str, file_path, output_json_path) -> None:
+def update_bug_info_json(bug_name, dsl: str, file_path, output_json_path) -> None:
     """Update or add a single bug entry in the JSON file."""
     # Extract data
     bug_data = extract_vulnerability_info_from_file(file_path)
-    bug_key = sbug_path
+    bug_key = bug_name
 
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_json_path), exist_ok=True)
@@ -151,7 +150,7 @@ def update_bug_info_json(sbug_path, dsl: str, file_path, output_json_path) -> No
     with open(output_json_path, "w", encoding="utf-8") as f:
         json.dump(bug_info, f, indent=2)
 
-    logging.error(
+    logging.debug(
         f"Bug entry '{bug_key}' {action} under DSL '{dsl}' in {output_json_path}"
     )
 

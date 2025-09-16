@@ -11,21 +11,17 @@ def execute_tool_on_bug(
     bug_path: Path,
     bug_name: str,
     timeout: int,
-    base_dir: Path,
-    output_dir: Path,
+    output: Path,
     tool_info: ToolInfo,
-    sbug_path,
 ) -> None:
-    dsl = tool_info.dsl
     execute_fn = tool_info.execute
-    output = base_dir / output_dir / f"{dsl}" / "raw" / f"{tool}.log"
     logging.info(f"Running {tool=} on {bug_name=}")
     try:
         result = execute_fn(bug_path, timeout)
     except Exception as e:
         logging.error(f"{tool} failed on {bug_name}: {e}")
         result = f"Error: {e}"
-    write_output(output, tool, sbug_path, result)
+    write_output(output, tool, bug_name, result)
 
 
 def write_output(output_file: Path, tool: str, bug_name: str, content: str) -> None:
