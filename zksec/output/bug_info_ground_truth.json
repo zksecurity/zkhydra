@@ -1,24 +1,112 @@
 {
-  "circom": {
-    "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
-      "Vulnerability": "Under-Constrained",
-      "Impact": "Soundness",
-      "Root Cause": "Unsafe Reuse of Circuit",
-      "Location": {
-        "Path": "circuits/range_proof/circuit.circom",
-        "Function": "RangeProof",
-        "Line": "16-22"
-      }
-    },
-    "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
-      "Vulnerability": "Under-Constrained",
-      "Impact": "Soundness",
-      "Root Cause": "Assigned but Unconstrained",
-      "Location": {
-        "Path": "circuits/mimcsponge.circom",
-        "Function": "MiMCSponge",
-        "Line": "28"
-      }
+  "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Arithmetic Field Errors",
+    "Location": {
+      "Path": "circuits/bigint.circom",
+      "Function": "BigMod",
+      "Line": "363-417"
+    }
+  },
+  "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Unsafe Reuse of Circuit",
+    "Location": {
+      "Path": "circuits/range_proof/circuit.circom",
+      "Function": "RangeProof",
+      "Line": "16-22"
+    }
+  },
+  "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Assigned but Unconstrained",
+    "Location": {
+      "Path": "circuits/mimcsponge.circom",
+      "Function": "MiMCSponge",
+      "Line": "28"
+    }
+  },
+  "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Wrong translation of logic into constraints",
+    "Location": {
+      "Path": "circuits/multiplexer.circom",
+      "Function": "Decoder",
+      "Line": "10-11"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Unsafe Reuse of Circuit",
+    "Location": {
+      "Path": "circuits/escalarmulany.circom",
+      "Function": "BitElementMulAny",
+      "Line": "21-22"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Unsafe Reuse of Circuit",
+    "Location": {
+      "Path": "circuits/pederson.circom",
+      "Function": "Window4",
+      "Line": "47-108"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Unsafe Reuse of Circuit",
+    "Location": {
+      "Path": "circuits/escalarmulfix.circom",
+      "Function": "WindowMulFix",
+      "Line": "70-131"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Missing Input Constraints",
+    "Location": {
+      "Path": "circuits/montgomery.circom",
+      "Function": "Edwards2Montgomery",
+      "Line": "7-8"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Missing Input Constraints",
+    "Location": {
+      "Path": "circuits/montgomery.circom",
+      "Function": "Montgomery2Edwards",
+      "Line": "7-8"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Missing Input Constraint",
+    "Location": {
+      "Path": "circuits/montgomery.circom",
+      "Function": "MontgomeryAdd",
+      "Line": "16-17"
+    }
+  },
+  "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Soundness",
+    "Root Cause": "Missing Input Constraints",
+    "Location": {
+      "Path": "circuits/montgomery.circom",
+      "Function": "MontgomeryDouble",
+      "Line": "18-19"
     }
   }
 }
