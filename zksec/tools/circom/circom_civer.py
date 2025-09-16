@@ -111,11 +111,11 @@ def compare_zkbugs_ground_truth(
         with open(output_file, "r", encoding="utf-8") as f:
             output = json.load(f)
     else:
-        output = {"circom": {}}
+        output = {dsl: {}}
 
     # Ensure tool entry exists
-    output.setdefault("circom", {}).setdefault(tool, {}).setdefault("correct", [])
-    output.setdefault("circom", {}).setdefault(tool, {}).setdefault("false", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
@@ -132,7 +132,7 @@ def compare_zkbugs_ground_truth(
         startline, endline = map(int, buggy_line.split("-", 1))
     else:
         startline = endline = int(buggy_line)
-    logging.error(
+    logging.debug(
         f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
     )
 
@@ -141,7 +141,7 @@ def compare_zkbugs_ground_truth(
         tool_output_data = json.load(f)
 
     buggy_components = (
-        tool_output_data.get("circom", {})
+        tool_output_data.get(dsl, {})
         .get(tool, {})
         .get(bug_name, {})
         .get("buggy_components", [])
@@ -151,7 +151,7 @@ def compare_zkbugs_ground_truth(
     for component in buggy_components:
         comp_name = component.get("name")
         comp_params = component.get("params", [])
-        logging.error(
+        logging.debug(
             f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
         )
 
@@ -165,33 +165,33 @@ def compare_zkbugs_ground_truth(
             endline_tool = params[1]
         else:
             raise ValueError("params should have at most 2 values")
-        logging.error(
+        logging.debug(
             f"Component lines: startline={startline_tool}, endline={endline_tool}"
         )
 
         # Compare with ground truth
         if comp_name == buggy_function:
-            logging.error(f"Component name matches buggy function: {comp_name}")
+            logging.debug(f"Component name matches buggy function: {comp_name}")
 
             # Check lines
             if startline_tool == endline_tool == 0:
-                logging.error(f"Component lines not provided by tool")
+                logging.debug(f"Component lines not provided by tool")
                 is_correct = True
             if startline_tool <= startline and endline_tool >= endline:
-                logging.error(
+                logging.debug(
                     f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}"
                 )
                 is_correct = True
             else:
-                logging.error(
+                logging.debug(
                     f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}"
                 )
 
-        logging.warning(f"Component '{comp_name}' correctness: {is_correct}")
+        logging.debug(f"Component '{comp_name}' correctness: {is_correct}")
 
     if is_correct:
-        if bug_name not in output["circom"][tool]["correct"]:
-            output["circom"][tool]["correct"].append(bug_name)
+        if bug_name not in output[dsl][tool]["correct"]:
+            output[dsl][tool]["correct"].append(bug_name)
     else:
         reason = ""
         if not buggy_components:
@@ -202,12 +202,16 @@ def compare_zkbugs_ground_truth(
             reason = f"tool found correct module, but lines didn't match (tool found lines: {startline_tool}-{endline_tool}; buggy lines: {startline}-{endline})"
 
         # Append dictionary with reason
-        output["circom"][tool]["false"].append({"bug_name": bug_name, "reason": reason})
+        # output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
+        # Only append if not already recorded
+        existing_false = output[dsl][tool]["false"]
+        if not any(entry["bug_name"] == bug_name for entry in existing_false):
+            output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
 
     # Update counts dynamically
-    output["circom"][tool]["count"] = {
-        "correct": len(output["circom"][tool]["correct"]),
-        "false": len(output["circom"][tool]["false"]),
+    output[dsl][tool]["count"] = {
+        "correct": len(output[dsl][tool]["correct"]),
+        "false": len(output[dsl][tool]["false"]),
     }
 
     # # Write back to file
