@@ -78,14 +78,21 @@ def write_output(
 
 
 def parse_tool_output(
-    tool: str, tool_info: ToolInfo, tool_result_raw: Path, output: Path, bug_name: str
+    tool: str,
+    tool_info: ToolInfo,
+    tool_result_raw: Path,
+    output: Path,
+    bug_name: str,
+    ground_truth: Path,
 ):
     parse_output_fn = tool_info.parse_output
     logging.debug(
         f"Parsing output for tool '{tool}' in DSL '{tool_info.dsl}' for bug '{bug_name}'."
     )
     try:
-        parsed_result = parse_output_fn(tool_result_raw, tool, bug_name, tool_info.dsl)
+        parsed_result = parse_output_fn(
+            tool_result_raw, tool, bug_name, tool_info.dsl, ground_truth
+        )
     except Exception as e:
         logging.error(f"Parsing output failed for tool '{tool}': {e}")
         return

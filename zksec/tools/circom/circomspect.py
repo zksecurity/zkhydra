@@ -42,12 +42,10 @@ def execute(bug_path: str, timeout: int):
     return result
 
 
-def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> None:
+def parse_output(
+    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, ground_truth: Path
+) -> None:
     # Get ground truth to reverse search
-    # TODO: Make this dynamic
-    ground_truth = Path(
-        "/Users/tom/Development/state-of-zk-security-tools/zksec/output/bug_info_ground_truth.json"
-    )
     with open(ground_truth, "r", encoding="utf-8") as f:
         gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
     vuln_function = gt_data.get("Location", {}).get("Function")
@@ -166,7 +164,9 @@ def compare_zkbugs_ground_truth(
         tool_vulnerability = CS_MAPPING.get(tool_code)
 
         if tool_vulnerability.lower() == gt_vulnerability.lower():
-            if int(tool_line) >= int(gt_startline) and int(tool_line) <= int(gt_endline):
+            if int(tool_line) >= int(gt_startline) and int(tool_line) <= int(
+                gt_endline
+            ):
                 is_correct = True
             else:
                 reason.append(

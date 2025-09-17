@@ -24,7 +24,9 @@ def execute(bug_path: str, timeout: int) -> str:
     return result
 
 
-def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> None:
+def parse_output(
+    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, _: Path
+) -> None:
     with open(tool_result_raw, "r", encoding="utf-8") as f:
         bug_info = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
 
