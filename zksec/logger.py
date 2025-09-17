@@ -1,7 +1,7 @@
 import logging
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
