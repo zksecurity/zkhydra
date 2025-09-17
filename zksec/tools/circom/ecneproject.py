@@ -1,3 +1,4 @@
+import json
 import logging
 from pathlib import Path
 
@@ -34,9 +35,37 @@ def execute(bug_path: str, timeout: int) -> str:
     return result
 
 
-def parse_output(tool_result_raw: Path, output_file: Path) -> None:
-    logging.warning("Not implemented.")
-    return
+def parse_output(
+    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, _: Path
+) -> None:
+    with open(tool_result_raw, "r", encoding="utf-8") as f:
+        bug_info = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
+
+    result = ""
+    for i, line in enumerate(bug_info):
+        if line == "[Timed out]":
+            result = "Timed out"
+            break
+        # TODO: Verify: when setup script doesn't work, r1cs and sym files are not created
+        if line == "[Circuit file not found]":
+            result = "Circuit file not found"
+            break
+        if line == "stderr:":
+            info = bug_info[i - 2]
+            result = info
+            break
+
+    structured_info = {}
+    if dsl not in structured_info:
+        structured_info[dsl] = {}
+    if tool not in structured_info[dsl]:
+        structured_info[dsl][tool] = {}
+
+    structured_info[dsl][tool][bug_name] = {
+        "result": result,
+    }
+
+    return structured_info
 
 
 def compare_zkbugs_ground_truth(
