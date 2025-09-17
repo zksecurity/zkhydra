@@ -31,7 +31,7 @@ def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> N
 
     status = ""
     vulnerability = ""
-    print(f"{bug_name=}")
+    logging.debug(f"{bug_name=}")
     if bug_info == []:
         status = "tool error"
         vulnerability = "tool error (no output)"
@@ -44,13 +44,10 @@ def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> N
     else:
         for i, line in enumerate(bug_info):
             if "No Counter Example Found" in line:
-                print(f"{bug_info[i]=}")
                 status = "found_no_bug"
                 vulnerability = "No Counter Example Found"
                 break
             if "Counter Example" in line and i + 1 < len(bug_info):
-                print(f"{bug_info[i]=}")
-                print(f"{bug_info[i + 1]=}")
                 status = "found_bug"
                 vulnerability = bug_info[i + 1]
                 vulnerability = re.sub(
