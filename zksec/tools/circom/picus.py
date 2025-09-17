@@ -30,8 +30,6 @@ def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> N
 
     status = ""
 
-    print(bug_info)
-
     if bug_info[0] == "[Timed out]":
         status = "Timed out"
     elif len(bug_info) > 1 and bug_info[1] == "The circuit is underconstrained":
