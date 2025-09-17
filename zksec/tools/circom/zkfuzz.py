@@ -31,13 +31,27 @@ def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> N
 
     status = ""
     vulnerability = ""
-    if bug_info[0] == "[Timed out]":
+    print(f"{bug_name=}")
+    if bug_info == []:
+        status = "tool error"
+        vulnerability = "tool error (no output)"
+    elif bug_info[0] == "[Timed out]":
         status = "Timed out"
         vulnerability = "Not found"
+    elif bug_info[-1] != "Everything went okay":
+        status = "tool error"
+        vulnerability = "tool error"
     else:
         for i, line in enumerate(bug_info):
+            if "No Counter Example Found" in line:
+                print(f"{bug_info[i]=}")
+                status = "found_no_bug"
+                vulnerability = "No Counter Example Found"
+                break
             if "Counter Example" in line and i + 1 < len(bug_info):
-                status = "buggy"
+                print(f"{bug_info[i]=}")
+                print(f"{bug_info[i + 1]=}")
+                status = "found_bug"
                 vulnerability = bug_info[i + 1]
                 vulnerability = re.sub(
                     r"^[^A-Za-z()]*", "", vulnerability
@@ -45,6 +59,7 @@ def parse_output(tool_result_raw: Path, tool: str, bug_name: str, dsl: str) -> N
                 vulnerability = re.sub(
                     r"[^A-Za-z()]*$", "", vulnerability
                 )  # remove trailing junk
+                break
 
     structured_info = {}
     if dsl not in structured_info:
@@ -90,10 +105,12 @@ def compare_zkbugs_ground_truth(
     is_correct = False
 
     reason = ""
+    if status == "tool error":
+        reason = vulnerability
     if status == "Timed out":
         reason = "Timed out"
-    elif status == "buggy":
-        reason = "buggy"
+    elif status == "found_bug":
+        reason = "found_bug"
     else:
         reason = "Tool Error"
 
@@ -102,7 +119,10 @@ def compare_zkbugs_ground_truth(
 
     gt_vulnerability = gt_data.get("Vulnerability")
 
-    if reason == "buggy" and gt_vulnerability.replace("-", "") in vulnerability.strip():
+    if (
+        reason == "found_bug"
+        and gt_vulnerability.replace("-", "") in vulnerability.strip()
+    ):
         is_correct = True
         reason = gt_vulnerability
     elif reason == "Timed out":
