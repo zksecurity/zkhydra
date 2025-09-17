@@ -33,7 +33,12 @@ def load_config(
         config = tomllib.load(f)
 
     log_level = config["app"].get("log_level", "WARNING").upper()
-    setup_logging(log_level)
+
+    output_dir = Path(config["app"].get("output", "./output"))
+    ensure_dir(output_dir)
+
+    file_logging = config["app"].get("file_logging", False)
+    setup_logging(log_level, output_dir, file_logging)
 
     tools, bugs = parse_dsl_sections(config)
 
