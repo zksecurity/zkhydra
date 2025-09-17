@@ -112,8 +112,14 @@ def parse_raw_tool_output(config, dsl, tool_registry, bug_name):
 
         output_structured = get_output_structured(config)
         tool_results_raw = get_tool_results_raw(config)
+        ground_truth = get_output_ground_truth(config)
         parse_tool_output(
-            tool, tool_registry[tool], tool_results_raw, output_structured, bug_name
+            tool,
+            tool_registry[tool],
+            tool_results_raw,
+            output_structured,
+            bug_name,
+            ground_truth,
         )
 
 
