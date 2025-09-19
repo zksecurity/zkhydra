@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import shlex
@@ -43,3 +44,43 @@ def check_files_exist(*files: Path) -> bool:
 
 def ensure_dir(path: Path):
     path.mkdir(parents=True, exist_ok=True)
+
+
+def init_output_dict(output: dict, dsl: str, tool: str) -> dict:
+    # Ensure tool entry exists
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
+
+
+def update_result_counts(output: dict, dsl: str, tool: str) -> dict:
+    # Update counts dynamically
+    output[dsl][tool]["count"] = {
+        "correct": len(output[dsl][tool]["correct"]),
+        "false": len(output[dsl][tool]["false"]),
+        "error": len(output[dsl][tool]["error"]),
+        "timeout": len(output[dsl][tool]["timeout"]),
+    }
+
+    return output
+
+
+def load_output_dict(output_file: Path, dsl: str, tool: str) -> dict:
+    # Load existing output or initialize
+    if os.path.exists(output_file):
+        with open(output_file, "r", encoding="utf-8") as f:
+            output = json.load(f)
+    else:
+        output = {dsl: {}}
+
+    init_output_dict(output, dsl, tool)
+    return output
+
+
+def get_tool_result_parsed(
+    tool_result_parsed: Path, dsl: str, tool: str, bug_name: str
+) -> dict:
+    with open(tool_result_parsed, "r", encoding="utf-8") as f:
+        tool_output_data = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, {})
+    return tool_output_data

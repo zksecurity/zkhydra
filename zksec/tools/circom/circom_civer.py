@@ -4,7 +4,14 @@ import os
 import re
 from pathlib import Path
 
-from ..utils import change_directory, check_files_exist, run_command
+from ..utils import (
+    change_directory,
+    check_files_exist,
+    get_tool_result_parsed,
+    load_output_dict,
+    run_command,
+    update_result_counts,
+)
 
 TOOL_DIR = Path(__file__).resolve().parent / "circom_civer"
 
@@ -101,18 +108,7 @@ def compare_zkbugs_ground_truth(
     tool_result_parsed: Path,
     output_file: Path,
 ) -> None:
-    # Load existing output or initialize
-    if os.path.exists(output_file):
-        with open(output_file, "r", encoding="utf-8") as f:
-            output = json.load(f)
-    else:
-        output = {dsl: {}}
-
-    # Ensure tool entry exists
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
+    output = load_output_dict(output_file, dsl, tool)
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
@@ -136,9 +132,7 @@ def compare_zkbugs_ground_truth(
         f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
     )
 
-    # Get tool output data
-    with open(tool_result_parsed, "r", encoding="utf-8") as f:
-        tool_output_data = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, {})
+    tool_output_data = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name)
 
     buggy_components = tool_output_data.get("buggy_components", [])
 
@@ -208,12 +202,6 @@ def compare_zkbugs_ground_truth(
         if not any(entry["bug_name"] == bug_name for entry in existing_false):
             output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
 
-    # Update counts dynamically
-    output[dsl][tool]["count"] = {
-        "correct": len(output[dsl][tool]["correct"]),
-        "false": len(output[dsl][tool]["false"]),
-        "error": len(output[dsl][tool]["error"]),
-        "timeout": len(output[dsl][tool]["timeout"]),
-    }
+    output = update_result_counts(output, dsl, tool)
 
     return output
