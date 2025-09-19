@@ -36,6 +36,8 @@ def parse_output(
         status = "Timed out"
     elif len(bug_info) > 1 and bug_info[1] == "The circuit is underconstrained":
         status = "Underconstrained"
+    elif len(bug_info) > 1 and bug_info[1] == "The circuit is properly constrained":
+        status = "Properly Constrained"
     elif (
         len(bug_info) > 2
         and bug_info[2]
@@ -109,6 +111,8 @@ def compare_zkbugs_ground_truth(
         reason = "Unknown result"
     elif tool_output_data == "Tool Error":
         reason = "Picus Tool Error"
+    elif tool_output_data == "Properly Constrained":
+        reason = "Tool says circuit is properly constrained."
 
     if is_correct:
         if bug_name not in output[dsl][tool]["correct"]:
@@ -119,6 +123,9 @@ def compare_zkbugs_ground_truth(
     elif reason == "Picus Tool Error":
         if bug_name not in output[dsl][tool]["error"]:
             output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+    elif reason == "Tool says circuit is properly constrained.":
+        if bug_name not in output[dsl][tool]["false"]:
+            output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
     else:
         if bug_name not in output[dsl][tool]["false"]:
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})

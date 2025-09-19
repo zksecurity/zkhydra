@@ -94,6 +94,7 @@ def compare_zkbugs_ground_truth(
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
 
     with open(tool_result_parsed, "r", encoding="utf-8") as f:
         tool_output_data = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, {})
@@ -107,7 +108,7 @@ def compare_zkbugs_ground_truth(
     if status == "tool error":
         reason = vulnerability
     if status == "Timed out":
-        reason = "Timed out"
+        reason = "Reached zksec threshold."
     elif status == "found_bug":
         reason = "found_bug"
     else:
@@ -124,7 +125,7 @@ def compare_zkbugs_ground_truth(
     ):
         is_correct = True
         reason = gt_vulnerability
-    elif reason == "Timed out":
+    elif reason == "Reached zksec threshold.":
         pass
     else:
         reason = (
@@ -137,6 +138,9 @@ def compare_zkbugs_ground_truth(
     elif reason == "Tool Error":
         if bug_name not in output[dsl][tool]["error"]:
             output[dsl][tool]["error"].append(bug_name)
+    elif reason == "Reached zksec threshold.":
+        if bug_name not in output[dsl][tool]["timeout"]:
+            output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
     else:
         if bug_name not in output[dsl][tool]["false"]:
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
@@ -146,6 +150,7 @@ def compare_zkbugs_ground_truth(
         "correct": len(output[dsl][tool]["correct"]),
         "false": len(output[dsl][tool]["false"]),
         "error": len(output[dsl][tool]["error"]),
+        "timeout": len(output[dsl][tool]["timeout"]),
     }
 
     return output

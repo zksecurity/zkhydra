@@ -60,7 +60,12 @@ def parse_output(
     block = []
     inside_block = False
 
+    warnings = []
+
     for line in bug_info:
+        if line == "[Timed out]":
+            warnings = ["Reached zksec threshold."]
+            break
         if line.startswith("circomspect: analyzing function") or line.startswith(
             "circomspect: analyzing template"
         ):
@@ -78,7 +83,6 @@ def parse_output(
             block.append(line)
 
     # Extarct Warnings from block
-    warnings = []
     current_code = None
     for line in block:
         # Detect a warning line and extract the code (e.g. CS0005)
@@ -127,6 +131,7 @@ def compare_zkbugs_ground_truth(
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
 
     with open(tool_result_parsed, "r", encoding="utf-8") as f:
         warnings = (
@@ -140,6 +145,12 @@ def compare_zkbugs_ground_truth(
     if warnings == "No Warnings Found":
         if bug_name not in output[dsl][tool]["false"]:
             output[dsl][tool]["false"].append(
+                {"bug_name": bug_name, "reason": warnings}
+            )
+        return output
+    if warnings == ["Reached zksec threshold."]:
+        if bug_name not in output[dsl][tool]["timeout"]:
+            output[dsl][tool]["timeout"].append(
                 {"bug_name": bug_name, "reason": warnings}
             )
         return output
@@ -182,12 +193,16 @@ def compare_zkbugs_ground_truth(
             output[dsl][tool]["correct"].append(bug_name)
     else:
         if bug_name not in output[dsl][tool]["false"]:
+            if reason == []:
+                reason = "circomspect found no warnings."
             output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
 
     # Update counts dynamically
     output[dsl][tool]["count"] = {
         "correct": len(output[dsl][tool]["correct"]),
         "false": len(output[dsl][tool]["false"]),
+        "error": len(output[dsl][tool]["error"]),
+        "timeout": len(output[dsl][tool]["timeout"]),
     }
 
     return output
