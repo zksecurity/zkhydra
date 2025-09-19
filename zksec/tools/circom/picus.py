@@ -103,7 +103,7 @@ def compare_zkbugs_ground_truth(
     ):
         is_correct = True
     elif tool_output_data == "Timed out":
-        reason = "Timed out"
+        reason = "Reached zksec threshold."
     elif tool_output_data == "Unknown":
         reason = "Unknown result"
     elif tool_output_data == "Tool Error":
