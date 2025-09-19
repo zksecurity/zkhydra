@@ -37,7 +37,6 @@ def parse_output(
 ) -> None:
     with open(tool_result_raw, "r", encoding="utf-8") as f:
         bug_info = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
-
     structured_info = {}
 
     stats = {"verified": None, "failed": None, "timeout": None}
@@ -46,6 +45,10 @@ def parse_output(
     context = None  # track section
 
     for line in bug_info:
+        if line == "[Timed out]":
+            context = "Reached zksec threshold."
+            buggy_components = ["Reached zksec threshold."]
+            continue
         # --- Track context (which section we are in) ---
         if line.startswith("Components that do not satisfy weak safety"):
             context = "buggy"
@@ -62,6 +65,7 @@ def parse_output(
 
         # --- Match component lines only if inside "buggy" context ---
         if context == "buggy" and line.strip().startswith("-"):
+
             comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line.strip())
             if comp_match:
                 comp_name, numbers = comp_match.groups()
@@ -76,15 +80,15 @@ def parse_output(
         elif "Number of timeout components" in line:
             stats["timeout"] = int(re.search(r"(\d+)$", line).group(1))
 
-        if dsl not in structured_info:
-            structured_info[dsl] = {}
-        if tool not in structured_info[dsl]:
-            structured_info[dsl][tool] = {}
+    if dsl not in structured_info:
+        structured_info[dsl] = {}
+    if tool not in structured_info[dsl]:
+        structured_info[dsl][tool] = {}
 
-        structured_info[dsl][tool][bug_name] = {
-            "stats": stats,
-            "buggy_components": buggy_components,
-        }
+    structured_info[dsl][tool][bug_name] = {
+        "stats": stats,
+        "buggy_components": buggy_components,
+    }
 
     return structured_info
 
@@ -107,6 +111,8 @@ def compare_zkbugs_ground_truth(
     # Ensure tool entry exists
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
@@ -121,6 +127,9 @@ def compare_zkbugs_ground_truth(
     buggy_line = bug_location.get("Line")
     if "-" in buggy_line:
         startline, endline = map(int, buggy_line.split("-", 1))
+    elif not buggy_line:
+        startline = endline = 0
+        logging.warning(f"Line data for bug '{bug_name}' not found in ground truth.")
     else:
         startline = endline = int(buggy_line)
     logging.debug(
@@ -134,7 +143,11 @@ def compare_zkbugs_ground_truth(
     buggy_components = tool_output_data.get("buggy_components", [])
 
     is_correct = False
+    reason = ""
     for component in buggy_components:
+        if component == "Reached zksec threshold.":
+            reason = "Reached zksec threshold."
+            break
         comp_name = component.get("name")
         comp_params = component.get("params", [])
         logging.debug(
@@ -179,13 +192,16 @@ def compare_zkbugs_ground_truth(
         if bug_name not in output[dsl][tool]["correct"]:
             output[dsl][tool]["correct"].append(bug_name)
     else:
-        reason = ""
+        if reason == "Reached zksec threshold.":
+            if bug_name not in output[dsl][tool]["timeout"]:
+                output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
+            return output
         if not buggy_components:
             reason = "tool found no module"
         elif comp_name != buggy_function:
-            reason = f"tool found wrong module (tool found: {comp_name}; buggy module: {buggy_function})"
+            reason = f"tool found wrong module (tool found: '{comp_name}'; buggy module: '{buggy_function}')"
         else:
-            reason = f"tool found correct module, but lines didn't match (tool found lines: {startline_tool}-{endline_tool}; buggy lines: {startline}-{endline})"
+            reason = f"tool found correct module, but lines didn't match (tool found lines: '{startline_tool}-{endline_tool}'; buggy lines: '{startline}-{endline}')"
 
         # Append dictionary with reason if not already recorded
         existing_false = output[dsl][tool]["false"]
@@ -196,6 +212,8 @@ def compare_zkbugs_ground_truth(
     output[dsl][tool]["count"] = {
         "correct": len(output[dsl][tool]["correct"]),
         "false": len(output[dsl][tool]["false"]),
+        "error": len(output[dsl][tool]["error"]),
+        "timeout": len(output[dsl][tool]["timeout"]),
     }
 
     return output
