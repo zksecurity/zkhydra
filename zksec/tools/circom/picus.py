@@ -81,6 +81,7 @@ def compare_zkbugs_ground_truth(
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
     output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
+    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
 
     with open(ground_truth, "r", encoding="utf-8") as f:
         gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
@@ -107,14 +108,17 @@ def compare_zkbugs_ground_truth(
     elif tool_output_data == "Unknown":
         reason = "Unknown result"
     elif tool_output_data == "Tool Error":
-        reason = "Tool Error"
+        reason = "Picus Tool Error"
 
     if is_correct:
         if bug_name not in output[dsl][tool]["correct"]:
             output[dsl][tool]["correct"].append(bug_name)
-    elif reason == "Tool Error":
+    elif reason == "Reached zksec threshold.":
+        if bug_name not in output[dsl][tool]["timeout"]:
+            output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
+    elif reason == "Picus Tool Error":
         if bug_name not in output[dsl][tool]["error"]:
-            output[dsl][tool]["error"].append(bug_name)
+            output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
     else:
         if bug_name not in output[dsl][tool]["false"]:
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
@@ -124,6 +128,7 @@ def compare_zkbugs_ground_truth(
         "correct": len(output[dsl][tool]["correct"]),
         "false": len(output[dsl][tool]["false"]),
         "error": len(output[dsl][tool]["error"]),
+        "timeout": len(output[dsl][tool]["timeout"]),
     }
 
     return output
