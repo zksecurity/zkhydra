@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
-from .logger import setup_logging
 from tools.utils import ensure_dir
+
+from .logger import setup_logging
 
 
 @dataclass
@@ -77,7 +78,9 @@ def load_config(
     )
 
 
-def parse_dsl_sections(config: dict) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
+def parse_dsl_sections(
+    config: dict,
+) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Extract DSL sections from config to build tools and bugs maps.
 
     Returns a tuple: (tools, bugs)

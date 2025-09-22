@@ -10,6 +10,7 @@ from ..utils import (
     check_files_exist,
     get_tool_result_parsed,
     load_output_dict,
+    remove_bug_entry,
     run_command,
     update_result_counts,
 )
@@ -86,7 +87,7 @@ def parse_output(
     # If we don't know the function, we cannot find the specific block
     if not vuln_function:
         logging.warning(
-            "Ground truth missing vulnerable function for '%s' (%s)", bug_name, dsl
+            f"Ground truth missing vulnerable function for '{bug_name}' ({dsl})"
         )
         return {dsl: {tool: {bug_name: {"warnings": "No Warnings Found"}}}}
 
@@ -131,7 +132,7 @@ def parse_output(
                 line_number = int(match_line.group(1))
                 warnings.append((current_code, line_number))
             except ValueError:
-                logging.error("Failed to parse line number from '%s'", line)
+                logging.error(f"Failed to parse line number from '{line}'")
             finally:
                 current_code = None  # reset after recording
 
@@ -159,26 +160,19 @@ def compare_zkbugs_ground_truth(
 ) -> Dict[str, Any]:
     """Compare circomspect warnings to ground truth and update aggregate output."""
     output = load_output_dict(output_file, dsl, tool)
+    output = remove_bug_entry(output, dsl, tool, bug_name)
 
-    warnings: Any = get_tool_result_parsed(
-        tool_result_parsed, dsl, tool, bug_name
-    ).get("warnings", "No Warnings Found")
+    warnings: Any = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name).get(
+        "warnings", "No Warnings Found"
+    )
 
     # Handle trivial outcomes first
     if warnings == "No Warnings Found":
-        existing = output[dsl][tool]["false"]
-        if not any(entry.get("bug_name") == bug_name for entry in existing):
-            output[dsl][tool]["false"].append(
-                {"bug_name": bug_name, "reason": warnings}
-            )
+        output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": warnings})
         output = update_result_counts(output, dsl, tool)
         return output
     if warnings == ["Reached zksec threshold."]:
-        existing = output[dsl][tool]["timeout"]
-        if not any(entry.get("bug_name") == bug_name for entry in existing):
-            output[dsl][tool]["timeout"].append(
-                {"bug_name": bug_name, "reason": warnings}
-            )
+        output[dsl][tool]["timeout"].append({"bug_name": bug_name, "reason": warnings})
         output = update_result_counts(output, dsl, tool)
         return output
 
@@ -191,11 +185,7 @@ def compare_zkbugs_ground_truth(
 
     if not gt_vulnerability or not gt_lines:
         logging.error(
-            "Ground truth missing fields for '%s' (%s): vulnerability=%s, lines=%s",
-            bug_name,
-            dsl,
-            gt_vulnerability,
-            gt_lines,
+            f"Ground truth missing fields for '{bug_name}' ({dsl}): vulnerability={gt_vulnerability}, lines={gt_lines}"
         )
         existing = output[dsl][tool]["false"]
         if not any(entry.get("bug_name") == bug_name for entry in existing):
@@ -218,7 +208,7 @@ def compare_zkbugs_ground_truth(
             tool_code, tool_line_raw = warning
             tool_line = int(tool_line_raw)
         except Exception:
-            logging.error("Unexpected warning format: %s", warning)
+            logging.error(f"Unexpected warning format: {warning}")
             continue
         tool_vulnerability = CS_MAPPING.get(tool_code)
 
@@ -242,14 +232,11 @@ def compare_zkbugs_ground_truth(
             )
 
     if is_correct:
-        if bug_name not in output[dsl][tool]["correct"]:
-            output[dsl][tool]["correct"].append(bug_name)
+        output[dsl][tool]["correct"].append(bug_name)
     else:
-        existing = output[dsl][tool]["false"]
-        if not any(entry.get("bug_name") == bug_name for entry in existing):
-            if reason == []:
-                reason = ["circomspect found no warnings."]
-            output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
+        if reason == []:
+            reason = ["circomspect found no warnings."]
+        output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
 
     output = update_result_counts(output, dsl, tool)
 

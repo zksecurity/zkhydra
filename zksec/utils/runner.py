@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from tools.utils import ensure_dir
+
 from .tools_resolver import ToolInfo
 
 
@@ -23,10 +24,10 @@ def execute_tool_on_bug(
     except Exception as e:
         logging.error(f"{tool} failed on {bug_name}: {e}")
         result = f"Error: {e}"
-    write_output(output, tool, tool_info.dsl, bug_name, result)
+    write_raw_output(output, tool, tool_info.dsl, bug_name, result)
 
 
-def write_output(
+def write_raw_output(
     output_file: Path, tool: str, dsl: str, bug_name: str, content: Any
 ) -> None:
     """Write raw tool output to a JSON file organized by dsl/tool/bug_name.
@@ -58,7 +59,7 @@ def write_output(
     else:
         content_lines = [str(content)]
 
-    # Navigate into dsl → tool
+    # Navigate into dsl > tool
     if dsl not in data:
         data[dsl] = {}
     if tool not in data[dsl]:
@@ -73,16 +74,6 @@ def write_output(
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     logging.info(f"Entry for '{bug_name}' {action} in {json_file}")
-
-    # # Update or create entry
-    # action = "updated" if bug_name in data else "created"
-    # data[bug_name] = content_lines
-
-    # # Write back to JSON
-    # with open(json_file, "w", encoding="utf-8") as f:
-    #     json.dump(data, f, indent=2, ensure_ascii=False)
-
-    # logging.info(f"Entry for '{bug_name}' {action} in {json_file}")
 
 
 def parse_tool_output(
@@ -105,70 +96,28 @@ def parse_tool_output(
     except Exception as e:
         logging.error(f"Parsing output failed for tool '{tool}': {e}")
         return
-    write_parsed_output(output, tool, parsed_result)
+    write_output(output, parsed_result)
 
 
-# def write_parsed_output(output_file: Path, tool: str, content) -> None:
-#     logging.info(f"Writing parsed {tool} results to '{output_file}'")
-#     # Ensure directory exists
-#     ensure_dir(output_file.parent)
-#     # Write to JSON
-#     with open(output_file, "w", encoding="utf-8") as f:
-#         json.dump(content, f, indent=2, ensure_ascii=False)
-#     logging.info(f"Parsed output written to {output_file}")
+def write_output(output_file: Path, content: Dict[str, Any]) -> None:
+    """Safely write the full JSON content to output_file.
 
-
-def deep_update(original: Any, new_data: Any):
+    - Ensures parent directory exists
+    - Writes atomically via a temporary file then rename
+    - Uses UTF-8 and pretty formatting
     """
-    Recursively update dict `original` with values from `new_data`.
-    - Dicts are merged
-    - Lists are extended (deduplicated if possible)
-    - Other values are overwritten
-    """
-    if isinstance(original, dict) and isinstance(new_data, dict):
-        for key, value in new_data.items():
-            if key in original:
-                original[key] = deep_update(original[key], value)
-            else:
-                original[key] = value
-        return original
-
-    elif isinstance(original, list) and isinstance(new_data, list):
-        # merge lists (append unique items)
-        merged = original[:]
-        for item in new_data:
-            if item not in merged:
-                merged.append(item)
-        return merged
-
-    else:
-        # overwrite scalar or incompatible types
-        return new_data
-
-
-def write_parsed_output(output_file: Path, tool: str, content: Dict[str, Any]) -> None:
-    logging.info(f"Writing parsed {tool} results to '{output_file}'")
     ensure_dir(output_file.parent)
-
-    # Load existing JSON or start fresh
-    if output_file.exists():
-        with open(output_file, "r", encoding="utf-8") as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError:
-                logging.warning(f"Corrupt JSON in {output_file}, resetting.")
-                data = {}
-    else:
-        data = {}
-
-    # Merge parsed_result into existing JSON
-    data = deep_update(data, content)
-
-    # Save back
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-    logging.info(f"Parsed output written to {output_file}")
+    temp_file = output_file.with_suffix(output_file.suffix + ".tmp")
+    try:
+        with open(temp_file, "w", encoding="utf-8") as f:
+            json.dump(content, f, indent=2, ensure_ascii=False)
+        temp_file.replace(output_file)
+        logging.info(f"Parsed output written to {output_file}")
+    except Exception as e:
+        logging.error(f"Failed writing '{output_file}': {e}")
+        # Best-effort fallback direct write
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(content, f, indent=2, ensure_ascii=False)
 
 
 def compare_tool_output_with_zkbugs_ground_truth(
@@ -190,6 +139,6 @@ def compare_tool_output_with_zkbugs_ground_truth(
         logging.error(f"Comparison with ground truth failed for tool '{tool}': {e}")
         return
     if not isinstance(result, dict):
-        logging.error("Comparison function for '%s' did not return a dict", tool)
+        logging.error(f"Comparison function for '{tool}' did not return a dict")
         return
-    write_parsed_output(output_file, tool, result)
+    write_output(output_file, result)

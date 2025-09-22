@@ -10,6 +10,7 @@ from ..utils import (
     check_files_exist,
     get_tool_result_parsed,
     load_output_dict,
+    remove_bug_entry,
     run_command,
     update_result_counts,
 )
@@ -43,7 +44,7 @@ def execute(bug_path: str, timeout: int) -> str:
     # Ensure project and entrypoint exist
     ecne_entry = TOOL_DIR / "src" / "Ecne.jl"
     if not ecne_entry.is_file():
-        logging.error("Ecne.jl not found at %s", ecne_entry)
+        logging.error(f"Ecne.jl not found at {ecne_entry}")
         return "[Binary not found: Ecne.jl entrypoint missing]"
 
     change_directory(TOOL_DIR)
@@ -96,10 +97,7 @@ def parse_output(
     # If still undecided, try to detect the EcneProject success message anywhere
     if result == "No result":
         for line in bug_info:
-            if (
-                "R1CS function" in line
-                and "potentially unsound constraints" in line
-            ):
+            if "R1CS function" in line and "potentially unsound constraints" in line:
                 result = "R1CS function circuit has potentially unsound constraints"
                 break
 
@@ -137,35 +135,32 @@ def compare_zkbugs_ground_truth(
     and handle timeouts/missing files explicitly. Otherwise it's a false/unknown.
     """
     output = load_output_dict(output_file, dsl, tool)
+    output = remove_bug_entry(output, dsl, tool, bug_name)
 
     tool_result: str = get_tool_result_parsed(
         tool_result_parsed, dsl, tool, bug_name
     ).get("result", "No result")
 
     if tool_result == "R1CS function circuit has potentially unsound constraints":
-        if bug_name not in output[dsl][tool]["correct"]:
-            output[dsl][tool]["correct"].append(bug_name)
+        output[dsl][tool]["correct"].append(bug_name)
     elif tool_result == "Timed out":
-        existing = output[dsl][tool]["timeout"]
-        if not any(entry.get("bug") == bug_name for entry in existing):
-            output[dsl][tool]["timeout"].append(
-                {"bug": bug_name, "reason": "Reached zksec threshold."}
-            )
+        output[dsl][tool]["timeout"].append(
+            {"bug": bug_name, "reason": "Reached zksec threshold."}
+        )
     elif tool_result == "Circuit file not found":
-        existing = output[dsl][tool]["error"]
-        if not any(entry.get("bug") == bug_name for entry in existing):
-            output[dsl][tool]["error"].append(
-                {
-                    "bug": bug_name,
-                    "reason": "Circuit file not found. Might be missing in bug environment setup script.",
-                }
-            )
+        output[dsl][tool]["error"].append(
+            {
+                "bug": bug_name,
+                "reason": "Circuit file not found. Might be missing in bug environment setup script.",
+            }
+        )
     else:
-        existing = output[dsl][tool]["false"]
-        if not any(entry.get("bug_name") == bug_name for entry in existing):
-            output[dsl][tool]["false"].append(
-                {"bug_name": bug_name, "reason": "Missing or inconclusive result from parsing."}
-            )
+        output[dsl][tool]["false"].append(
+            {
+                "bug_name": bug_name,
+                "reason": "Missing or inconclusive result from parsing.",
+            }
+        )
 
     output = update_result_counts(output, dsl, tool)
 

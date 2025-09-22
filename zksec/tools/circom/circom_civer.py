@@ -10,6 +10,7 @@ from ..utils import (
     check_files_exist,
     get_tool_result_parsed,
     load_output_dict,
+    remove_bug_entry,
     run_command,
     update_result_counts,
 )
@@ -38,7 +39,7 @@ def execute(bug_path: str, timeout: int) -> str:
     # Ensure the binary exists before attempting to run
     binary_path = TOOL_DIR / "target" / "release" / "civer_circom"
     if not binary_path.is_file():
-        logging.error("circom-civer binary not found at %s", binary_path)
+        logging.error(f"circom-civer binary not found at {binary_path}")
         return "[Binary not found: build circom_civer first]"
 
     change_directory(TOOL_DIR)
@@ -67,12 +68,14 @@ def parse_output(
         { dsl: { tool: { bug_name: { stats, buggy_components } } } }
     """
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info: List[str] = (
-            json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
-        )
+        bug_info: List[str] = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
     structured_info: Dict[str, Dict[str, Dict[str, Dict[str, Any]]]] = {}
 
-    stats: Dict[str, Optional[int]] = {"verified": None, "failed": None, "timeout": None}
+    stats: Dict[str, Optional[int]] = {
+        "verified": None,
+        "failed": None,
+        "timeout": None,
+    }
     buggy_components: List[Any] = []
 
     context: Optional[str] = None  # track section
@@ -148,6 +151,7 @@ def compare_zkbugs_ground_truth(
     Returns the updated aggregated `output` dictionary.
     """
     output = load_output_dict(output_file, dsl, tool)
+    output = remove_bug_entry(output, dsl, tool, bug_name)
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
@@ -201,7 +205,7 @@ def compare_zkbugs_ground_truth(
         elif len(params) == 2:
             startline_tool, endline_tool = params[0], params[1]
         else:
-            logging.warning("params should have at most 2 values; got %s", params)
+            logging.warning(f"params should have at most 2 values; got {params}")
             continue
         last_comp_name = comp_name
         last_lines = f"{startline_tool}-{endline_tool}"
@@ -219,29 +223,23 @@ def compare_zkbugs_ground_truth(
                 is_correct = True
             elif startline_tool <= startline and endline_tool >= endline:
                 logging.debug(
-                    "Component lines match ground truth: startline=%s, endline=%s",
-                    startline_tool,
-                    endline_tool,
+                    f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}"
                 )
                 is_correct = True
             else:
                 logging.debug(
-                    "Component lines do not match ground truth: startline=%s, endline=%s",
-                    startline_tool,
-                    endline_tool,
+                    f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}"
                 )
 
         logging.debug(f"Component '{comp_name}' correctness: {is_correct}")
 
     if is_correct:
-        if bug_name not in output[dsl][tool]["correct"]:
-            output[dsl][tool]["correct"].append(bug_name)
+        output[dsl][tool]["correct"].append(bug_name)
     else:
         if timed_out:
-            if bug_name not in [item.get("bug") for item in output[dsl][tool]["timeout"]]:
-                output[dsl][tool]["timeout"].append(
-                    {"bug": bug_name, "reason": "Reached zksec threshold."}
-                )
+            output[dsl][tool]["timeout"].append(
+                {"bug": bug_name, "reason": "Reached zksec threshold."}
+            )
         else:
             if not buggy_components:
                 reason = "tool found no module"
@@ -256,12 +254,7 @@ def compare_zkbugs_ground_truth(
                     f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
                 )
 
-            # Append dictionary with reason if not already recorded
-            existing_false = output[dsl][tool]["false"]
-            if not any(entry["bug_name"] == bug_name for entry in existing_false):
-                output[dsl][tool]["false"].append(
-                    {"bug_name": bug_name, "reason": reason}
-                )
+            output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
 
     output = update_result_counts(output, dsl, tool)
 

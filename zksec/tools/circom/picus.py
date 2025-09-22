@@ -10,6 +10,7 @@ from ..utils import (
     check_files_exist,
     get_tool_result_parsed,
     load_output_dict,
+    remove_bug_entry,
     run_command,
     update_result_counts,
 )
@@ -36,10 +37,10 @@ def execute(bug_path: str, timeout: int) -> str:
 
     run_script = TOOL_DIR / "run-picus"
     if not run_script.is_file():
-        logging.error("run-picus not found at %s", run_script)
+        logging.error(f"run-picus not found at {run_script}")
         return "[Binary not found: run-picus missing]"
     if not os.access(run_script, os.X_OK):
-        logging.error("run-picus is not executable: %s", run_script)
+        logging.error(f"run-picus is not executable: {run_script}")
         return "[Binary not executable: fix permissions for run-picus]"
 
     change_directory(TOOL_DIR)
@@ -107,6 +108,7 @@ def compare_zkbugs_ground_truth(
         "When picus finds a bug, we assume it found the correct one. We can check if the bug is supposed to be underconstrained."
     )
     output = load_output_dict(output_file, dsl, tool)
+    output = remove_bug_entry(output, dsl, tool, bug_name)
 
     with open(ground_truth, "r", encoding="utf-8") as f:
         gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
@@ -137,20 +139,15 @@ def compare_zkbugs_ground_truth(
         reason = "No result"
 
     if is_correct:
-        if bug_name not in output[dsl][tool]["correct"]:
-            output[dsl][tool]["correct"].append(bug_name)
+        output[dsl][tool]["correct"].append(bug_name)
     elif reason == "Reached zksec threshold.":
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["timeout"]):
-            output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
     elif reason == "Picus Tool Error":
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["error"]):
-            output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
     elif reason == "Circuit file not found":
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["error"]):
-            output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
     else:
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
-            output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
 
     output = update_result_counts(output, dsl, tool)
 
