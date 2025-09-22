@@ -7,7 +7,15 @@ VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
-    # Validate log level
+    """Initialize root logger with console and optional file handlers.
+
+    Args:
+        log_level: One of DEBUG, INFO, WARNING, ERROR, CRITICAL (case-insensitive).
+        output_dir: Directory where log files are written when file logging is enabled.
+        file_logging: Whether to enable file logging in addition to console output.
+    """
+    # Normalize and validate log level
+    log_level = str(log_level).upper()
     if log_level not in VALID_LOG_LEVELS:
         raise ValueError(
             f"Config error: Invalid log_level '{log_level}'. "
@@ -27,6 +35,7 @@ def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
 
     # Create console logging
     console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(log_level)
     console_handler.setFormatter(formatter)
     root_logger.addHandler(console_handler)
 
@@ -35,6 +44,13 @@ def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
         current_day = datetime.now().strftime("%Y-%m-%d")
         file_path = output_dir / f"zksec_{current_day}.log"
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_handler = logging.FileHandler(file_path)
-        file_handler.setFormatter(formatter)
-        root_logger.addHandler(file_handler)
+        try:
+            file_handler = logging.FileHandler(file_path, encoding="utf-8")
+            file_handler.setLevel(log_level)
+            file_handler.setFormatter(formatter)
+            root_logger.addHandler(file_handler)
+        except Exception as e:
+            # Fall back to console-only if file cannot be created
+            logging.getLogger(__name__).warning(
+                "Failed to set up file logging at '%s': %s", file_path, e
+            )

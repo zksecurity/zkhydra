@@ -1,7 +1,7 @@
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple
 
 from .logger import setup_logging
 from tools.utils import ensure_dir
@@ -25,34 +25,42 @@ class AppConfig:
 def load_config(
     path: Path = Path("config.toml"),
 ) -> AppConfig:
-    # Verify config file exists
+    """Load the TOML configuration and return an AppConfig instance.
+
+    Validates presence of the `app` section, creates the output directory,
+    and configures logging according to settings.
+    """
     if not path.exists():
         raise FileNotFoundError(f"Config file not found: {path}")
-    # Load config file
+
     with open(path, "rb") as f:
-        config = tomllib.load(f)
+        config: Dict[str, Any] = tomllib.load(f)
 
-    log_level = config["app"].get("log_level", "WARNING").upper()
+    app_section = config.get("app")
+    if not isinstance(app_section, dict):
+        raise ValueError("Config error: missing or invalid 'app' section")
 
-    output_dir = Path(config["app"].get("output", "./output"))
+    log_level = str(app_section.get("log_level", "WARNING")).upper()
+
+    output_dir = Path(app_section.get("output", "./output"))
     ensure_dir(output_dir)
 
-    file_logging = config["app"].get("file_logging", False)
+    file_logging = bool(app_section.get("file_logging", False))
     setup_logging(log_level, output_dir, file_logging)
 
     tools, bugs = parse_dsl_sections(config)
 
-    output_dir = Path(config["app"].get("output", "./output"))
-    ensure_dir(output_dir)
+    # Timeout must be a positive integer
+    timeout = int(app_section.get("timeout", 300))
+    if timeout <= 0:
+        raise ValueError("Config error: 'timeout' must be a positive integer")
 
-    timeout = int(config["app"].get("timeout", 300))
-
-    setup_bug_environment = config["app"].get("setup_bug_environment", True)
-    execute_tools = config["app"].get("execute_tools", True)
-    cleanup_bug_environment = config["app"].get("cleanup_bug_environment", True)
-    generate_ground_truth = config["app"].get("generate_ground_truth", True)
-    parse_raw_tool_output = config["app"].get("parse_raw_tool_output", True)
-    analyze_tool_results = config["app"].get("analyze_tool_results", True)
+    setup_bug_environment = bool(app_section.get("setup_bug_environment", True))
+    execute_tools = bool(app_section.get("execute_tools", True))
+    cleanup_bug_environment = bool(app_section.get("cleanup_bug_environment", True))
+    generate_ground_truth = bool(app_section.get("generate_ground_truth", True))
+    parse_raw_tool_output = bool(app_section.get("parse_raw_tool_output", True))
+    analyze_tool_results = bool(app_section.get("analyze_tool_results", True))
 
     return AppConfig(
         tools=tools,
@@ -69,14 +77,26 @@ def load_config(
     )
 
 
-def parse_dsl_sections(config: dict) -> dict[str, dict]:
-    tools = {}
-    bugs = {}
+def parse_dsl_sections(config: dict) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
+    """Extract DSL sections from config to build tools and bugs maps.
+
+    Returns a tuple: (tools, bugs)
+      - tools[dsl] -> list of tool names (lowercased)
+      - bugs[dsl] -> list of bug names
+    """
+    tools: Dict[str, List[str]] = {}
+    bugs: Dict[str, List[str]] = {}
     for dsl, section in config.items():
         if dsl == "app":
             continue
-        tools[dsl] = [t.lower() for t in section.get("tools", [])]
-        bugs[dsl] = section.get("bugs", [])
+        if not isinstance(section, dict):
+            raise ValueError(f"Config error: section for '{dsl}' must be a table")
+
+        tools_list = section.get("tools", [])
+        bugs_list = section.get("bugs", [])
+
+        tools[dsl] = [str(t).lower() for t in tools_list]
+        bugs[dsl] = [str(b) for b in bugs_list]
 
         if not tools[dsl]:
             raise ValueError("Config error: 'tools' list must not be empty.")

@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+from typing import Any, Dict, List
 
 from tools.utils import ensure_dir
 from .tools_resolver import ToolInfo
@@ -14,6 +15,7 @@ def execute_tool_on_bug(
     output: Path,
     tool_info: ToolInfo,
 ) -> None:
+    """Execute a tool against a bug and persist raw output lines to JSON."""
     execute_fn = tool_info.execute
     logging.info(f"Running {tool=} on {bug_name=}")
     try:
@@ -25,8 +27,12 @@ def execute_tool_on_bug(
 
 
 def write_output(
-    output_file: Path, tool: str, dsl: str, bug_name: str, content: str
+    output_file: Path, tool: str, dsl: str, bug_name: str, content: Any
 ) -> None:
+    """Write raw tool output to a JSON file organized by dsl/tool/bug_name.
+
+    Content is normalized to a list of lines.
+    """
     json_file = output_file.with_suffix(".json")
     logging.info(f"Writing {tool} results for {bug_name} to '{json_file}'")
 
@@ -46,9 +52,11 @@ def write_output(
 
     # Ensure content is stored as list of lines (instead of one long string)
     if isinstance(content, str):
-        content_lines = content.splitlines()
+        content_lines: List[str] = content.splitlines()
+    elif isinstance(content, list):
+        content_lines = [str(item) for item in content]
     else:
-        content_lines = content
+        content_lines = [str(content)]
 
     # Navigate into dsl → tool
     if dsl not in data:
@@ -85,6 +93,7 @@ def parse_tool_output(
     bug_name: str,
     ground_truth: Path,
 ):
+    """Parse a tool's raw output into a structured JSON summary and persist it."""
     parse_output_fn = tool_info.parse_output
     logging.debug(
         f"Parsing output for tool '{tool}' in DSL '{tool_info.dsl}' for bug '{bug_name}'."
@@ -109,7 +118,7 @@ def parse_tool_output(
 #     logging.info(f"Parsed output written to {output_file}")
 
 
-def deep_update(original, new_data):
+def deep_update(original: Any, new_data: Any):
     """
     Recursively update dict `original` with values from `new_data`.
     - Dicts are merged
@@ -137,7 +146,7 @@ def deep_update(original, new_data):
         return new_data
 
 
-def write_parsed_output(output_file: Path, tool: str, content: dict) -> None:
+def write_parsed_output(output_file: Path, tool: str, content: Dict[str, Any]) -> None:
     logging.info(f"Writing parsed {tool} results to '{output_file}'")
     ensure_dir(output_file.parent)
 
@@ -170,6 +179,7 @@ def compare_tool_output_with_zkbugs_ground_truth(
     tool_result_parsed: Path,
     output_file: Path,
 ) -> None:
+    """Compare parsed tool output against ground truth and persist aggregate."""
     compare_fn = tool_info.compare_zkbugs_ground_truth
     logging.debug(f"Comparing output for tool '{tool}' in DSL '{tool_info.dsl}'")
     try:
@@ -178,5 +188,8 @@ def compare_tool_output_with_zkbugs_ground_truth(
         )
     except Exception as e:
         logging.error(f"Comparison with ground truth failed for tool '{tool}': {e}")
+        return
+    if not isinstance(result, dict):
+        logging.error("Comparison function for '%s' did not return a dict", tool)
         return
     write_parsed_output(output_file, tool, result)
