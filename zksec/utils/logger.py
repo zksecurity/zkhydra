@@ -52,5 +52,5 @@ def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
         except Exception as e:
             # Fall back to console-only if file cannot be created
             logging.getLogger(__name__).warning(
-                "Failed to set up file logging at '%s': %s", file_path, e
+                f"Failed to set up file logging at '{file_path}': {e}"
             )

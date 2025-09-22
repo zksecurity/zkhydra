@@ -10,6 +10,7 @@ from ..utils import (
     check_files_exist,
     get_tool_result_parsed,
     load_output_dict,
+    remove_bug_entry,
     run_command,
     update_result_counts,
 )
@@ -36,10 +37,10 @@ def execute(bug_path: str, timeout: int) -> str:
 
     binary_path = TOOL_DIR / "target" / "release" / "zkfuzz"
     if not binary_path.is_file():
-        logging.error("zkfuzz binary not found at %s", binary_path)
+        logging.error(f"zkfuzz binary not found at {binary_path}")
         return "[Binary not found: build zkfuzz first]"
     if not os.access(binary_path, os.X_OK):
-        logging.error("zkfuzz binary is not executable: %s", binary_path)
+        logging.error(f"zkfuzz binary is not executable: {binary_path}")
         return "[Binary not executable: fix permissions for zkfuzz]"
 
     change_directory(TOOL_DIR)
@@ -111,6 +112,7 @@ def compare_zkbugs_ground_truth(
 ) -> Dict[str, Any]:
     """Compare zkfuzz findings against ground truth and update aggregates."""
     output = load_output_dict(output_file, dsl, tool)
+    output = remove_bug_entry(output, dsl, tool, bug_name)
 
     tool_output_data = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name)
 
@@ -139,24 +141,26 @@ def compare_zkbugs_ground_truth(
 
     # Normalize strings for comparison
     vulnerability_str = (vulnerability or "").replace("-", "").replace(" ", "").lower()
-    gt_vulnerability_str = (gt_vulnerability or "").replace("-", "").replace(" ", "").lower()
+    gt_vulnerability_str = (
+        (gt_vulnerability or "").replace("-", "").replace(" ", "").lower()
+    )
 
-    if reason == "found_bug" and gt_vulnerability_str and gt_vulnerability_str in vulnerability_str:
+    if (
+        reason == "found_bug"
+        and gt_vulnerability_str
+        and gt_vulnerability_str in vulnerability_str
+    ):
         is_correct = True
         reason = gt_vulnerability or "found_bug"
 
     if is_correct:
-        if bug_name not in output[dsl][tool]["correct"]:
-            output[dsl][tool]["correct"].append(bug_name)
+        output[dsl][tool]["correct"].append(bug_name)
     elif reason == "Reached zksec threshold.":
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["timeout"]):
-            output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
     elif reason in ("tool error", "Tool Error"):
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["error"]):
-            output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
     else:
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
-            output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
+        output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
 
     output = update_result_counts(output, dsl, tool)
 

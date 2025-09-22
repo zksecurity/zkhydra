@@ -86,7 +86,9 @@ def get_output_result(config) -> Path:
     return BASE_DIR / config.output_dir / "results.json"
 
 
-def execute_bug(config, dsl: str, bug_path: Path, bug_name: str, tool_registry: Dict[str, any]) -> None:
+def execute_bug(
+    config, dsl: str, bug_path: Path, bug_name: str, tool_registry: Dict[str, any]
+) -> None:
     for tool in config.tools[dsl]:
         if tool not in tool_registry:
             logging.warning(f"Skipping {tool} because it failed to load")
@@ -109,7 +111,9 @@ def generate_ground_truth(config, dsl: str, bug_path: Path, bug_name: str) -> No
     generate_ground_truth_zkbugs(bug_name, bug_path, dsl, output_ground_truth)
 
 
-def parse_raw_tool_output(config, dsl: str, tool_registry: Dict[str, any], bug_name: str) -> None:
+def parse_raw_tool_output(
+    config, dsl: str, tool_registry: Dict[str, any], bug_name: str
+) -> None:
     for tool in config.tools[dsl]:
         if tool not in tool_registry:
             logging.warning(f"Skipping {tool} because it failed to load")
@@ -128,7 +132,9 @@ def parse_raw_tool_output(config, dsl: str, tool_registry: Dict[str, any], bug_n
         )
 
 
-def analyze_tool_results(config, dsl: str, tool_registry: Dict[str, any], bug_name: str) -> None:
+def analyze_tool_results(
+    config, dsl: str, tool_registry: Dict[str, any], bug_name: str
+) -> None:
     for tool in config.tools[dsl]:
         if tool not in tool_registry:
             logging.warning(f"Skipping {tool} because it failed to load")

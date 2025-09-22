@@ -20,7 +20,7 @@ def resolve_tools(dsl: str, tools: List[str]) -> Dict[str, ToolInfo]:
         try:
             module = importlib.import_module(module_path)
         except ImportError as e:
-            logging.error("Failed to import module '%s': %s", module_path, e)
+            logging.error(f"Failed to import module '{module_path}': {e}")
             continue
 
         try:
@@ -28,20 +28,18 @@ def resolve_tools(dsl: str, tools: List[str]) -> Dict[str, ToolInfo]:
             parse_output = getattr(module, "parse_output")
             compare = getattr(module, "compare_zkbugs_ground_truth")
         except AttributeError as e:
-            logging.error(
-                "Missing required functions in '%s': %s", module_path, e
-            )
+            logging.error(f"Missing required functions in '{module_path}': {e}")
             continue
 
         if not callable(execute):
-            logging.error("%s: 'execute' is not callable", module_path)
+            logging.error(f"{module_path}: 'execute' is not callable")
             continue
         if not callable(parse_output):
-            logging.error("%s: 'parse_output' is not callable", module_path)
+            logging.error(f"{module_path}: 'parse_output' is not callable")
             continue
         if not callable(compare):
             logging.error(
-                "%s: 'compare_zkbugs_ground_truth' is not callable", module_path
+                f"{module_path}: 'compare_zkbugs_ground_truth' is not callable"
             )
             continue
 

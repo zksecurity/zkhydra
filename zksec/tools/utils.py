@@ -20,7 +20,9 @@ def run_command(cmd: list[str], timeout: int, tool: str, bug: str) -> str:
         result = subprocess.run(
             cmd, capture_output=True, text=True, check=True, timeout=timeout
         )
-        return "stdout:\n" + (result.stdout or "") + "\nstderr:\n" + (result.stderr or "")
+        return (
+            "stdout:\n" + (result.stdout or "") + "\nstderr:\n" + (result.stderr or "")
+        )
 
     except subprocess.TimeoutExpired as e:
         logging.warning(
@@ -99,7 +101,7 @@ def load_output_dict(output_file: Path, dsl: str, tool: str) -> dict:
                 logging.error("Output file is not a JSON object; reinitializing")
                 output = {dsl: {}}
         except Exception as e:
-            logging.error("Failed to load output file '%s': %s", output_file, e)
+            logging.error(f"Failed to load output file '{output_file}': {e}")
             output = {dsl: {}}
     else:
         output = {dsl: {}}
@@ -119,8 +121,33 @@ def get_tool_result_parsed(
         with open(tool_result_parsed, "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception as e:
-        logging.error(
-            "Failed to read parsed tool result '%s': %s", tool_result_parsed, e
-        )
+        logging.error(f"Failed to read parsed tool result '{tool_result_parsed}': {e}")
         return {}
     return data.get(dsl, {}).get(tool, {}).get(bug_name, {})
+
+
+def remove_bug_entry(output: dict, dsl: str, tool: str, bug_name: str) -> dict:
+    """Remove a bug from all result buckets for a tool.
+
+    Handles string list bucket ('correct') and dict-list buckets ('false', 'error', 'timeout').
+    Robust to buckets containing strings by mistake.
+    """
+    print(f"\n\n\n")
+
+    for bucket_name in ["false", "error", "timeout", "correct"]:
+        bucket = output[dsl][tool][bucket_name]
+        if isinstance(bucket, list):
+            new_bucket = []
+            for item in bucket:
+                if isinstance(item, dict):
+                    print(f"Checking dict in {bucket_name}: {item}")
+                    if item.get("bug_name") == bug_name:
+                        print(f"Removing {item}")
+                        continue
+                elif item == bug_name:
+                    print(f"Removing string '{item}' from {bucket_name}")
+                    continue
+                new_bucket.append(item)
+            bucket[:] = new_bucket
+
+    return output
