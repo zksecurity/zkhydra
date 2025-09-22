@@ -1,7 +1,9 @@
 import json
 import logging
 import os
+import shutil
 from pathlib import Path
+from typing import Any, Dict, List
 
 from ..utils import (
     change_directory,
@@ -16,6 +18,15 @@ TOOL_DIR = Path(__file__).resolve().parent / "picus"
 
 
 def execute(bug_path: str, timeout: int) -> str:
+    """Run Picus on the given circuit.
+
+    Args:
+        bug_path: Absolute path to the bug directory containing `circuits/circuit.circom`.
+        timeout: Maximum execution time in seconds.
+
+    Returns:
+        Raw tool output, or a bracketed error marker string.
+    """
     logging.debug(f"PICUS_DIR='{TOOL_DIR}'")
     logging.debug(f"bug_path='{bug_path}'")
 
@@ -23,9 +34,17 @@ def execute(bug_path: str, timeout: int) -> str:
     if not check_files_exist(circuit_file):
         return "[Circuit file not found]"
 
+    run_script = TOOL_DIR / "run-picus"
+    if not run_script.is_file():
+        logging.error("run-picus not found at %s", run_script)
+        return "[Binary not found: run-picus missing]"
+    if not os.access(run_script, os.X_OK):
+        logging.error("run-picus is not executable: %s", run_script)
+        return "[Binary not executable: fix permissions for run-picus]"
+
     change_directory(TOOL_DIR)
 
-    cmd = ["./run-picus", str(circuit_file)]
+    cmd = [str(run_script), str(circuit_file)]
     result = run_command(cmd, timeout, tool="picus", bug=bug_path)
 
     return result
@@ -33,28 +52,36 @@ def execute(bug_path: str, timeout: int) -> str:
 
 def parse_output(
     tool_result_raw: Path, tool: str, bug_name: str, dsl: str, _: Path
-) -> None:
+) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
+    """Parse Picus output and classify the result.
+
+    Returns nested structure: { dsl: { tool: { bug_name: { "result": str } } } }
+    Possible results: "Timed out", "Underconstrained", "Properly Constrained",
+    "Unknown", "Circuit file not found", "Tool Error", or "No result".
+    """
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
+        bug_info: List[str] = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
 
-    status = ""
-
-    if bug_info[0] == "[Timed out]":
+    status: str
+    if not bug_info:
+        status = "No result"
+    elif any(line == "[Timed out]" for line in bug_info):
         status = "Timed out"
-    elif len(bug_info) > 1 and bug_info[1] == "The circuit is underconstrained":
+    elif any(line == "[Circuit file not found]" for line in bug_info):
+        status = "Circuit file not found"
+    elif any(line == "The circuit is underconstrained" for line in bug_info):
         status = "Underconstrained"
-    elif len(bug_info) > 1 and bug_info[1] == "The circuit is properly constrained":
+    elif any(line == "The circuit is properly constrained" for line in bug_info):
         status = "Properly Constrained"
-    elif (
-        len(bug_info) > 2
-        and bug_info[2]
-        == "Cannot determine whether the circuit is properly constrained"
+    elif any(
+        line == "Cannot determine whether the circuit is properly constrained"
+        for line in bug_info
     ):
         status = "Unknown"
     else:
         status = "Tool Error"
 
-    structured_info = {}
+    structured_info: Dict[str, Dict[str, Dict[str, Dict[str, Any]]]] = {}
     if dsl not in structured_info:
         structured_info[dsl] = {}
     if tool not in structured_info[dsl]:
@@ -74,7 +101,8 @@ def compare_zkbugs_ground_truth(
     ground_truth: Path,
     tool_result_parsed: Path,
     output_file: Path,
-) -> None:
+) -> Dict[str, Any]:
+    """Compare Picus classification to ground truth and update aggregate output."""
     logging.debug(
         "When picus finds a bug, we assume it found the correct one. We can check if the bug is supposed to be underconstrained."
     )
@@ -83,7 +111,7 @@ def compare_zkbugs_ground_truth(
     with open(ground_truth, "r", encoding="utf-8") as f:
         gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
 
-    tool_output_data = get_tool_result_parsed(
+    tool_result: str = get_tool_result_parsed(
         tool_result_parsed, dsl, tool, bug_name
     ).get("result", "No result")
 
@@ -91,18 +119,22 @@ def compare_zkbugs_ground_truth(
     reason = ""
 
     if (
-        tool_output_data == "Underconstrained"
+        tool_result == "Underconstrained"
         and gt_data.get("Vulnerability") == "Under-Constrained"
     ):
         is_correct = True
-    elif tool_output_data == "Timed out":
+    elif tool_result == "Timed out":
         reason = "Reached zksec threshold."
-    elif tool_output_data == "Unknown":
+    elif tool_result == "Unknown":
         reason = "Unknown result"
-    elif tool_output_data == "Tool Error":
+    elif tool_result == "Tool Error":
         reason = "Picus Tool Error"
-    elif tool_output_data == "Properly Constrained":
+    elif tool_result == "Properly Constrained":
         reason = "Tool says circuit is properly constrained."
+    elif tool_result == "Circuit file not found":
+        reason = "Circuit file not found"
+    elif tool_result == "No result":
+        reason = "No result"
 
     if is_correct:
         if bug_name not in output[dsl][tool]["correct"]:
@@ -113,9 +145,9 @@ def compare_zkbugs_ground_truth(
     elif reason == "Picus Tool Error":
         if not any(item.get("bug") == bug_name for item in output[dsl][tool]["error"]):
             output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
-    elif reason == "Tool says circuit is properly constrained.":
-        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
-            output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
+    elif reason == "Circuit file not found":
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["error"]):
+            output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
     else:
         if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
