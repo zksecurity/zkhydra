@@ -6,13 +6,13 @@ from pathlib import Path
 from bugs.zkbugs import cleanup as cleanup_zkbug_environment
 from bugs.zkbugs import generate_ground_truth as generate_ground_truth_zkbugs
 from bugs.zkbugs import setup as setup_zkbug_environment
-from config import load_config
-from runner import (
+from utils.config import load_config
+from utils.runner import (
     compare_tool_output_with_zkbugs_ground_truth,
     execute_tool_on_bug,
     parse_tool_output,
 )
-from tools_resolver import resolve_tools
+from utils.tools_resolver import resolve_tools
 
 BASE_DIR = Path.cwd()
 REPO_DIR = BASE_DIR.parent

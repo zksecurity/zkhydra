@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List
 
-from logger import setup_logging
+from .logger import setup_logging
 from tools.utils import ensure_dir
 
 
