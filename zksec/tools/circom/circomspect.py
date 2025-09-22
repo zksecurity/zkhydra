@@ -223,12 +223,12 @@ def compare_zkbugs_ground_truth(
                 is_correct = True
             else:
                 reason.append(
-                    f"tool found correct vulnerability ('{tool_vulnerability}'), but wrong line: "
+                    f"Tool found correct vulnerability ('{tool_vulnerability}'), but wrong line: "
                     f"tool found: '{tool_line}'; ground truth line: '{gt_startline}'-'{gt_endline}'"
                 )
         else:
             reason.append(
-                f"tool found wrong vulnerability ('{tool_vulnerability}'); ground truth vulnerability: '{gt_vulnerability}'"
+                f"Tool found wrong vulnerability ('{tool_vulnerability}'); ground truth vulnerability: '{gt_vulnerability}'"
             )
 
     if is_correct:
