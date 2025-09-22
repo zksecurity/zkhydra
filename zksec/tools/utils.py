@@ -132,20 +132,15 @@ def remove_bug_entry(output: dict, dsl: str, tool: str, bug_name: str) -> dict:
     Handles string list bucket ('correct') and dict-list buckets ('false', 'error', 'timeout').
     Robust to buckets containing strings by mistake.
     """
-    print(f"\n\n\n")
-
     for bucket_name in ["false", "error", "timeout", "correct"]:
         bucket = output[dsl][tool][bucket_name]
         if isinstance(bucket, list):
             new_bucket = []
             for item in bucket:
                 if isinstance(item, dict):
-                    print(f"Checking dict in {bucket_name}: {item}")
                     if item.get("bug_name") == bug_name:
-                        print(f"Removing {item}")
                         continue
                 elif item == bug_name:
-                    print(f"Removing string '{item}' from {bucket_name}")
                     continue
                 new_bucket.append(item)
             bucket[:] = new_bucket

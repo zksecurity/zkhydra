@@ -242,15 +242,15 @@ def compare_zkbugs_ground_truth(
             )
         else:
             if not buggy_components:
-                reason = "tool found no module"
+                reason = "Tool found no module"
             elif last_comp_name != buggy_function:
                 reason = (
-                    f"tool found wrong module (tool found: '{last_comp_name}'; "
+                    f"Tool found wrong module (tool found: '{last_comp_name}'; "
                     f"buggy module: '{buggy_function}')"
                 )
             else:
                 reason = (
-                    f"tool found correct module, but lines didn't match (tool found lines: "
+                    f"Tool found correct module, but lines didn't match (tool found lines: "
                     f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
                 )
 

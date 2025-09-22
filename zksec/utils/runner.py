@@ -35,7 +35,7 @@ def write_raw_output(
     Content is normalized to a list of lines.
     """
     json_file = output_file.with_suffix(".json")
-    logging.info(f"Writing {tool} results for {bug_name} to '{json_file}'")
+    logging.debug(f"Writing {tool} results for {bug_name} to '{json_file}'")
 
     # Ensure directory exists
     json_file.parent.mkdir(parents=True, exist_ok=True)
@@ -96,7 +96,7 @@ def parse_tool_output(
     except Exception as e:
         logging.error(f"Parsing output failed for tool '{tool}': {e}")
         return
-    write_output(output, parsed_result)
+    write_parsed_output(output, parsed_result)
 
 
 def write_output(output_file: Path, content: Dict[str, Any]) -> None:
@@ -112,7 +112,7 @@ def write_output(output_file: Path, content: Dict[str, Any]) -> None:
         with open(temp_file, "w", encoding="utf-8") as f:
             json.dump(content, f, indent=2, ensure_ascii=False)
         temp_file.replace(output_file)
-        logging.info(f"Parsed output written to {output_file}")
+        logging.debug(f"Parsed output written to {output_file}")
     except Exception as e:
         logging.error(f"Failed writing '{output_file}': {e}")
         # Best-effort fallback direct write
@@ -142,3 +142,56 @@ def compare_tool_output_with_zkbugs_ground_truth(
         logging.error(f"Comparison function for '{tool}' did not return a dict")
         return
     write_output(output_file, result)
+
+
+def deep_update(original: Any, new_data: Any):
+    """
+    Recursively update dict `original` with values from `new_data`.
+    - Dicts are merged
+    - Lists are extended (deduplicated if possible)
+    - Other values are overwritten
+    """
+    if isinstance(original, dict) and isinstance(new_data, dict):
+        for key, value in new_data.items():
+            if key in original:
+                original[key] = deep_update(original[key], value)
+            else:
+                original[key] = value
+        return original
+
+    elif isinstance(original, list) and isinstance(new_data, list):
+        # merge lists (append unique items)
+        merged = original[:]
+        for item in new_data:
+            if item not in merged:
+                merged.append(item)
+        return merged
+
+    else:
+        # overwrite scalar or incompatible types
+        return new_data
+
+
+def write_parsed_output(output_file: Path, content: Dict[str, Any]) -> None:
+    logging.debug(f"Writing parsed results to '{output_file}'; content={content}")
+    ensure_dir(output_file.parent)
+
+    # Load existing JSON or start fresh
+    if output_file.exists():
+        with open(output_file, "r", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                logging.warning(f"Corrupt JSON in {output_file}, resetting.")
+                data = {}
+    else:
+        data = {}
+
+    # Merge parsed_result into existing JSON
+    data = deep_update(data, content)
+
+    # Save back
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+    logging.debug(f"Parsed output written to {output_file}")
