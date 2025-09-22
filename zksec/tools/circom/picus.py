@@ -108,16 +108,16 @@ def compare_zkbugs_ground_truth(
         if bug_name not in output[dsl][tool]["correct"]:
             output[dsl][tool]["correct"].append(bug_name)
     elif reason == "Reached zksec threshold.":
-        if bug_name not in output[dsl][tool]["timeout"]:
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["timeout"]):
             output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
     elif reason == "Picus Tool Error":
-        if bug_name not in output[dsl][tool]["error"]:
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["error"]):
             output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
     elif reason == "Tool says circuit is properly constrained.":
-        if bug_name not in output[dsl][tool]["false"]:
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
     else:
-        if bug_name not in output[dsl][tool]["false"]:
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
 
     output = update_result_counts(output, dsl, tool)

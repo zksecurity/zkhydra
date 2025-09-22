@@ -29,8 +29,8 @@ def execute(bug_path: str, timeout: int) -> str:
 
     cmd = [
         "julia",
-        "--project=.",
-        "src/Ecne.jl",
+        f"--project={TOOL_DIR}",
+        f"{TOOL_DIR}/src/Ecne.jl",
         "--r1cs",
         str(r1cs_file),
         "--name",
@@ -51,19 +51,35 @@ def parse_output(
     with open(tool_result_raw, "r", encoding="utf-8") as f:
         bug_info = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
 
-    result = ""
+    # Default to an explicit value so downstream comparison can categorize it
+    result = "No result"
+
+    # Fast checks for common sentinel lines
     for i, line in enumerate(bug_info):
         if line == "[Timed out]":
             result = "Timed out"
             break
-        # TODO: Verify: when setup script doesn't work, r1cs and sym files are not created
+        # When setup script doesn't work, r1cs and sym files are not created
         if line == "[Circuit file not found]":
             result = "Circuit file not found"
             break
-        if line == "stderr:":
-            info = bug_info[i - 2]
-            result = info
-            break
+
+    # If still undecided, try to detect the EcneProject success message anywhere
+    if result == "No result":
+        for line in bug_info:
+            if (
+                "R1CS function" in line
+                and "potentially unsound constraints" in line
+            ):
+                result = "R1CS function circuit has potentially unsound constraints"
+                break
+
+    # Legacy heuristic: sometimes the interesting line appears two lines before 'stderr:'
+    if result == "No result":
+        for i, line in enumerate(bug_info):
+            if line == "stderr:" and i >= 2:
+                result = bug_info[i - 2]
+                break
 
     structured_info = {}
     if dsl not in structured_info:

@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 from tools.utils import ensure_dir
-from tools_resolver import ToolInfo
+from .tools_resolver import ToolInfo
 
 
 def execute_tool_on_bug(

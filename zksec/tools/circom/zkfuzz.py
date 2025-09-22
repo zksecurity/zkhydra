@@ -112,12 +112,12 @@ def compare_zkbugs_ground_truth(
 
     gt_vulnerability = gt_data.get("Vulnerability")
 
-    if (
-        reason == "found_bug"
-        and gt_vulnerability.replace("-", "") in vulnerability.strip()
-    ):
+    vulnerability_str = (vulnerability or "").strip()
+    gt_vulnerability_str = (gt_vulnerability or "").replace("-", "")
+
+    if reason == "found_bug" and gt_vulnerability_str and gt_vulnerability_str in vulnerability_str:
         is_correct = True
-        reason = gt_vulnerability
+        reason = gt_vulnerability_str or gt_vulnerability or "found_bug"
     elif reason == "Reached zksec threshold.":
         pass
     else:
@@ -132,10 +132,10 @@ def compare_zkbugs_ground_truth(
         if bug_name not in output[dsl][tool]["error"]:
             output[dsl][tool]["error"].append(bug_name)
     elif reason == "Reached zksec threshold.":
-        if bug_name not in output[dsl][tool]["timeout"]:
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["timeout"]):
             output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
     else:
-        if bug_name not in output[dsl][tool]["false"]:
+        if not any(item.get("bug") == bug_name for item in output[dsl][tool]["false"]):
             output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
 
     output = update_result_counts(output, dsl, tool)
