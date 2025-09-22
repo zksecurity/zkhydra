@@ -3,11 +3,12 @@ set -euo pipefail
 
 echo "[info] Installing circom..."
 
-# Ensure we’re running from the script’s directory
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+UTILS_DIR="$ROOT_DIR/setup/utils"
 
 # Install Rust
-./rust.sh
+[[ -f "$UTILS_DIR/rust.sh" ]] && bash "$UTILS_DIR/rust.sh" || true
 
 # Install Node.js & npm
 if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
@@ -23,6 +24,6 @@ if ! npm list -g snarkjs &> /dev/null; then
 fi
 
 # Install circom
-./zksec/bugs/zkbugs/scripts/install_circom.sh
+bash "$ROOT_DIR/bugs/zkbugs/scripts/install_circom.sh"
 
 echo "[info] circom installation completed successfully."

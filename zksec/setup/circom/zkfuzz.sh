@@ -3,11 +3,12 @@ set -euo pipefail
 
 echo "[info] Installing zkFuzz..."
 
-# Ensure we’re running from the script’s directory
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TOOLS_DIR="$ROOT_DIR/tools"
 
 # zkFuzz Installation
-cd ../zksec/tools/zkFuzz
+cd "$TOOLS_DIR/zkFuzz"
 if cargo build --release > /dev/null 2>&1; then
     echo "[info] zkFuzz installed successfully."
 else

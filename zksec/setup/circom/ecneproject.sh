@@ -2,12 +2,13 @@
 set -euo pipefail
 
 echo "[info] Installing EcneProject..."
-# Ensure we’re running from the script’s directory
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TOOLS_DIR="$ROOT_DIR/tools"
 
 
 # Install EcneProject
-cd ../zksec/tools/EcneProject/Circom_Functions
+cd "$TOOLS_DIR/EcneProject/Circom_Functions"
 git clone https://github.com/iden3/circomlib
 cd ..
 

@@ -3,8 +3,10 @@ set -euo pipefail
 
 echo "[info] Installing Picus..."
 
-# Ensure we’re running from the script’s directory
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+TOOLS_DIR="$ROOT_DIR/tools"
+HELPERS_DIR="$ROOT_DIR/helpers"
 
 # Install Racket
 if ! command -v racket &> /dev/null; then
@@ -18,8 +20,8 @@ if ! dpkg -s libgmp-dev &> /dev/null; then
     sudo apt install -y libgmp-dev
 fi
 
-# Steup CVC5 environment
-cd ../zksec/helpers/cvc5
+# Setup CVC5 environment
+cd "$HELPERS_DIR/cvc5"
 
 if [ ! -d "venv" ]; then
     uv venv
@@ -35,7 +37,7 @@ cd build
 make -j4 install > /dev/null 2>&1
 
 # Install Picus
-cd ../zksec/tools/Picus
+cd "$TOOLS_DIR/Picus"
 
 raco pkg install || true
 
@@ -43,6 +45,7 @@ raco pkg install || true
 for pkg in rosette csv-reading; do
     if ! raco pkg show "$pkg" &> /dev/null; then
         raco pkg install --auto "$pkg"
+    fi
 done
 
 echo "[info] Picus installed successfully."
