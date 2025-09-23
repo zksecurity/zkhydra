@@ -4,7 +4,6 @@ import os
 import shlex
 import subprocess
 from pathlib import Path
-from typing import Any, Dict
 
 
 def run_command(cmd: list[str], timeout: int, tool: str, bug: str) -> str:
@@ -61,53 +60,6 @@ def check_files_exist(*files: Path) -> bool:
 def ensure_dir(path: Path) -> None:
     """Create directory path if it doesn't exist (parents included)."""
     path.mkdir(parents=True, exist_ok=True)
-
-
-def init_output_dict(output: dict, dsl: str, tool: str) -> dict:
-    """Ensure output dict has the standard structure for a given dsl/tool."""
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("correct", [])
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("false", [])
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("error", [])
-    output.setdefault(dsl, {}).setdefault(tool, {}).setdefault("timeout", [])
-    # Do not set count here; updated dynamically by update_result_counts
-    return output
-
-
-def update_result_counts(output: dict, dsl: str, tool: str) -> dict:
-    """Recompute and store counts for a given dsl/tool."""
-    # Ensure keys exist
-    init_output_dict(output, dsl, tool)
-    output[dsl][tool]["count"] = {
-        "correct": len(output[dsl][tool]["correct"]),
-        "false": len(output[dsl][tool]["false"]),
-        "error": len(output[dsl][tool]["error"]),
-        "timeout": len(output[dsl][tool]["timeout"]),
-    }
-
-    return output
-
-
-def load_output_dict(output_file: Path, dsl: str, tool: str) -> dict:
-    """Load the aggregate output JSON file and ensure base structure.
-
-    If the file does not exist or is invalid, initialize a minimal structure.
-    """
-    output: dict
-    if os.path.exists(output_file):
-        try:
-            with open(output_file, "r", encoding="utf-8") as f:
-                output = json.load(f)
-            if not isinstance(output, dict):
-                logging.error("Output file is not a JSON object; reinitializing")
-                output = {dsl: {}}
-        except Exception as e:
-            logging.error(f"Failed to load output file '{output_file}': {e}")
-            output = {dsl: {}}
-    else:
-        output = {dsl: {}}
-
-    init_output_dict(output, dsl, tool)
-    return output
 
 
 def get_tool_result_parsed(

@@ -12,6 +12,7 @@ from utils.runner import (
     compare_tool_output_with_zkbugs_ground_truth,
     execute_tool_on_bug,
     parse_tool_output,
+    summarize_results,
 )
 from utils.tools_resolver import resolve_tools
 
@@ -32,7 +33,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    config = load_config(args.config)
+    config = load_config(args.config, BASE_DIR)
 
     for dsl in config.tools:
         logging.info(f"Processing DSL: {dsl}")
@@ -69,21 +70,24 @@ def main() -> None:
                     bug_name,
                 )
 
-
-def get_tool_results_raw(config) -> Path:
-    return BASE_DIR / config.output_dir / "tool_output_raw.json"
-
-
-def get_output_ground_truth(config) -> Path:
-    return BASE_DIR / config.output_dir / "bug_info_ground_truth.json"
+            if config.summarize_tool_results:
+                summarize_tool_results(config, dsl, tool_registry, bug_name)
 
 
-def get_output_structured(config) -> Path:
-    return BASE_DIR / config.output_dir / "tool_output_parsed.json"
+def get_tool_results_raw(config, dsl: str, tool: str, bug_name: str) -> Path:
+    return config.output_dir / dsl / tool / bug_name / "raw.txt"
 
 
-def get_output_result(config) -> Path:
-    return BASE_DIR / config.output_dir / "results.json"
+def get_output_ground_truth(config, dsl: str, bug_name: str) -> Path:
+    return config.output_dir / "ground_truth" / dsl / bug_name / "ground_truth.json"
+
+
+def get_output_structured(config, dsl: str, tool: str, bug_name: str) -> Path:
+    return config.output_dir / dsl / tool / bug_name / "parsed.json"
+
+
+def get_output_result(config, dsl: str, tool: str, bug_name: str) -> Path:
+    return config.output_dir / dsl / tool / bug_name / "results.json"
 
 
 def execute_bug(
@@ -94,7 +98,7 @@ def execute_bug(
             logging.warning(f"Skipping {tool} because it failed to load")
             continue
 
-        tool_results_raw = get_tool_results_raw(config)
+        tool_results_raw = get_tool_results_raw(config, dsl, tool, bug_name)
 
         execute_tool_on_bug(
             tool,
@@ -107,7 +111,7 @@ def execute_bug(
 
 
 def generate_ground_truth(config, dsl: str, bug_path: Path, bug_name: str) -> None:
-    output_ground_truth = get_output_ground_truth(config)
+    output_ground_truth = get_output_ground_truth(config, dsl, bug_name)
     generate_ground_truth_zkbugs(bug_name, bug_path, dsl, output_ground_truth)
 
 
@@ -119,9 +123,9 @@ def parse_raw_tool_output(
             logging.warning(f"Skipping {tool} because it failed to load")
             continue
 
-        output_structured = get_output_structured(config)
-        tool_results_raw = get_tool_results_raw(config)
-        ground_truth = get_output_ground_truth(config)
+        output_structured = get_output_structured(config, dsl, tool, bug_name)
+        tool_results_raw = get_tool_results_raw(config, dsl, tool, bug_name)
+        ground_truth = get_output_ground_truth(config, dsl, bug_name)
         parse_tool_output(
             tool,
             tool_registry[tool],
@@ -140,15 +144,28 @@ def analyze_tool_results(
             logging.warning(f"Skipping {tool} because it failed to load")
             continue
 
-        output_result = get_output_result(config)
+        output_result = get_output_result(config, dsl, tool, bug_name)
         compare_tool_output_with_zkbugs_ground_truth(
             tool,
             tool_registry[tool],
             bug_name,
-            get_output_ground_truth(config),
-            get_output_structured(config),
+            get_output_ground_truth(config, dsl, bug_name),
+            get_output_structured(config, dsl, tool, bug_name),
             output_result,
         )
+
+
+def summarize_tool_results(
+    config, dsl: str, tool_registry: Dict[str, any], bug_name: str
+) -> None:
+    output_result = config.output_dir / "summary.json"
+
+    for tool in config.tools[dsl]:
+        if tool not in tool_registry:
+            logging.warning(f"Skipping {tool} because it failed to load")
+            continue
+        output_result_tool = get_output_result(config, dsl, tool, bug_name)
+        summarize_results(dsl, tool, bug_name, output_result, output_result_tool)
 
 
 def remove_first_n_dirs(path: str, n: int = 5) -> str:

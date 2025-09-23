@@ -9,10 +9,7 @@ from ..utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
-    load_output_dict,
-    remove_bug_entry,
     run_command,
-    update_result_counts,
 )
 
 TOOL_DIR = Path(__file__).resolve().parent / "circom_civer"
@@ -57,19 +54,13 @@ def execute(bug_path: str, timeout: int) -> str:
 
 
 def parse_output(
-    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, _: Path
+    tool_result_raw: Path, _: Path
 ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
-    """Parse circom-civer raw output into a structured dictionary.
-
-    The input file is expected to contain a JSON mapping shaped like:
-        { dsl: { tool: { bug_name: [lines...] } } }
-
-    Returns a nested dict in the form:
-        { dsl: { tool: { bug_name: { stats, buggy_components } } } }
-    """
+    """Parse circom-civer raw output into a structured dictionary."""
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info: List[str] = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
-    structured_info: Dict[str, Dict[str, Dict[str, Dict[str, Any]]]] = {}
+        bug_info: list[str] = [line.strip() for line in f if line.strip()]
+
+    structured_info: Dict[str, Any] = {}
 
     stats: Dict[str, Optional[int]] = {
         "verified": None,
@@ -125,12 +116,7 @@ def parse_output(
         elif "Number of timeout components" in line:
             stats["timeout"] = _safe_int_from_line(r"(\d+)$", line)
 
-    if dsl not in structured_info:
-        structured_info[dsl] = {}
-    if tool not in structured_info[dsl]:
-        structured_info[dsl][tool] = {}
-
-    structured_info[dsl][tool][bug_name] = {
+    structured_info = {
         "stats": stats,
         "buggy_components": buggy_components,
     }
@@ -139,27 +125,25 @@ def parse_output(
 
 
 def compare_zkbugs_ground_truth(
-    tool: str,
-    dsl: str,
-    bug_name: str,
-    ground_truth: Path,
-    tool_result_parsed: Path,
-    output_file: Path,
+    tool: str, dsl: str, bug_name: str, ground_truth: Path, tool_result_parsed: Path
 ) -> Dict[str, Any]:
     """Compare parsed tool output against ground-truth for a single bug.
 
     Returns the updated aggregated `output` dictionary.
     """
-    output = load_output_dict(output_file, dsl, tool)
-    output = remove_bug_entry(output, dsl, tool, bug_name)
+    output = {}
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
-        ground_truth_data = json.load(f).get(dsl, {}).get(bug_name, {})
+        ground_truth_data = json.load(f)
 
     bug_location = ground_truth_data.get("Location", {})
     if not bug_location:
         logging.error(f"Location data for bug '{bug_name}' not found in ground truth.")
+        output = {
+            "result": "error",
+            "reason": "Location data not found in ground truth.",
+        }
         return output
 
     buggy_function: Optional[str] = bug_location.get("Function")
@@ -234,12 +218,10 @@ def compare_zkbugs_ground_truth(
         logging.debug(f"Component '{comp_name}' correctness: {is_correct}")
 
     if is_correct:
-        output[dsl][tool]["correct"].append(bug_name)
+        output = {"result": "correct"}
     else:
         if timed_out:
-            output[dsl][tool]["timeout"].append(
-                {"bug": bug_name, "reason": "Reached zksec threshold."}
-            )
+            output = {"result": "timeout", "reason": "Reached zksec threshold."}
         else:
             if not buggy_components:
                 reason = "Tool found no module"
@@ -254,8 +236,5 @@ def compare_zkbugs_ground_truth(
                     f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
                 )
 
-            output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
-
-    output = update_result_counts(output, dsl, tool)
-
+            output = {"result": "false", "reason": reason}
     return output

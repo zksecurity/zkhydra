@@ -75,7 +75,6 @@ def generate_random_text(min_len=8, max_len=25) -> str:
 
 
 def generate_ptau():
-    # TODO: Test this function
     logging.debug(f"Generating PTAU file.")
     os.chdir(SCRIPT_DIR)
 
@@ -133,25 +132,12 @@ def generate_ground_truth(
         "Location": location,
     }
 
-    output_file = output_file.with_suffix(".json")
-    # Load existing JSON if it exists
-    if os.path.exists(output_file):
-        with open(output_file, "r", encoding="utf-8") as f:
-            bug_info = json.load(f)
-    else:
-        bug_info = {}
-
-    # Ensure the DSL key exists
-    if dsl not in bug_info:
-        bug_info[dsl] = {}
-
-    # Determine if created or updated
-    action = "updated" if bug_name in bug_info[dsl] else "created"
-    bug_info[dsl][bug_name] = bug_data
-
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     # Write back to JSON
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(bug_info, f, indent=2)
+        json.dump(bug_data, f, indent=2)
 
-    logging.debug(f"Bug entry '{bug_name}' {action} under DSL '{dsl}' in {output_file}")
+    logging.debug(
+        f"Written ground truth for bug '{bug_name}' under DSL '{dsl}' in {output_file}"
+    )
     return
