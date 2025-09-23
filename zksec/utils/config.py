@@ -16,7 +16,6 @@ class AppConfig:
     output_dir: Path
     timeout: int
     log_level: str
-    log_level_file: str
     dynamic_name: bool
     static_name: str
     setup_bug_environment: bool
@@ -48,22 +47,21 @@ def load_config(
         raise ValueError("Config error: missing or invalid 'app' section")
 
     log_level = str(app_section.get("log_level", "WARNING")).upper()
-    log_level_file = str(app_section.get("log_level_file", "WARNING")).upper()
 
     output_dir = Path(app_section.get("output", "./output"))
     dynamic_name = bool(app_section.get("dynamic_name", False))
+    static_name = app_section.get("static_name", "zksec")
 
     if dynamic_name:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         output_dir = base_dir / output_dir / f"zksec_{timestamp}"
-    else:
-        static_name = app_section.get("static_name", "zksec")
+    else:        
         output_dir = base_dir / output_dir / static_name
 
     ensure_dir(output_dir)
 
     file_logging = bool(app_section.get("file_logging", False))
-    setup_logging(log_level, log_level_file, output_dir, file_logging)
+    setup_logging(log_level, output_dir, file_logging)
 
     tools, bugs = parse_dsl_sections(config)
 
@@ -86,7 +84,6 @@ def load_config(
         output_dir=output_dir,
         timeout=timeout,
         log_level=log_level,
-        log_level_file=log_level_file,
         dynamic_name=dynamic_name,
         static_name=static_name,
         setup_bug_environment=setup_bug_environment,

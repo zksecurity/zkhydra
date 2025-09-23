@@ -7,7 +7,7 @@ VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 def setup_logging(
-    log_level: str, log_level_file: str, output_dir: Path, file_logging: bool
+    log_level: str, output_dir: Path, file_logging: bool
 ) -> None:
     """Initialize root logger with console and optional file handlers.
 
@@ -23,6 +23,7 @@ def setup_logging(
             f"Config error: Invalid log_level '{log_level}'. "
             f"Must be one of {', '.join(VALID_LOG_LEVELS)}."
         )
+
 
     # Create formatter (shared by both handlers)
     formatter = logging.Formatter(
@@ -47,7 +48,7 @@ def setup_logging(
         file_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             file_handler = logging.FileHandler(file_path, encoding="utf-8")
-            file_handler.setLevel(log_level_file)
+            file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             root_logger.addHandler(file_handler)
         except Exception as e:
