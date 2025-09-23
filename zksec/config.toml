@@ -8,6 +8,8 @@ timeout = 300
 # Output directory
 output = "./output"
 file_logging = true
+dynamic_name = true
+static_name = "zksec"
 
 # App stages
 ## Set to false to skip a stage
@@ -17,13 +19,14 @@ cleanup_bug_environment = true
 generate_ground_truth = true
 parse_raw_tool_output = true
 analyze_tool_results = true
+summarize_tool_results = true
 
 [circom]
 # List of tools to use
 tools = [
     "circom_civer",
     "circomspect",
-    # "EcneProject",
+    "EcneProject",
     "Picus",
     "zkFuzz"
 ]
@@ -31,13 +34,13 @@ tools = [
 # List of bugs to analyze
 ## Removed bugs that are not reproducible
 bugs = [
-    # # 0xbok
+    ## 0xbok
     # "zksec/bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
-    # # darkforest-eth
+    ## darkforest-eth
     "zksec/bugs/zkbugs/dataset/circom/darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
-    # # iden3
+    # ## iden3
     "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
-    "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
+    # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
     # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
     # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_window4",
     # "zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
