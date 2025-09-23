@@ -9,10 +9,7 @@ from ..utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
-    load_output_dict,
-    remove_bug_entry,
     run_command,
-    update_result_counts,
 )
 
 TOOL_DIR = Path(__file__).resolve().parent / "zkfuzz"
@@ -52,19 +49,14 @@ def execute(bug_path: str, timeout: int) -> str:
 
 
 def parse_output(
-    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, _: Path
+    tool_result_raw: Path, _: Path
 ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
-    """Parse zkfuzz output and extract status and vulnerability string.
-
-    Returns nested structure: { dsl: { tool: { bug_name: { result, vulnerability }}}}
-    Where result is one of: "Timed out", "tool error", "found_bug", "found_no_bug".
-    """
+    """Parse zkfuzz output and extract status and vulnerability string."""
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info: List[str] = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
+        bug_info: list[str] = [line.strip() for line in f if line.strip()]
 
-    status = "tool error"
-    vulnerability = "tool error"
-    logging.debug(f"{bug_name=}")
+    status = ""
+    vulnerability = ""
 
     if not bug_info:
         status = "tool error"
@@ -88,13 +80,9 @@ def parse_output(
                 vulnerability = re.sub(r"[^A-Za-z()]*$", "", vulnerability)
                 break
 
-    structured_info: Dict[str, Dict[str, Dict[str, Dict[str, Any]]]] = {}
-    if dsl not in structured_info:
-        structured_info[dsl] = {}
-    if tool not in structured_info[dsl]:
-        structured_info[dsl][tool] = {}
+    structured_info: Dict[str, Any] = {}
 
-    structured_info[dsl][tool][bug_name] = {
+    structured_info = {
         "result": status,
         "vulnerability": vulnerability,
     }
@@ -103,16 +91,10 @@ def parse_output(
 
 
 def compare_zkbugs_ground_truth(
-    tool: str,
-    dsl: str,
-    bug_name: str,
-    ground_truth: Path,
-    tool_result_parsed: Path,
-    output_file: Path,
+    tool: str, dsl: str, bug_name: str, ground_truth: Path, tool_result_parsed: Path
 ) -> Dict[str, Any]:
     """Compare zkfuzz findings against ground truth and update aggregates."""
-    output = load_output_dict(output_file, dsl, tool)
-    output = remove_bug_entry(output, dsl, tool, bug_name)
+    output = {}
 
     tool_output_data = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name)
 
@@ -154,14 +136,12 @@ def compare_zkbugs_ground_truth(
         reason = gt_vulnerability or "found_bug"
 
     if is_correct:
-        output[dsl][tool]["correct"].append(bug_name)
+        output = {"result": "correct"}
     elif reason == "Reached zksec threshold.":
-        output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
+        output = {"result": "timeout", "reason": reason}
     elif reason in ("tool error", "Tool Error"):
-        output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+        output = {"result": "error", "reason": reason}
     else:
-        output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
-
-    output = update_result_counts(output, dsl, tool)
+        output = {"result": "false", "reason": reason}
 
     return output

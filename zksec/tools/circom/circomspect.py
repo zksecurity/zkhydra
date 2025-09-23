@@ -1,18 +1,14 @@
 import json
 import logging
-import os
 import re
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 from ..utils import (
     check_files_exist,
     get_tool_result_parsed,
-    load_output_dict,
-    remove_bug_entry,
     run_command,
-    update_result_counts,
 )
 
 # From circomspect: https://github.com/trailofbits/circomspect/blob/ece9efe0a21e6c422a43ab6f2e1c0ce99678013b/program_structure/src/program_library/report_code.rs#L164C13-L182C44
@@ -65,24 +61,17 @@ def execute(bug_path: str, timeout: int) -> str:
 
 
 def parse_output(
-    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, ground_truth: Path
+    tool_result_raw: Path, ground_truth: Path
 ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
-    """Parse circomspect output and extract warnings for the vulnerable function.
-
-    Returns nested structure: { dsl: { tool: { bug_name: { "warnings": ... } } } }
-    where warnings is one of:
-      - [(code: str, line: int), ...]
-      - ["Reached zksec threshold."]
-      - "No Warnings Found"
-    """
+    """Parse circomspect output and extract warnings for the vulnerable function."""
     # Get ground truth to reverse search
     with open(ground_truth, "r", encoding="utf-8") as f:
-        gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
+        gt_data = json.load(f)
     vuln_function: Optional[str] = gt_data.get("Location", {}).get("Function")
 
     # Get tool output
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info: List[str] = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
+        bug_info: List[str] = [line.strip() for line in f if line.strip()]
 
     # If we don't know the function, we cannot find the specific block
     if not vuln_function:
@@ -136,14 +125,10 @@ def parse_output(
             finally:
                 current_code = None  # reset after recording
 
-    structured_info: Dict[str, Dict[str, Dict[str, Dict[str, Any]]]] = {}
-    if dsl not in structured_info:
-        structured_info[dsl] = {}
-    if tool not in structured_info[dsl]:
-        structured_info[dsl][tool] = {}
+    structured_info: Dict[str, Any] = {}
 
     result_value: Any = warnings if warnings else "No Warnings Found"
-    structured_info[dsl][tool][bug_name] = {
+    structured_info = {
         "warnings": result_value,
     }
 
@@ -151,16 +136,10 @@ def parse_output(
 
 
 def compare_zkbugs_ground_truth(
-    tool: str,
-    dsl: str,
-    bug_name: str,
-    ground_truth: Path,
-    tool_result_parsed: Path,
-    output_file: Path,
+    tool: str, dsl: str, bug_name: str, ground_truth: Path, tool_result_parsed: Path
 ) -> Dict[str, Any]:
     """Compare circomspect warnings to ground truth and update aggregate output."""
-    output = load_output_dict(output_file, dsl, tool)
-    output = remove_bug_entry(output, dsl, tool, bug_name)
+    output = {}
 
     warnings: Any = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name).get(
         "warnings", "No Warnings Found"
@@ -168,12 +147,10 @@ def compare_zkbugs_ground_truth(
 
     # Handle trivial outcomes first
     if warnings == "No Warnings Found":
-        output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": warnings})
-        output = update_result_counts(output, dsl, tool)
+        output = {"result": "false", "reason": warnings}
         return output
     if warnings == ["Reached zksec threshold."]:
-        output[dsl][tool]["timeout"].append({"bug_name": bug_name, "reason": warnings})
-        output = update_result_counts(output, dsl, tool)
+        output = {"result": "timeout", "reason": warnings}
         return output
 
     # Get ground truth data
@@ -187,11 +164,7 @@ def compare_zkbugs_ground_truth(
         logging.error(
             f"Ground truth missing fields for '{bug_name}' ({dsl}): vulnerability={gt_vulnerability}, lines={gt_lines}"
         )
-        existing = output[dsl][tool]["false"]
-        if not any(entry.get("bug_name") == bug_name for entry in existing):
-            output[dsl][tool]["false"].append(
-                {"bug_name": bug_name, "reason": "incomplete ground truth"}
-            )
+        output = {"result": "false", "reason": "incomplete ground truth"}
         return output
 
     if "-" in gt_lines:
@@ -232,12 +205,10 @@ def compare_zkbugs_ground_truth(
             )
 
     if is_correct:
-        output[dsl][tool]["correct"].append(bug_name)
+        output = {"result": "correct"}
     else:
         if reason == []:
             reason = ["circomspect found no warnings."]
-        output[dsl][tool]["false"].append({"bug_name": bug_name, "reason": reason})
-
-    output = update_result_counts(output, dsl, tool)
+        output = {"result": "false", "reason": reason}
 
     return output

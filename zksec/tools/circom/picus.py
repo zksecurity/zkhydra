@@ -1,18 +1,14 @@
 import json
 import logging
 import os
-import shutil
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from ..utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
-    load_output_dict,
-    remove_bug_entry,
     run_command,
-    update_result_counts,
 )
 
 TOOL_DIR = Path(__file__).resolve().parent / "picus"
@@ -52,16 +48,11 @@ def execute(bug_path: str, timeout: int) -> str:
 
 
 def parse_output(
-    tool_result_raw: Path, tool: str, bug_name: str, dsl: str, _: Path
+    tool_result_raw: Path, _: Path
 ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
-    """Parse Picus output and classify the result.
-
-    Returns nested structure: { dsl: { tool: { bug_name: { "result": str } } } }
-    Possible results: "Timed out", "Underconstrained", "Properly Constrained",
-    "Unknown", "Circuit file not found", "Tool Error", or "No result".
-    """
+    """Parse Picus output and classify the result."""
     with open(tool_result_raw, "r", encoding="utf-8") as f:
-        bug_info: List[str] = json.load(f).get(dsl, {}).get(tool, {}).get(bug_name, [])
+        bug_info: list[str] = [line.strip() for line in f if line.strip()]
 
     status: str
     if not bug_info:
@@ -82,13 +73,9 @@ def parse_output(
     else:
         status = "Tool Error"
 
-    structured_info: Dict[str, Dict[str, Dict[str, Dict[str, Any]]]] = {}
-    if dsl not in structured_info:
-        structured_info[dsl] = {}
-    if tool not in structured_info[dsl]:
-        structured_info[dsl][tool] = {}
+    structured_info: Dict[str, Any] = {}
 
-    structured_info[dsl][tool][bug_name] = {
+    structured_info = {
         "result": status,
     }
 
@@ -96,19 +83,13 @@ def parse_output(
 
 
 def compare_zkbugs_ground_truth(
-    tool: str,
-    dsl: str,
-    bug_name: str,
-    ground_truth: Path,
-    tool_result_parsed: Path,
-    output_file: Path,
+    tool: str, dsl: str, bug_name: str, ground_truth: Path, tool_result_parsed: Path
 ) -> Dict[str, Any]:
     """Compare Picus classification to ground truth and update aggregate output."""
     logging.debug(
         "When picus finds a bug, we assume it found the correct one. We can check if the bug is supposed to be underconstrained."
     )
-    output = load_output_dict(output_file, dsl, tool)
-    output = remove_bug_entry(output, dsl, tool, bug_name)
+    output = {}
 
     with open(ground_truth, "r", encoding="utf-8") as f:
         gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
@@ -139,16 +120,14 @@ def compare_zkbugs_ground_truth(
         reason = "No result"
 
     if is_correct:
-        output[dsl][tool]["correct"].append(bug_name)
+        output = {"result": "correct"}
     elif reason == "Reached zksec threshold.":
-        output[dsl][tool]["timeout"].append({"bug": bug_name, "reason": reason})
+        output = {"result": "timeout", "reason": reason}
     elif reason == "Picus Tool Error":
-        output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+        output = {"result": "error", "reason": reason}
     elif reason == "Circuit file not found":
-        output[dsl][tool]["error"].append({"bug": bug_name, "reason": reason})
+        output = {"result": "error", "reason": reason}
     else:
-        output[dsl][tool]["false"].append({"bug": bug_name, "reason": reason})
-
-    output = update_result_counts(output, dsl, tool)
+        output = {"result": "false", "reason": reason}
 
     return output

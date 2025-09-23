@@ -62,3 +62,8 @@ uv run main.py
 ```Bash
 uv run black . && uv run isort . --profile black
 ```
+
+## TODO
+add `"need_manual_evaluation": true` to false bucket when there is a reason
+  - not finding anything is no reason - false for sure
+  - wrong line is a reason, wrong name of funciton  might also be, could be that its the calling function of the buggy one, etc.

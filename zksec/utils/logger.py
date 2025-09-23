@@ -6,7 +6,9 @@ from pathlib import Path
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
+def setup_logging(
+    log_level: str, log_level_file: str, output_dir: Path, file_logging: bool
+) -> None:
     """Initialize root logger with console and optional file handlers.
 
     Args:
@@ -41,12 +43,11 @@ def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
 
     if file_logging:
         # Create file logging
-        current_day = datetime.now().strftime("%Y-%m-%d")
-        file_path = output_dir / f"zksec_{current_day}.log"
+        file_path = output_dir / f"zksec.log"
         file_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             file_handler = logging.FileHandler(file_path, encoding="utf-8")
-            file_handler.setLevel(log_level)
+            file_handler.setLevel(log_level_file)
             file_handler.setFormatter(formatter)
             root_logger.addHandler(file_handler)
         except Exception as e:
