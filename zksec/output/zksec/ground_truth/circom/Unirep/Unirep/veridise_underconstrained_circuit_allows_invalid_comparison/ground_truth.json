@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Arithmetic Field Errors",
+  "Location": {
+    "Path": "circuits/bigComparators.circom",
+    "Function": "BigLessThan",
+    "Line": "45"
+  }
+}

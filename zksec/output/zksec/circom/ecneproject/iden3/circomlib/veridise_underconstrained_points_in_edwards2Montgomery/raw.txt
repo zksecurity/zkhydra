@@ -1,0 +1,57 @@
+stdout:
+time to prep inputs 150 milliseconds
+setup solver 187 milliseconds
+Solved for 3 variables out of 5 total variables
+Solved for 0 target variables out of 2 total target variables
+------ Bad Constraints ------
+
+constraint #1
+(-1 * main.in[1] + 1 * 1) * (1 * main.out[0]) = (1 * main.in[1] + 1 * 1)
+main.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+constraint #2
+(1 * main.out[1]) * (1 * main.in[0]) = (1 * main.out[0])
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+------ All Variables ------
+
+main.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+R1CS function circuit has potentially unsound constraints
+
+stderr:
+The latest version of Julia in the `release` channel is 1.11.7+0.x64.linux.gnu. You currently have `1.11.6+0.x64.linux.gnu` installed. Run:
+
+  juliaup update
+
+in your terminal shell to install Julia 1.11.7+0.x64.linux.gnu and update the `release` channel to that version.

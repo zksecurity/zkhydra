@@ -1,0 +1,8 @@
+{
+  "stats": {
+    "verified": 10,
+    "failed": 0,
+    "timeout": 7
+  },
+  "buggy_components": []
+}

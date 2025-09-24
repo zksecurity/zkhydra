@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Missing Input Constraints",
+  "Location": {
+    "Path": "circuits/montgomery.circom",
+    "Function": "Montgomery2Edwards",
+    "Line": "7-8"
+  }
+}

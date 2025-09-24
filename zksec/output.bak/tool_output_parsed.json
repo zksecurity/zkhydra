@@ -1,0 +1,795 @@
+{
+  "circom": {
+    "circom_civer": {
+      "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+        "stats": {
+          "verified": 10,
+          "failed": 0,
+          "timeout": 7
+        },
+        "buggy_components": []
+      },
+      "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "RangeProof",
+            "params": [
+              9,
+              255
+            ]
+          }
+        ]
+      },
+      "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+        "stats": {
+          "verified": 0,
+          "failed": 0,
+          "timeout": 2
+        },
+        "buggy_components": []
+      },
+      "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "Decoder",
+            "params": [
+              4
+            ]
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 1
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 1
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+        "stats": {
+          "verified": 2,
+          "failed": 1,
+          "timeout": 1
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "Edwards2Montgomery",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "Montgomery2Edwards",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          }
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+        "stats": {
+          "verified": 0,
+          "failed": 0,
+          "timeout": 1
+        },
+        "buggy_components": []
+      },
+      "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom": {
+        "stats": {
+          "verified": 8,
+          "failed": 2,
+          "timeout": 6
+        },
+        "buggy_components": [
+          {
+            "name": "Secp256k1Double",
+            "params": []
+          },
+          {
+            "name": "Secp256k1AddIncomplete",
+            "params": []
+          }
+        ]
+      },
+      "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system": {
+        "stats": {
+          "verified": 7,
+          "failed": 0,
+          "timeout": 4
+        },
+        "buggy_components": []
+      },
+      "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "RotateLeft32Bits",
+            "params": [
+              3
+            ]
+          }
+        ]
+      },
+      "semaphore-protocol/semaphore/veridise_no_zero_value_validation": {
+        "stats": {
+          "verified": 146,
+          "failed": 0,
+          "timeout": 0
+        },
+        "buggy_components": []
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery": {
+        "stats": {
+          "verified": null,
+          "failed": null,
+          "timeout": null
+        },
+        "buggy_components": []
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment": {
+        "stats": {
+          "verified": null,
+          "failed": null,
+          "timeout": null
+        },
+        "buggy_components": []
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag": {
+        "stats": {
+          "verified": 11,
+          "failed": 0,
+          "timeout": 2
+        },
+        "buggy_components": []
+      },
+      "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained": {
+        "stats": {
+          "verified": 0,
+          "failed": 1,
+          "timeout": 0
+        },
+        "buggy_components": [
+          {
+            "name": "ArrayXOR",
+            "params": [
+              4
+            ]
+          }
+        ]
+      },
+      "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified": {
+        "stats": {
+          "verified": 7,
+          "failed": 0,
+          "timeout": 1
+        },
+        "buggy_components": []
+      },
+      "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow": {
+        "stats": {
+          "verified": 0,
+          "failed": 0,
+          "timeout": 1
+        },
+        "buggy_components": []
+      },
+      "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits": {
+        "stats": {
+          "verified": 77,
+          "failed": 0,
+          "timeout": 1
+        },
+        "buggy_components": []
+      },
+      "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison": {
+        "stats": {
+          "verified": 7,
+          "failed": 0,
+          "timeout": 2
+        },
+        "buggy_components": []
+      },
+      "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes": {
+        "stats": {
+          "verified": 89,
+          "failed": 3,
+          "timeout": 9
+        },
+        "buggy_components": [
+          {
+            "name": "Montgomery2Edwards",
+            "params": []
+          },
+          {
+            "name": "MontgomeryAdd",
+            "params": []
+          },
+          {
+            "name": "Edwards2Montgomery",
+            "params": []
+          }
+        ]
+      }
+    },
+    "circomspect": {
+      "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+        "warnings": [
+          [
+            "CS0005",
+            373
+          ],
+          [
+            "CS0005",
+            376
+          ],
+          [
+            "CS0005",
+            374
+          ],
+          [
+            "CS0010",
+            379
+          ]
+        ]
+      },
+      "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+        "warnings": [
+          [
+            "CS0006",
+            12
+          ],
+          [
+            "CS0014",
+            14
+          ],
+          [
+            "CS0014",
+            15
+          ],
+          [
+            "CS0014",
+            15
+          ],
+          [
+            "CS0014",
+            14
+          ]
+        ]
+      },
+      "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+        "warnings": [
+          [
+            "CS0013",
+            28
+          ]
+        ]
+      },
+      "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+        "warnings": [
+          [
+            "CS0005",
+            10
+          ]
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+        "warnings": "No Warnings Found"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+        "warnings": "No Warnings Found"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+        "warnings": "No Warnings Found"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+        "warnings": [
+          [
+            "CS0005",
+            8
+          ],
+          [
+            "CS0005",
+            7
+          ],
+          [
+            "CS0015",
+            7
+          ],
+          [
+            "CS0015",
+            8
+          ]
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+        "warnings": [
+          [
+            "CS0005",
+            8
+          ],
+          [
+            "CS0005",
+            7
+          ],
+          [
+            "CS0015",
+            7
+          ],
+          [
+            "CS0015",
+            8
+          ]
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+        "warnings": [
+          [
+            "CS0005",
+            16
+          ],
+          [
+            "CS0015",
+            16
+          ]
+        ]
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+        "warnings": [
+          [
+            "CS0005",
+            18
+          ],
+          [
+            "CS0015",
+            18
+          ]
+        ]
+      },
+      "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom": {
+        "warnings": [
+          [
+            "CS0006",
+            14
+          ]
+        ]
+      },
+      "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system": {
+        "warnings": [
+          [
+            "CS0005",
+            123
+          ],
+          [
+            "CS0005",
+            124
+          ],
+          [
+            "CS0010",
+            180
+          ],
+          [
+            "CS0010",
+            183
+          ]
+        ]
+      },
+      "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation": {
+        "warnings": [
+          [
+            "CS0005",
+            11
+          ],
+          [
+            "CS0005",
+            12
+          ]
+        ]
+      },
+      "semaphore-protocol/semaphore/veridise_no_zero_value_validation": {
+        "warnings": [
+          [
+            "CS0017",
+            84
+          ]
+        ]
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery": {
+        "warnings": [
+          [
+            "CS0005",
+            178
+          ],
+          [
+            "CS0005",
+            179
+          ]
+        ]
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment": {
+        "warnings": [
+          [
+            "CS0006",
+            726
+          ]
+        ]
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag": {
+        "warnings": [
+          [
+            "CS0006",
+            203
+          ]
+        ]
+      },
+      "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained": {
+        "warnings": [
+          [
+            "CS0005",
+            9
+          ]
+        ]
+      },
+      "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified": {
+        "warnings": [
+          [
+            "CS0006",
+            73
+          ]
+        ]
+      },
+      "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow": {
+        "warnings": [
+          [
+            "CS0005",
+            9
+          ]
+        ]
+      },
+      "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits": {
+        "warnings": "No Warnings Found"
+      },
+      "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison": {
+        "warnings": [
+          [
+            "CS0014",
+            64
+          ],
+          [
+            "CS0014",
+            64
+          ],
+          [
+            "CS0014",
+            60
+          ],
+          [
+            "CS0014",
+            60
+          ],
+          [
+            "CS0010",
+            45
+          ]
+        ]
+      },
+      "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes": {
+        "warnings": [
+          [
+            "CS0006",
+            11
+          ]
+        ]
+      }
+    },
+    "ecneproject": {
+      "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "semaphore-protocol/semaphore/veridise_no_zero_value_validation": {
+        "result": "R1CS function circuit has sound constraints (No trusted functions needed!)"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery": {
+        "result": "Timed out"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment": {
+        "result": "Circuit file not found"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag": {
+        "result": "Circuit file not found"
+      },
+      "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified": {
+        "result": "Circuit file not found"
+      },
+      "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      },
+      "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits": {
+        "result": "R1CS function circuit has sound constraints (No trusted functions needed!)"
+      },
+      "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison": {
+        "result": "R1CS function circuit has sound constraints (No trusted functions needed!)"
+      },
+      "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes": {
+        "result": "R1CS function circuit has potentially unsound constraints"
+      }
+    },
+    "picus": {
+      "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+        "result": "Timed out"
+      },
+      "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+        "result": "Unknown"
+      },
+      "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+        "result": "Unknown"
+      },
+      "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+        "result": "Underconstrained"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+        "result": "Unknown"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+        "result": "Timed out"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+        "result": "Timed out"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+        "result": "Underconstrained"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+        "result": "Underconstrained"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+        "result": "Underconstrained"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+        "result": "Underconstrained"
+      },
+      "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom": {
+        "result": "Timed out"
+      },
+      "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system": {
+        "result": "Timed out"
+      },
+      "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation": {
+        "result": "Underconstrained"
+      },
+      "semaphore-protocol/semaphore/veridise_no_zero_value_validation": {
+        "result": "Properly Constrained"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery": {
+        "result": "Timed out"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment": {
+        "result": "Tool Error"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag": {
+        "result": "Tool Error"
+      },
+      "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained": {
+        "result": "Underconstrained"
+      },
+      "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified": {
+        "result": "Tool Error"
+      },
+      "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow": {
+        "result": "Timed out"
+      },
+      "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits": {
+        "result": "Properly Constrained"
+      },
+      "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison": {
+        "result": "Timed out"
+      },
+      "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes": {
+        "result": "Tool Error"
+      }
+    },
+    "zkfuzz": {
+      "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+        "result": "Timed out",
+        "vulnerability": "Not found"
+      },
+      "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Unused-Output)"
+      },
+      "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom": {
+        "result": "Timed out",
+        "vulnerability": "Not found"
+      },
+      "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "semaphore-protocol/semaphore/veridise_no_zero_value_validation": {
+        "result": "Timed out",
+        "vulnerability": "Not found"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery": {
+        "result": "found_no_bug",
+        "vulnerability": "No Counter Example Found"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment": {
+        "result": "tool error",
+        "vulnerability": "tool error (no output)"
+      },
+      "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag": {
+        "result": "tool error",
+        "vulnerability": "tool error (no output)"
+      },
+      "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Non-Deterministic)"
+      },
+      "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified": {
+        "result": "tool error",
+        "vulnerability": "tool error (no output)"
+      },
+      "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow": {
+        "result": "Timed out",
+        "vulnerability": "Not found"
+      },
+      "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Unexpected-Input)"
+      },
+      "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison": {
+        "result": "Timed out",
+        "vulnerability": "Not found"
+      },
+      "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes": {
+        "result": "found_bug",
+        "vulnerability": "UnderConstrained (Unused-Output)"
+      }
+    }
+  }
+}
