@@ -1,0 +1,244 @@
+{
+  "circom": {
+    "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Arithmetic Field Errors",
+      "Location": {
+        "Path": "circuits/bigint.circom",
+        "Function": "BigMod",
+        "Line": "363-417"
+      }
+    },
+    "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/range_proof/circuit.circom",
+        "Function": "RangeProof",
+        "Line": "16-22"
+      }
+    },
+    "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Assigned but Unconstrained",
+      "Location": {
+        "Path": "circuits/mimcsponge.circom",
+        "Function": "MiMCSponge",
+        "Line": "28"
+      }
+    },
+    "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Wrong translation of logic into constraints",
+      "Location": {
+        "Path": "circuits/multiplexer.circom",
+        "Function": "Decoder",
+        "Line": "10-11"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/escalarmulany.circom",
+        "Function": "BitElementMulAny",
+        "Line": "21-22"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_outputs_in_window4": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/pederson.circom",
+        "Function": "Window4",
+        "Line": "47-108"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/escalarmulfix.circom",
+        "Function": "WindowMulFix",
+        "Line": "70-131"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Missing Input Constraints",
+      "Location": {
+        "Path": "circuits/montgomery.circom",
+        "Function": "Edwards2Montgomery",
+        "Line": "7-8"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Missing Input Constraints",
+      "Location": {
+        "Path": "circuits/montgomery.circom",
+        "Function": "Montgomery2Edwards",
+        "Line": "7-8"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Missing Input Constraint",
+      "Location": {
+        "Path": "circuits/montgomery.circom",
+        "Function": "MontgomeryAdd",
+        "Line": "16-17"
+      }
+    },
+    "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Missing Input Constraints",
+      "Location": {
+        "Path": "circuits/montgomery.circom",
+        "Function": "MontgomeryDouble",
+        "Line": "18-19"
+      }
+    },
+    "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Missing Input Constraints",
+      "Location": {
+        "Path": "circuits/eff_ecdsa.circom",
+        "Function": "EfficientECDSA",
+        "Line": "25-28"
+      }
+    },
+    "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Assigned but Unconstrained",
+      "Location": {
+        "Path": "circuits/mul.circom",
+        "Function": "K",
+        "Line": "123-124"
+      }
+    },
+    "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Wrong translation of logic into constraints",
+      "Location": {
+        "Path": "circuits/generics.circom",
+        "Function": "RotateLeft32Bits",
+        "Line": "39-45"
+      }
+    },
+    "semaphore-protocol/semaphore/veridise_no_zero_value_validation": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Missing Input Constraints",
+      "Location": {
+        "Path": "circuits/semaphore.circom",
+        "Function": "Semaphore",
+        "Line": "47-88"
+      }
+    },
+    "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/curve.circom",
+        "Function": "EllipticCurveAddUnequal",
+        "Line": "155-227"
+      }
+    },
+    "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Completeness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/pairing/bls12_381_hash_to_G2",
+        "Function": "SubgroupCheckG1WithValidX",
+        "Line": "723-731"
+      }
+    },
+    "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Completeness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/bls.circom",
+        "Function": "G1BigIntToSignFlag",
+        "Line": "198-227"
+      }
+    },
+    "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Assigned but Unconstrained",
+      "Location": {
+        "Path": "circuits/hash_to_field.circom",
+        "Function": "ArrayXOR",
+        "Line": "9"
+      }
+    },
+    "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/bls_signature.circom",
+        "Function": "CoreVerifyPubkeyG1ToyExample",
+        "Line": "77-95"
+      }
+    },
+    "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Arithmetic Field Errors",
+      "Location": {
+        "Path": "circuits/hash_to_field.circom",
+        "Function": "I2OSP",
+        "Line": "3-23"
+      }
+    },
+    "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/epochKeyLite.circom",
+        "Function": "EpochKeyLite",
+        "Line": "45-48"
+      }
+    },
+    "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Arithmetic Field Errors",
+      "Location": {
+        "Path": "circuits/bigComparators.circom",
+        "Function": "BigLessThan",
+        "Line": "45"
+      }
+    },
+    "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes": {
+      "Vulnerability": "Under-Constrained",
+      "Impact": "Soundness",
+      "Root Cause": "Unsafe Reuse of Circuit",
+      "Location": {
+        "Path": "circuits/ownership_proof.circom",
+        "Function": "OwnershipProof",
+        "Line": "14"
+      }
+    }
+  }
+}

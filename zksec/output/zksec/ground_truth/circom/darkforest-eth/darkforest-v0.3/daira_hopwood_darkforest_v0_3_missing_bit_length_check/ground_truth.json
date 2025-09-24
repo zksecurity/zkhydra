@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Unsafe Reuse of Circuit",
+  "Location": {
+    "Path": "circuits/range_proof/circuit.circom",
+    "Function": "RangeProof",
+    "Line": "16-22"
+  }
+}

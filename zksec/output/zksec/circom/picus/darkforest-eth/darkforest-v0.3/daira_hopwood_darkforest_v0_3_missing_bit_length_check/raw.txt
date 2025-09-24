@@ -1,0 +1,6 @@
+stdout:
+working directory: /var/tmp/picus17587142881758714288407
+Cannot determine whether the circuit is properly constrained
+Exiting Picus with the code 0
+
+stderr:

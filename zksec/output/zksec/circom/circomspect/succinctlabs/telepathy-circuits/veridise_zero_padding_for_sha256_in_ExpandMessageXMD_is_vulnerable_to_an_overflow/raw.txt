@@ -1,0 +1,77 @@
+circomspect: analyzing template 'I2OSP'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:9:9
+  
+9          out[i] <-- value & 255;
+           ^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[i]` is not constrained here.
+  
+  = Consider if it is possible to rewrite the statement using `<==` instead.
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+  = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:8:18
+  
+8      for (var i = l - 1; i >= 0; i--) {
+                    ^^^^^ Field element arithmetic here.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+  = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:8:33
+  
+8      for (var i = l - 1; i >= 0; i--) {
+                                   ^^^ Field element arithmetic here.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+  = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:18:24
+   
+18              acc[i] <== 256 * acc[i-1] + out[i];
+                           ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:14:28
+   
+14      for (var i = 0; i < l; i++) {
+                               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:22:9
+   
+22      acc[l-1] === in;
+            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:8:25
+  
+8      for (var i = l - 1; i >= 0; i--) {
+                           ^^^^^^ Field element comparison here.
+  
+  = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+  = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow/circuits/hash_to_field.circom:14:21
+   
+14      for (var i = 0; i < l; i++) {
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: 8 issues found.

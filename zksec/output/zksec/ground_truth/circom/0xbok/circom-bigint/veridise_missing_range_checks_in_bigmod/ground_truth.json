@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Arithmetic Field Errors",
+  "Location": {
+    "Path": "circuits/bigint.circom",
+    "Function": "BigMod",
+    "Line": "363-417"
+  }
+}

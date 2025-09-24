@@ -1,0 +1,208 @@
+circomspect: analyzing template 'Multiplexor2'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/escalarmulany.circom:10:16
+   
+10      out[0] <== (in[1][0] - in[0][0])*sel + in[0][0];
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/escalarmulany.circom:11:16
+   
+11      out[1] <== (in[1][1] - in[0][1])*sel + in[0][1];
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'MontgomeryAdd'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:16:5
+   
+16      lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lamda` is not constrained here.
+17      lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+        ------------------------------------------------ The signal `lamda` is constrained here.
+18  
+19      out[0] <== B*lamda*lamda - A - in1[0] -in2[0];
+        --------------------------------------------- The signal `lamda` is constrained here.
+20      out[1] <== lamda * (in1[0] - out[0]) - in1[1];
+        --------------------------------------------- The signal `lamda` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:11:13
+   
+11      var A = (2 * (a + d)) / (a - d);
+                ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:12:13
+   
+12      var B = 4 / (a - d);
+                ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:16:15
+   
+16      lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:17:5
+   
+17      lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:17:36
+   
+17      lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+                                       ^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:19:16
+   
+19      out[0] <== B*lamda*lamda - A - in1[0] -in2[0];
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:20:16
+   
+20      out[1] <== lamda * (in1[0] - out[0]) - in1[1];
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:16:36
+   
+16      lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+                                       ^^^^^^^^^^^^^^^ The divisor `(in2[0] - in1[0])` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'MontgomeryDouble'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:38:5
+   
+38      lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lamda` is not constrained here.
+39      lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+        -------------------------------------------------- The signal `lamda` is constrained here.
+40  
+41      out[0] <== B*lamda*lamda - A - 2*in[0];
+        -------------------------------------- The signal `lamda` is constrained here.
+42      out[1] <== lamda * (in[0] - out[0]) - in[1];
+        ------------------------------------------- The signal `lamda` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:30:13
+   
+30      var A = (2 * (a + d)) / (a - d);
+                ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:31:13
+   
+31      var B = 4 / (a - d);
+                ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:36:14
+   
+36      x1_2 <== in[0] * in[0];
+                 ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:38:15
+   
+38      lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:39:5
+   
+39      lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+        ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:39:30
+   
+39      lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+                                 ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:41:16
+   
+41      out[0] <== B*lamda*lamda - A - 2*in[0];
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:42:16
+   
+42      out[1] <== lamda * (in[0] - out[0]) - in[1];
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny/circuits/montgomery.circom:38:44
+   
+38      lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
+                                               ^^^^^^^^^ The divisor `((2 * B) * in[1])` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'BitElementMulAny'
+circomspect: 21 issues found.
