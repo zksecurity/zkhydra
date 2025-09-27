@@ -1,4 +1,4 @@
 {
-  "result": "error",
-  "reason": "tool error"
+  "result": "false",
+  "reason": "Tool found no counter example"
 }

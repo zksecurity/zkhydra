@@ -62,6 +62,7 @@ def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
+# TODO: remove unused parameters
 def get_tool_result_parsed(
     tool_result_parsed: Path, dsl: str, tool: str, bug_name: str
 ) -> dict:
@@ -75,7 +76,7 @@ def get_tool_result_parsed(
     except Exception as e:
         logging.error(f"Failed to read parsed tool result '{tool_result_parsed}': {e}")
         return {}
-    return data.get(dsl, {}).get(tool, {}).get(bug_name, {})
+    return data
 
 
 def remove_bug_entry(output: dict, dsl: str, tool: str, bug_name: str) -> dict:

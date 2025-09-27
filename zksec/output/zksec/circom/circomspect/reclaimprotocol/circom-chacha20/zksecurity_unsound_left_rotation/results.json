@@ -1,4 +1,8 @@
 {
   "result": "false",
-  "reason": "No Warnings Found"
+  "reason": [
+    "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '11'; ground truth line: '39'-'45'",
+    "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '12'; ground truth line: '39'-'45'"
+  ],
+  "need_manual_evaluation": true
 }

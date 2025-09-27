@@ -6,9 +6,7 @@ from pathlib import Path
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-def setup_logging(
-    log_level: str, output_dir: Path, file_logging: bool
-) -> None:
+def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
     """Initialize root logger with console and optional file handlers.
 
     Args:
@@ -23,7 +21,6 @@ def setup_logging(
             f"Config error: Invalid log_level '{log_level}'. "
             f"Must be one of {', '.join(VALID_LOG_LEVELS)}."
         )
-
 
     # Create formatter (shared by both handlers)
     formatter = logging.Formatter(

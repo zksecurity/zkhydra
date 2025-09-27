@@ -55,7 +55,7 @@ def load_config(
     if dynamic_name:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         output_dir = base_dir / output_dir / f"zksec_{timestamp}"
-    else:        
+    else:
         output_dir = base_dir / output_dir / static_name
 
     ensure_dir(output_dir)

@@ -1,4 +1,6 @@
 {
   "result": "false",
-  "reason": "No Warnings Found"
+  "reason": [
+    "circomspect found no warnings for vulnerable function."
+  ]
 }

@@ -87,6 +87,13 @@ def parse_output(
                 result = "R1CS function circuit has potentially unsound constraints"
                 break
 
+            if (
+                "R1CS function circuit has sound constraints (No trusted functions needed!)"
+                in line
+            ):
+                result = "R1CS function circuit has sound constraints (No trusted functions needed!)"
+                break
+
     # Legacy heuristic: sometimes the interesting line appears two lines before 'stderr:'
     if result == "No result":
         for i, line in enumerate(bug_info):
@@ -119,6 +126,14 @@ def compare_zkbugs_ground_truth(
 
     if tool_result == "R1CS function circuit has potentially unsound constraints":
         output = {"result": "correct"}
+    elif (
+        tool_result
+        == "R1CS function circuit has sound constraints (No trusted functions needed!)"
+    ):
+        output = {
+            "result": "false",
+            "reason": "Tool found sound constraints but the circuit is unsound.",
+        }
     elif tool_result == "Timed out":
         output = {"result": "timeout", "reason": "Reached zksec threshold."}
     elif tool_result == "Circuit file not found":
