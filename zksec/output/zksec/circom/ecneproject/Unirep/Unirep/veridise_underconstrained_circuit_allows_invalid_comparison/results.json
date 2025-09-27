@@ -1,4 +1,4 @@
 {
   "result": "false",
-  "reason": "Missing or inconclusive result from parsing."
+  "reason": "Tool found sound constraints but the circuit is unsound."
 }

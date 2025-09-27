@@ -214,14 +214,32 @@ def summarize_results(
         output[dsl][tool]["correct"].append({"bug_name": bug_name})
         output[dsl][tool]["count"]["correct"] += 1
     elif output_tool["result"] == "false":
-        output[dsl][tool]["false"].append(
-            {"bug_name": bug_name, "reason": output_tool["reason"]}
-        )
+        if "need_manual_evaluation" in output_tool:
+            output[dsl][tool]["false"].append(
+                {
+                    "bug_name": bug_name,
+                    "reason": output_tool["reason"],
+                    "need_manual_evaluation": output_tool["need_manual_evaluation"],
+                }
+            )
+        else:
+            output[dsl][tool]["false"].append(
+                {"bug_name": bug_name, "reason": output_tool["reason"]}
+            )
         output[dsl][tool]["count"]["false"] += 1
     elif output_tool["result"] == "error":
-        output[dsl][tool]["error"].append(
-            {"bug_name": bug_name, "reason": output_tool["reason"]}
-        )
+        if "need_manual_evaluation" in output_tool:
+            output[dsl][tool]["error"].append(
+                {
+                    "bug_name": bug_name,
+                    "reason": output_tool["reason"],
+                    "need_manual_evaluation": output_tool["need_manual_evaluation"],
+                }
+            )
+        else:
+            output[dsl][tool]["error"].append(
+                {"bug_name": bug_name, "reason": output_tool["reason"]}
+            )
         output[dsl][tool]["count"]["error"] += 1
     elif output_tool["result"] == "timeout":
         output[dsl][tool]["timeout"].append(

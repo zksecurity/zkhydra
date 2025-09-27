@@ -83,6 +83,7 @@ def parse_output(
     # Get block that is analyzing the vulnerable function or template
     start_marker_function = f"circomspect: analyzing function '{vuln_function}'"
     start_marker_template = f"circomspect: analyzing template '{vuln_function}'"
+
     block: List[str] = []
     inside_block = False
 
@@ -108,17 +109,20 @@ def parse_output(
 
     # Extract warnings from block
     current_code: Optional[str] = None
-    for line in block:
+    for i, line in enumerate(block):
         # Detect a warning line and extract the code (e.g. CS0005)
         match_warn = re.match(r"\s*warning\[(CS\d+)\]:", line)
         if match_warn:
             current_code = match_warn.group(1)
-
-        # Detect the line number from the code snippet (e.g. "373")
-        match_line = re.match(r"\s*(\d+)\s*│", line)
+        try:
+            match_line = re.search(r":(\d+):", block[i + 1])
+        except Exception:
+            match_line = None
+        if match_line:
+            line_number = match_line.group(1)
         if current_code and match_line:
             try:
-                line_number = int(match_line.group(1))
+                line_number = int(line_number)
                 warnings.append((current_code, line_number))
             except ValueError:
                 logging.error(f"Failed to parse line number from '{line}'")
@@ -127,7 +131,7 @@ def parse_output(
 
     structured_info: Dict[str, Any] = {}
 
-    result_value: Any = warnings if warnings else "No Warnings Found"
+    result_value: Any = warnings if warnings else []
     structured_info = {
         "warnings": result_value,
     }
@@ -141,21 +145,24 @@ def compare_zkbugs_ground_truth(
     """Compare circomspect warnings to ground truth and update aggregate output."""
     output = {}
 
-    warnings: Any = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name).get(
-        "warnings", "No Warnings Found"
-    )
+    warnings: List[Any] = get_tool_result_parsed(
+        tool_result_parsed, dsl, tool, bug_name
+    ).get("warnings", "No Warnings Found")
 
     # Handle trivial outcomes first
     if warnings == "No Warnings Found":
         output = {"result": "false", "reason": warnings}
         return output
-    if warnings == ["Reached zksec threshold."]:
+    elif warnings == ["Reached zksec threshold."]:
         output = {"result": "timeout", "reason": warnings}
+        return output
+    elif warnings == "No Warnings Found for vulnerable function":
+        output = {"result": "false", "reason": warnings}
         return output
 
     # Get ground truth data
     with open(ground_truth, "r", encoding="utf-8") as f:
-        gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
+        gt_data = json.load(f)
 
     gt_vulnerability: Optional[str] = gt_data.get("Vulnerability")
     gt_lines: Optional[str] = gt_data.get("Location", {}).get("Line")
@@ -175,6 +182,7 @@ def compare_zkbugs_ground_truth(
 
     is_correct = False
     reason: List[str] = []
+    manual_evaluation = False
 
     for warning in warnings:
         try:
@@ -199,16 +207,24 @@ def compare_zkbugs_ground_truth(
                     f"Tool found correct vulnerability ('{tool_vulnerability}'), but wrong line: "
                     f"tool found: '{tool_line}'; ground truth line: '{gt_startline}'-'{gt_endline}'"
                 )
+                manual_evaluation = True
         else:
             reason.append(
                 f"Tool found wrong vulnerability ('{tool_vulnerability}'); ground truth vulnerability: '{gt_vulnerability}'"
             )
-
+            manual_evaluation = True
     if is_correct:
         output = {"result": "correct"}
     else:
         if reason == []:
-            reason = ["circomspect found no warnings."]
-        output = {"result": "false", "reason": reason}
+            reason = ["circomspect found no warnings for vulnerable function."]
+        if manual_evaluation:
+            output = {
+                "result": "false",
+                "reason": reason,
+                "need_manual_evaluation": True,
+            }
+        else:
+            output = {"result": "false", "reason": reason}
 
     return output

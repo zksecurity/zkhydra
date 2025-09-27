@@ -64,6 +64,9 @@ def parse_output(
     elif any(line == "[Timed out]" for line in bug_info):
         status = "Timed out"
         vulnerability = "Not found"
+    elif any(line == "previous errors were found" for line in bug_info):
+        status = "previous errors were found"
+        vulnerability = "previous errors were found"
     elif bug_info[-1] != "Everything went okay":
         status = "tool error"
         vulnerability = "tool error"
@@ -103,8 +106,8 @@ def compare_zkbugs_ground_truth(
 
     # Load ground truth correctly (file path -> JSON)
     with open(ground_truth, "r", encoding="utf-8") as f:
-        gt_data_all = json.load(f)
-    gt_data = gt_data_all.get(dsl, {}).get(bug_name, {})
+        gt_data = json.load(f)
+    # gt_data = gt_data_all.get(dsl, {}).get(bug_name, {})
     gt_vulnerability = gt_data.get("Vulnerability")
 
     is_correct = False
@@ -117,7 +120,9 @@ def compare_zkbugs_ground_truth(
     elif status == "found_bug":
         reason = "found_bug"
     elif status == "found_no_bug":
-        reason = "No bug found"
+        reason = "Tool found no counter example"
+    elif status == "previous errors were found":
+        reason = "Tool found previous errors"
     else:
         reason = status or "unknown"
 
@@ -140,6 +145,8 @@ def compare_zkbugs_ground_truth(
     elif reason == "Reached zksec threshold.":
         output = {"result": "timeout", "reason": reason}
     elif reason in ("tool error", "Tool Error"):
+        output = {"result": "error", "reason": reason}
+    elif reason == "Tool found previous errors":
         output = {"result": "error", "reason": reason}
     else:
         output = {"result": "false", "reason": reason}

@@ -1,4 +1,4 @@
 {
-  "result": "false",
-  "reason": "No result"
+  "result": "error",
+  "reason": "Picus Tool Error"
 }

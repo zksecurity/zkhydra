@@ -1,4 +1,4 @@
 {
-  "result": "error",
-  "reason": "tool error"
+  "result": "timeout",
+  "reason": "Reached zksec threshold."
 }

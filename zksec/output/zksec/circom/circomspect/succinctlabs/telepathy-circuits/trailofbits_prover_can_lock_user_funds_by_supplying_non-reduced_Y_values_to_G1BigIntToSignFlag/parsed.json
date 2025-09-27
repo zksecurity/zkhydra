@@ -1,3 +1,8 @@
 {
-  "warnings": "No Warnings Found"
+  "warnings": [
+    [
+      "CS0006",
+      203
+    ]
+  ]
 }

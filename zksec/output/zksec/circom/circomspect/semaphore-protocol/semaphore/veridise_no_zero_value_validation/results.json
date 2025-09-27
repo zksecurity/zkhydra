@@ -1,4 +1,7 @@
 {
   "result": "false",
-  "reason": "No Warnings Found"
+  "reason": [
+    "Tool found wrong vulnerability ('under-constrained-signal'); ground truth vulnerability: 'Under-Constrained'"
+  ],
+  "need_manual_evaluation": true
 }

@@ -69,7 +69,7 @@ def parse_output(
         line == "Cannot determine whether the circuit is properly constrained"
         for line in bug_info
     ):
-        status = "Unknown"
+        status = "Tool cannot determine whether the circuit is properly constrained"
     else:
         status = "Tool Error"
 
@@ -92,7 +92,7 @@ def compare_zkbugs_ground_truth(
     output = {}
 
     with open(ground_truth, "r", encoding="utf-8") as f:
-        gt_data = json.load(f).get(dsl, {}).get(bug_name, {})
+        gt_data = json.load(f)
 
     tool_result: str = get_tool_result_parsed(
         tool_result_parsed, dsl, tool, bug_name
@@ -108,8 +108,11 @@ def compare_zkbugs_ground_truth(
         is_correct = True
     elif tool_result == "Timed out":
         reason = "Reached zksec threshold."
-    elif tool_result == "Unknown":
-        reason = "Unknown result"
+    elif (
+        tool_result
+        == "Tool cannot determine whether the circuit is properly constrained"
+    ):
+        reason = "Tool cannot determine whether the circuit is properly constrained"
     elif tool_result == "Tool Error":
         reason = "Picus Tool Error"
     elif tool_result == "Properly Constrained":

@@ -1,4 +1,4 @@
 {
-  "result": "false",
-  "reason": "No result"
+  "result": "timeout",
+  "reason": "Reached zksec threshold."
 }

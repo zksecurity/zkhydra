@@ -165,6 +165,7 @@ def compare_zkbugs_ground_truth(
     tool_output_data = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name)
 
     buggy_components: List[Any] = tool_output_data.get("buggy_components", [])
+    logging.debug(f"Buggy components: {buggy_components}")
 
     is_correct = False
     timed_out = False
@@ -189,7 +190,7 @@ def compare_zkbugs_ground_truth(
         elif len(params) == 2:
             startline_tool, endline_tool = params[0], params[1]
         else:
-            logging.warning(f"params should have at most 2 values; got {params}")
+            logging.warning(f"Params should have at most 2 values; got {params}")
             continue
         last_comp_name = comp_name
         last_lines = f"{startline_tool}-{endline_tool}"
@@ -224,17 +225,31 @@ def compare_zkbugs_ground_truth(
             output = {"result": "timeout", "reason": "Reached zksec threshold."}
         else:
             if not buggy_components:
-                reason = "Tool found no module"
+                reason = "Tool found no module that do not satisfy weak safety. Component might have timed out."
+                output = {
+                    "result": "false",
+                    "reason": reason,
+                    "need_manual_evaluation": True,
+                }
             elif last_comp_name != buggy_function:
                 reason = (
                     f"Tool found wrong module (tool found: '{last_comp_name}'; "
                     f"buggy module: '{buggy_function}')"
                 )
+                output = {
+                    "result": "false",
+                    "reason": reason,
+                    "need_manual_evaluation": True,
+                }
             else:
                 reason = (
                     f"Tool found correct module, but lines didn't match (tool found lines: "
                     f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
                 )
+                output = {
+                    "result": "false",
+                    "reason": reason,
+                    "need_manual_evaluation": True,
+                }
 
-            output = {"result": "false", "reason": reason}
     return output
