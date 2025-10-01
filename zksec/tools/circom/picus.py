@@ -95,7 +95,7 @@ def compare_zkbugs_ground_truth(
         gt_data = json.load(f)
 
     tool_result: str = get_tool_result_parsed(
-        tool_result_parsed, dsl, tool, bug_name
+        tool_result_parsed
     ).get("result", "No result")
 
     is_correct = False

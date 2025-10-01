@@ -99,7 +99,7 @@ def compare_zkbugs_ground_truth(
     """Compare zkfuzz findings against ground truth and update aggregates."""
     output = {}
 
-    tool_output_data = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name)
+    tool_output_data = get_tool_result_parsed(tool_result_parsed)
 
     status: str = tool_output_data.get("result", "tool error")
     vulnerability: str = tool_output_data.get("vulnerability", "")

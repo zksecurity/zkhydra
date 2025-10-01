@@ -146,7 +146,7 @@ def compare_zkbugs_ground_truth(
     output = {}
 
     warnings: List[Any] = get_tool_result_parsed(
-        tool_result_parsed, dsl, tool, bug_name
+        tool_result_parsed
     ).get("warnings", "No Warnings Found")
 
     # Handle trivial outcomes first
