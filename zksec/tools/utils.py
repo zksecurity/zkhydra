@@ -62,9 +62,8 @@ def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-# TODO: remove unused parameters
 def get_tool_result_parsed(
-    tool_result_parsed: Path, dsl: str, tool: str, bug_name: str
+    tool_result_parsed: Path
 ) -> dict:
     """Read a parsed tool result file and return the entry for a bug.
 

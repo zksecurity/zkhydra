@@ -163,7 +163,7 @@ def compare_zkbugs_ground_truth(
         f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
     )
 
-    tool_output_data = get_tool_result_parsed(tool_result_parsed, dsl, tool, bug_name)
+    tool_output_data = get_tool_result_parsed(tool_result_parsed)
 
     buggy_components: List[Any] = tool_output_data.get("buggy_components", [])
     logging.debug(f"Buggy components: {buggy_components}")
