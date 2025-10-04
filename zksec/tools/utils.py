@@ -62,9 +62,7 @@ def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def get_tool_result_parsed(
-    tool_result_parsed: Path
-) -> dict:
+def get_tool_result_parsed(tool_result_parsed: Path) -> dict:
     """Read a parsed tool result file and return the entry for a bug.
 
     Missing keys return an empty dict; handles invalid files gracefully.

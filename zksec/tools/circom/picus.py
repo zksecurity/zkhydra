@@ -94,9 +94,9 @@ def compare_zkbugs_ground_truth(
     with open(ground_truth, "r", encoding="utf-8") as f:
         gt_data = json.load(f)
 
-    tool_result: str = get_tool_result_parsed(
-        tool_result_parsed
-    ).get("result", "No result")
+    tool_result: str = get_tool_result_parsed(tool_result_parsed).get(
+        "result", "No result"
+    )
 
     is_correct = False
     reason = ""

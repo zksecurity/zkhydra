@@ -48,13 +48,13 @@ def main() -> None:
                 continue
 
             if config.setup_bug_environment:
-                setup_zkbug_environment(bug_path)
+                setup_zkbug_environment(dsl, bug_path)
 
             if config.execute_tools:
                 execute_bug(config, dsl, bug_path, bug_name, tool_registry)
 
             if config.cleanup_bug_environment:
-                cleanup_zkbug_environment(bug_path)
+                cleanup_zkbug_environment(dsl, bug_path)
 
             if config.generate_ground_truth:
                 generate_ground_truth(config, dsl, bug_path, bug_name)
