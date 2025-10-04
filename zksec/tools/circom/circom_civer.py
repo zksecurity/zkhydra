@@ -69,6 +69,7 @@ def parse_output(
         "timeout": None,
     }
     buggy_components: List[Any] = []
+    timed_out_components: List[Any] = []
 
     context: Optional[str] = None  # track section
 
@@ -77,6 +78,7 @@ def parse_output(
         if line == "[Timed out]":
             context = "timeout"
             buggy_components = ["Reached zksec threshold."]
+            timed_out_components = ["Reached zksec threshold."]
             continue
         # --- Track context (which section we are in) ---
         if line.startswith("Components that do not satisfy weak safety"):
@@ -92,13 +94,20 @@ def parse_output(
             context = None  # reset only on empty line
             continue
 
-        # --- Match component lines only if inside "buggy" context ---
+        # --- Match component lines ---
         if context == "buggy" and line.startswith("-"):
             comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line)
             if comp_match:
                 comp_name, numbers = comp_match.groups()
                 nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
                 buggy_components.append({"name": comp_name, "params": nums})
+
+        if context == "timeout" and line.startswith("-"):
+            comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line)
+            if comp_match:
+                comp_name, numbers = comp_match.groups()
+                nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
+                timed_out_components.append({"name": comp_name, "params": nums})
 
         # --- Stats parsing ---
         def _safe_int_from_line(pattern: str, text: str) -> Optional[int]:
@@ -120,6 +129,7 @@ def parse_output(
     structured_info = {
         "stats": stats,
         "buggy_components": buggy_components,
+        "timed_out_components": timed_out_components,
     }
 
     return structured_info
@@ -166,7 +176,9 @@ def compare_zkbugs_ground_truth(
     tool_output_data = get_tool_result_parsed(tool_result_parsed)
 
     buggy_components: List[Any] = tool_output_data.get("buggy_components", [])
+    timed_out_components: List[Any] = tool_output_data.get("timed_out_components", [])
     logging.debug(f"Buggy components: {buggy_components}")
+    logging.debug(f"Timed out components: {timed_out_components}")
 
     is_correct = False
     timed_out = False
@@ -226,20 +238,23 @@ def compare_zkbugs_ground_truth(
             output = {"result": "timeout", "reason": "Reached zksec threshold."}
         else:
             if not buggy_components:
-                reason = "Tool found no module that do not satisfy weak safety. Component might have timed out."
+                reason = "Tool found no module that do not satisfy weak safety."
                 output = {
                     "result": "false",
                     "reason": reason,
+                    "buggy_components": buggy_components,
+                    "timed_out_components": timed_out_components,
                     "need_manual_evaluation": True,
                 }
             elif last_comp_name != buggy_function:
                 reason = (
-                    f"Tool found wrong module (tool found: '{last_comp_name}'; "
-                    f"buggy module: '{buggy_function}')"
+                    f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
                 )
                 output = {
                     "result": "false",
                     "reason": reason,
+                    "buggy_components": buggy_components,
+                    "timed_out_components": timed_out_components,
                     "need_manual_evaluation": True,
                 }
             else:
@@ -250,6 +265,8 @@ def compare_zkbugs_ground_truth(
                 output = {
                     "result": "false",
                     "reason": reason,
+                    "buggy_components": buggy_components,
+                    "timed_out_components": timed_out_components,
                     "need_manual_evaluation": True,
                 }
 

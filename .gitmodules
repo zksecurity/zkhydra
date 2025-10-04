@@ -54,3 +54,6 @@
 [submodule "zksec/helpers/rewriter"]
 	path = zksec/helpers/rewriter
 	url = https://github.com/mit-plv/rewriter.git
+[submodule "zksec/tools/picus_gnark"]
+	path = zksec/tools/picus_gnark
+	url = https://github.com/Veridise/picus_gnark.git
