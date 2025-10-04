@@ -247,9 +247,7 @@ def compare_zkbugs_ground_truth(
                     "need_manual_evaluation": True,
                 }
             elif last_comp_name != buggy_function:
-                reason = (
-                    f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
-                )
+                reason = f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
                 output = {
                     "result": "false",
                     "reason": reason,

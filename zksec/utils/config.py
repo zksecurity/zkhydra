@@ -65,7 +65,6 @@ def load_config(
 
     tools, bugs = parse_dsl_sections(config)
 
-    # Timeout must be a positive integer
     timeout = int(app_section.get("timeout", 300))
     if timeout <= 0:
         raise ValueError("Config error: 'timeout' must be a positive integer")
@@ -118,9 +117,4 @@ def parse_dsl_sections(
 
         tools[dsl] = [str(t).lower() for t in tools_list]
         bugs[dsl] = [str(b) for b in bugs_list]
-
-        if not tools[dsl]:
-            raise ValueError("Config error: 'tools' list must not be empty.")
-        if not bugs[dsl]:
-            raise ValueError("Config error: 'bugs' list must not be empty.")
     return tools, bugs

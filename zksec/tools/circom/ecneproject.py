@@ -120,9 +120,9 @@ def compare_zkbugs_ground_truth(
     """
     output = {}
 
-    tool_result: str = get_tool_result_parsed(
-        tool_result_parsed
-    ).get("result", "No result")
+    tool_result: str = get_tool_result_parsed(tool_result_parsed).get(
+        "result", "No result"
+    )
 
     if tool_result == "R1CS function circuit has potentially unsound constraints":
         output = {"result": "correct"}

@@ -55,11 +55,14 @@ main() {
   run_step "circom" "$CIRCOM_DIR/circom.sh" || true
 
   # Individual tools
+  ## Circom
   run_step "circom_civer" "$UTIL_DIR/circom_civer.sh" || true
   run_step "circomspect" "$CIRCOM_DIR/circomspect.sh" || true
   run_step "ecneproject" "$CIRCOM_DIR/ecneproject.sh" || true
   run_step "picus" "$CIRCOM_DIR/picus.sh" || true
   run_step "zkfuzz" "$CIRCOM_DIR/zkfuzz.sh" || true
+  ## Pil
+  run_step "pilspector" "$PIL_DIR/pilspector.sh" || true
 
   ok "All setup steps completed (some steps may have been skipped if scripts were missing)."
 }

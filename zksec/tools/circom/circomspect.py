@@ -145,9 +145,9 @@ def compare_zkbugs_ground_truth(
     """Compare circomspect warnings to ground truth and update aggregate output."""
     output = {}
 
-    warnings: List[Any] = get_tool_result_parsed(
-        tool_result_parsed
-    ).get("warnings", "No Warnings Found")
+    warnings: List[Any] = get_tool_result_parsed(tool_result_parsed).get(
+        "warnings", "No Warnings Found"
+    )
 
     # Handle trivial outcomes first
     if warnings == "No Warnings Found":
