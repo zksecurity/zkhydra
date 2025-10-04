@@ -142,31 +142,6 @@ def deep_update(original: Any, new_data: Any):
         return new_data
 
 
-def write_parsed_output(output: Path, content: Dict[str, Any]) -> None:
-    logging.debug(f"Writing parsed results to '{output_file}'; content={content}")
-    ensure_dir(output_file.parent)
-
-    # Load existing JSON or start fresh
-    if output_file.exists():
-        with open(output_file, "r", encoding="utf-8") as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError:
-                logging.warning(f"Corrupt JSON in {output_file}, resetting.")
-                data = {}
-    else:
-        data = {}
-
-    # Merge parsed_result into existing JSON
-    data = deep_update(data, content)
-
-    # Save back
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-    logging.debug(f"Parsed output written to {output_file}")
-
-
 def write_json(
     output_file: Path, tool: str, bug_name: str, name: str, content: Any
 ) -> None:

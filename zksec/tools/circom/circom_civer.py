@@ -46,8 +46,9 @@ def execute(bug_path: str, timeout: int) -> str:
         str(circuit_file),
         "--check_safety",
         "--verbose",
+        "--verification_timeout",
+        "500000",
         "--O0",
-        "--verification_timeout 500000",
     ]
     result = run_command(cmd, timeout, tool="circom_civer", bug=bug_path)
 
