@@ -65,10 +65,10 @@ def setup_circom(bug_dir: str):
     os.chdir(BASE_DIR)
 
 
-def setup_pil(bug_dir: str):
+def setup_pil_cairo(bug_dir: str):
     logging.info(f"Setting up bug environment for '{bug_dir}'.")
     repo_url, commit_hash = get_repo_url_and_commit_hash(bug_dir)
-    logging.error(f"Repo URL: {repo_url}, Commit Hash: {commit_hash}")
+    logging.debug(f"Repo URL: {repo_url}, Commit Hash: {commit_hash}")
     commit_hash = commit_hash.replace("0x", "")
     repo_path = bug_dir / "repo"
     clone_repo_and_checkout_commit(repo_url, commit_hash, repo_path)
@@ -117,8 +117,8 @@ def checkout_commit(commit_hash: str, repo_path: Path) -> None:
 def setup(dsl: str, bug_dir: str):
     if dsl == "circom":
         setup_circom(bug_dir)
-    elif dsl == "pil":
-        setup_pil(bug_dir)
+    elif dsl == "pil" or dsl == "cairo":
+        setup_pil_cairo(bug_dir)
 
 
 def generate_random_text(min_len=8, max_len=25) -> str:
@@ -145,8 +145,8 @@ def generate_ptau():
 def cleanup(dsl: str, bug_dir: str):
     if dsl == "circom":
         cleanup_circom(bug_dir)
-    elif dsl == "pil":
-        cleanup_pil(bug_dir)
+    elif dsl == "pil" or dsl == "cairo":
+        cleanup_pil_cairo(bug_dir)
 
 
 def cleanup_circom(bug_dir: str):
@@ -171,7 +171,7 @@ def cleanup_circom(bug_dir: str):
     os.chdir(BASE_DIR)
 
 
-def cleanup_pil(bug_dir: str):
+def cleanup_pil_cairo(bug_dir: str):
     logging.debug(f"Cleaning up bug environment. bug_dir='{bug_dir}'")
     # Remove the repo directory
     repo_path = bug_dir / "repo"
