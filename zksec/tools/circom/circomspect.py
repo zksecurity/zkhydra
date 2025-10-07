@@ -11,6 +11,7 @@ from ..utils import (
     run_command,
 )
 
+# TODO: Verify what really is under-constrained
 # From circomspect: https://github.com/trailofbits/circomspect/blob/ece9efe0a21e6c422a43ab6f2e1c0ce99678013b/program_structure/src/program_library/report_code.rs#L164C13-L182C44
 CS_MAPPING = {
     "CS0001": "shadowing-variable",  # ShadowingVariable
@@ -76,9 +77,9 @@ def parse_output(
     # If we don't know the function, we cannot find the specific block
     if not vuln_function:
         logging.warning(
-            f"Ground truth missing vulnerable function for '{bug_name}' ({dsl})"
+            f"Ground truth missing vulnerable function."
         )
-        return {dsl: {tool: {bug_name: {"warnings": "No Warnings Found"}}}}
+        return {"warnings": "No Warnings Found"}
 
     # Get block that is analyzing the vulnerable function or template
     start_marker_function = f"circomspect: analyzing function '{vuln_function}'"
