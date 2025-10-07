@@ -37,6 +37,9 @@ def main() -> None:
 
     for dsl in config.tools:
         logging.info(f"Processing DSL: {dsl}")
+        if config.tools[dsl] == []:
+            logging.warning(f"No tools to process for {dsl}.")
+            continue
         tool_registry = resolve_tools(dsl, config.tools[dsl])
 
         for bug in config.bugs[dsl]:
