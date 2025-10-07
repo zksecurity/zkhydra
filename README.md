@@ -37,5 +37,5 @@ uv run main.py
 To format the codebase, run:
 
 ```Bash
-uv run black . && uv run isort . --profile black
+cd zksec && uv run black . && uv run isort . --profile black
 ```

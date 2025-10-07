@@ -76,9 +76,7 @@ def parse_output(
 
     # If we don't know the function, we cannot find the specific block
     if not vuln_function:
-        logging.warning(
-            f"Ground truth missing vulnerable function."
-        )
+        logging.warning(f"Ground truth missing vulnerable function.")
         return {"warnings": "No Warnings Found"}
 
     # Get block that is analyzing the vulnerable function or template
