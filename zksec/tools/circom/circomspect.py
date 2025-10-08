@@ -11,27 +11,26 @@ from ..utils import (
     run_command,
 )
 
-# TODO: Verify what really is under-constrained
 # From circomspect: https://github.com/trailofbits/circomspect/blob/ece9efe0a21e6c422a43ab6f2e1c0ce99678013b/program_structure/src/program_library/report_code.rs#L164C13-L182C44
 CS_MAPPING = {
-    "CS0001": "shadowing-variable",  # ShadowingVariable
-    "CS0002": "parameter-name-collision",  # ParameterNameCollision
-    "CS0003": "field-element-comparison",  # FieldElementComparison
-    "CS0004": "field-element-arithmetic",  # FieldElementArithmetic
-    "CS0005": "under-constrained",  # SignalAssignmentStatement
-    "CS0006": "under-constrained",  # UnusedVariableValue
-    "CS0007": "unused-parameter-value",  # UnusedParameterValue
-    "CS0008": "variable-without-side-effect",  # VariableWithoutSideEffect
-    "CS0009": "constant-branch-condition",  # ConstantBranchCondition
-    "CS0010": "under-constrained",  # NonStrictBinaryConversion
-    "CS0011": "cyclomatic-complexity",  # CyclomaticComplexity
-    "CS0012": "too-many-arguments",  # TooManyArguments
-    "CS0013": "under-constrained",  # UnnecessarySignalAssignment
-    "CS0014": "under-constrained",  # UnconstrainedLessThan
-    "CS0015": "unconstrained-division",  # UnconstrainedDivision
-    "CS0016": "bn254-specific-circuit",  # Bn254SpecificCircuit
-    "CS0017": "under-constrained-signal",  # UnderConstrainedSignal
-    "CS0018": "unused-output-signal",  # UnusedOutputSignal
+    "CS0001": "ShadowingVariable",
+    "CS0002": "ParameterNameCollision",
+    "CS0003": "FieldElementComparison",
+    "CS0004": "FieldElementArithmetic",
+    "CS0005": "SignalAssignmentStatement",
+    "CS0006": "UnusedVariableValue",
+    "CS0007": "UnusedParameterValue",
+    "CS0008": "VariableWithoutSideEffect",
+    "CS0009": "ConstantBranchCondition",
+    "CS0010": "NonStrictBinaryConversion",
+    "CS0011": "CyclomaticComplexity",
+    "CS0012": "TooManyArguments",
+    "CS0013": "UnnecessarySignalAssignment",
+    "CS0014": "under-constrained",  # "UnconstrainedLessThan"
+    "CS0015": "under-constrained",  # "UnconstrainedDivision"
+    "CS0016": "Bn254SpecificCircuit",
+    "CS0017": "under-constrained",  # "UnderConstrainedSignal"
+    "CS0018": "UnusedOutputSignal",
 }
 
 
