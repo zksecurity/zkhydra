@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Assigned but Unconstrained",
+  "Location": {
+    "Path": "circuits/mul.circom",
+    "Function": "K",
+    "Line": "123-124"
+  }
+}

@@ -1,0 +1,1062 @@
+circomspect: analyzing function 'POSEIDON_M'
+circomspect: analyzing function 'POSEIDON_P'
+circomspect: analyzing function 'POSEIDON_S'
+circomspect: analyzing function 'POSEIDON_C'
+circomspect: analyzing template 'CalculateSecret'
+circomspect: analyzing template 'Semaphore'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/semaphore.circom:76:34
+   
+76      for (var i = 0; i < nLevels; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/semaphore.circom:85:27
+   
+85      signalHashSquared <== signalHash * signalHash;
+                              ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/semaphore.circom:76:21
+   
+76      for (var i = 0; i < nLevels; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0017]: Intermediate signals should typically occur in at least two separate constraints.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/semaphore.circom:84:5
+   
+84      signal signalHashSquared;
+        ^^^^^^^^^^^^^^^^^^^^^^^^ The intermediate signal `signalHashSquared` is declared here.
+85      signalHashSquared <== signalHash * signalHash;
+        --------------------------------------------- The intermediate signal `signalHashSquared` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#under-constrained-signal.
+   = To ignore this type of result, use `--allow CS0017`.
+
+circomspect: analyzing template 'Mix'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:35:13
+   
+35              lc += M[j][i]*in[j];
+                ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:34:28
+   
+34          for (var j=0; j<t; j++) {
+                               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:32:24
+   
+32      for (var i=0; i<t; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:32:19
+   
+32      for (var i=0; i<t; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:34:23
+   
+34          for (var j=0; j<t; j++) {
+                          ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'MixLast'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:47:9
+   
+47          lc += M[j][s]*in[j];
+            ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:46:24
+   
+46      for (var j=0; j<t; j++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:46:19
+   
+46      for (var j=0; j<t; j++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Poseidon'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:204:30
+    
+204      for (var i=0; i<nInputs; i++) {
+                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:204:19
+    
+204      for (var i=0; i<nInputs; i++) {
+                       ^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Sigma'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:12:13
+   
+12      in2 <== in*in;
+                ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:13:13
+   
+13      in4 <== in2*in2;
+                ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:15:13
+   
+15      out <== in4*in;
+                ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'MerkleTreeInclusionProof'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/tree.circom:16:19
+   
+16      signal hashes[nLevels + 1];
+                      ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/tree.circom:20:9
+   
+20          pathIndices[i] * (1 - pathIndices[i]) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/tree.circom:36:16
+   
+36          hashes[i + 1] <== poseidons[i].out;
+                   ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/tree.circom:19:34
+   
+19      for (var i = 0; i < nLevels; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation/circuits/tree.circom:19:21
+   
+19      for (var i = 0; i < nLevels; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'MultiMux1'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/mux1.circom:28:20
+   
+28          out[i] <== (c[i][1] - c[i][0])*s + c[i][0];
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/mux1.circom:26:24
+   
+26      for (var i=0; i<n; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/mux1.circom:26:19
+   
+26      for (var i=0; i<n; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'MixS'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:59:9
+   
+59          lc += S[(t*2-1)*r+i]*in[i];
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:58:24
+   
+58      for (var i=0; i<t; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:63:20
+   
+63          out[i] <== in[i] +  in[0] * S[(t*2-1)*r + t + i -1];
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:62:24
+   
+62      for (var i=1; i<t; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:58:19
+   
+58      for (var i=0; i<t; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:62:19
+   
+62      for (var i=1; i<t; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PoseidonEx'
+warning[CS0011]: The template `PoseidonEx` is too complex and would benefit from being refactored into smaller components.
+ = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#overly-complex-function-or-template.
+ = To ignore this type of result, use `--allow CS0011`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:76:13
+   
+76      var t = nInputs + 1;
+                ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:78:31
+   
+78      var nRoundsP = N_ROUNDS_P[t - 2];
+                                  ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:79:11
+   
+79      var C[t*nRoundsF + nRoundsP] = POSEIDON_C(t);
+              ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:80:13
+   
+80      var S[  N_ROUNDS_P[t-2]  *  (t*2-1)  ]  = POSEIDON_S(t);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:87:19
+   
+87      component mix[nRoundsF-1];
+                      ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:95:37
+   
+95              ark[0].in[j] <== inputs[j-1];
+                                        ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:93:24
+   
+93      for (var j=0; j<t; j++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:101:25
+    
+101      for (var r = 0; r < nRoundsF\2-1; r++) {
+                             ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:107:41
+    
+107                  sigmaF[r][j].in <== mix[r-1].out[j];
+                                             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:102:28
+    
+102          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:111:13
+    
+111          ark[r+1] = Ark(t, C, (r+1)*t);
+                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:111:30
+    
+111          ark[r+1] = Ark(t, C, (r+1)*t);
+                                  ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:113:17
+    
+113              ark[r+1].in[j] <== sigmaF[r][j].out;
+                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:112:28
+    
+112          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:118:34
+    
+118              mix[r].in[j] <== ark[r+1].out[j];
+                                      ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:117:28
+    
+117          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:101:39
+    
+101      for (var r = 0; r < nRoundsF\2-1; r++) {
+                                           ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:124:16
+    
+124          sigmaF[nRoundsF\2-1][j] = Sigma();
+                    ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:125:16
+    
+125          sigmaF[nRoundsF\2-1][j].in <== mix[nRoundsF\2-2].out[j];
+                    ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:125:44
+    
+125          sigmaF[nRoundsF\2-1][j].in <== mix[nRoundsF\2-2].out[j];
+                                                ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:123:24
+    
+123      for (var j=0; j<t; j++) {
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:128:33
+    
+128      ark[nRoundsF\2] = Ark(t, C, (nRoundsF\2)*t );
+                                     ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:130:42
+    
+130          ark[nRoundsF\2].in[j] <== sigmaF[nRoundsF\2-1][j].out;
+                                              ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:129:24
+    
+129      for (var j=0; j<t; j++) {
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:133:9
+    
+133      mix[nRoundsF\2-1] = Mix(t,P);
+             ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:135:13
+    
+135          mix[nRoundsF\2-1].in[j] <== ark[nRoundsF\2].out[j];
+                 ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:134:24
+    
+134      for (var j=0; j<t; j++) {
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:142:34
+    
+142              sigmaP[r].in <== mix[nRoundsF\2-1].out[0];
+                                      ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:144:35
+    
+144              sigmaP[r].in <== mixS[r-1].out[0];
+                                       ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:150:35
+    
+150                  mixS[r].in[j] <== sigmaP[r].out + C[(nRoundsF\2+1)*t + r];
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:153:43
+    
+153                      mixS[r].in[j] <== mix[nRoundsF\2-1].out[j];
+                                               ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:155:44
+    
+155                      mixS[r].in[j] <== mixS[r-1].out[j];
+                                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:148:28
+    
+148          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:139:35
+    
+139      for (var r = 0; r < nRoundsP; r++) {
+                                       ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:161:25
+    
+161      for (var r = 0; r < nRoundsF\2-1; r++) {
+                             ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:163:20
+    
+163              sigmaF[nRoundsF\2 + r][j] = Sigma();
+                        ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:165:24
+    
+165                  sigmaF[nRoundsF\2 + r][j].in <== mixS[nRoundsP-1].out[j];
+                            ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:165:55
+    
+165                  sigmaF[nRoundsF\2 + r][j].in <== mixS[nRoundsP-1].out[j];
+                                                           ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:167:24
+    
+167                  sigmaF[nRoundsF\2 + r][j].in <== mix[nRoundsF\2+r-1].out[j];
+                            ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:167:54
+    
+167                  sigmaF[nRoundsF\2 + r][j].in <== mix[nRoundsF\2+r-1].out[j];
+                                                          ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:162:28
+    
+162          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:171:14
+    
+171          ark[ nRoundsF\2 + r + 1] = Ark(t, C,  (nRoundsF\2+1)*t + nRoundsP + r*t );
+                  ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:171:47
+    
+171          ark[ nRoundsF\2 + r + 1] = Ark(t, C,  (nRoundsF\2+1)*t + nRoundsP + r*t );
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:173:17
+    
+173              ark[nRoundsF\2 + r + 1].in[j] <== sigmaF[nRoundsF\2 + r][j].out;
+                     ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:173:54
+    
+173              ark[nRoundsF\2 + r + 1].in[j] <== sigmaF[nRoundsF\2 + r][j].out;
+                                                          ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:172:28
+    
+172          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:176:13
+    
+176          mix[nRoundsF\2 + r] = Mix(t,M);
+                 ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:178:17
+    
+178              mix[nRoundsF\2 + r].in[j] <== ark[nRoundsF\2 + r + 1].out[j];
+                     ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:178:47
+    
+178              mix[nRoundsF\2 + r].in[j] <== ark[nRoundsF\2 + r + 1].out[j];
+                                                   ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:177:28
+    
+177          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:161:39
+    
+161      for (var r = 0; r < nRoundsF\2-1; r++) {
+                                           ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:184:16
+    
+184          sigmaF[nRoundsF-1][j] = Sigma();
+                    ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:185:16
+    
+185          sigmaF[nRoundsF-1][j].in <== mix[nRoundsF-2].out[j];
+                    ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:185:42
+    
+185          sigmaF[nRoundsF-1][j].in <== mix[nRoundsF-2].out[j];
+                                              ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:183:24
+    
+183      for (var j=0; j<t; j++) {
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:191:41
+    
+191              mixLast[i].in[j] <== sigmaF[nRoundsF-1][j].out;
+                                             ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:190:28
+    
+190          for (var j=0; j<t; j++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:188:28
+    
+188      for (var i=0; i<nOuts; i++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:93:19
+   
+93      for (var j=0; j<t; j++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:94:13
+   
+94          if (j>0) {
+                ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:101:21
+    
+101      for (var r = 0; r < nRoundsF\2-1; r++) {
+                         ^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:102:23
+    
+102          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:112:23
+    
+112          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:117:23
+    
+117          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:123:19
+    
+123      for (var j=0; j<t; j++) {
+                       ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:129:19
+    
+129      for (var j=0; j<t; j++) {
+                       ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:134:19
+    
+134      for (var j=0; j<t; j++) {
+                       ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:139:21
+    
+139      for (var r = 0; r < nRoundsP; r++) {
+                         ^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:148:23
+    
+148          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:161:21
+    
+161      for (var r = 0; r < nRoundsF\2-1; r++) {
+                         ^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:162:23
+    
+162          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:172:23
+    
+172          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:177:23
+    
+177          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:183:19
+    
+183      for (var j=0; j<t; j++) {
+                       ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:188:19
+    
+188      for (var i=0; i<nOuts; i++) {
+                       ^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:190:23
+    
+190          for (var j=0; j<t; j++) {
+                           ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CalculateNullifierHash'
+circomspect: analyzing template 'Ark'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:23:20
+   
+23          out[i] <== in[i] + C[i + r];
+                       ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:22:24
+   
+22      for (var i=0; i<t; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/poseidon.circom:22:19
+   
+22      for (var i=0; i<t; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Mux1'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/mux1.circom:41:20
+   
+41      for (i=0; i<2; i++) {
+                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/mux1.circom:41:15
+   
+41      for (i=0; i<2; i++) {
+                  ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CalculateIdentityCommitment'
+circomspect: 113 issues found.

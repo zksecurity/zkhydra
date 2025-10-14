@@ -1,0 +1,56 @@
+stdout:
+time to prep inputs 168 milliseconds
+setup solver 208 milliseconds
+Solved for 1 variables out of 4 total variables
+Solved for 0 target variables out of 1 total target variables
+------ Bad Constraints ------
+
+constraint #1
+0 * 0 = (1 * main.part2 + 1 * main.part1 + -1 * main.out)
+main.part2
+Uniquely Determined: false
+Bounds: None
+
+main.part1
+Uniquely Determined: false
+Bounds: None
+
+main.out
+Uniquely Determined: false
+Bounds: None
+
+constraint #2
+0 * 0 = (-536870912 * main.part2 + 2736030358979909402780800718157159386068545550052004292962275523321976061952 * main.part1 + 1 * main.in)
+main.part2
+Uniquely Determined: false
+Bounds: None
+
+main.part1
+Uniquely Determined: false
+Bounds: None
+
+main.in
+Uniquely Determined: true
+Bounds: None
+
+------ All Variables ------
+
+main.part2
+Uniquely Determined: false
+Bounds: None
+
+main.part1
+Uniquely Determined: false
+Bounds: None
+
+main.out
+Uniquely Determined: false
+Bounds: None
+
+main.in
+Uniquely Determined: true
+Bounds: None
+
+R1CS function circuit has potentially unsound constraints
+
+stderr:

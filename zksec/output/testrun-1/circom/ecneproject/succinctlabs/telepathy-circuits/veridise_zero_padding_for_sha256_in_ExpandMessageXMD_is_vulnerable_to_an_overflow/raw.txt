@@ -1,0 +1,1422 @@
+stdout:
+time to prep inputs 185 milliseconds
+setup solver 208 milliseconds
+Solved for 2 variables out of 129 total variables
+Solved for 0 target variables out of 64 total target variables
+------ Bad Constraints ------
+
+constraint #1
+0 * 0 = (-1 * main.acc[0] + 1 * main.out[0])
+main.acc[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+constraint #2
+0 * 0 = (256 * main.acc[0] + -1 * main.acc[1] + 1 * main.out[1])
+main.acc[0]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[1]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+constraint #3
+0 * 0 = (1 * main.out[2] + -1 * main.acc[2] + 256 * main.acc[1])
+main.out[2]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[2]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[1]
+Uniquely Determined: false
+Bounds: None
+
+constraint #4
+0 * 0 = (1 * main.out[3] + -1 * main.acc[3] + 256 * main.acc[2])
+main.out[3]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[3]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[2]
+Uniquely Determined: false
+Bounds: None
+
+constraint #5
+0 * 0 = (256 * main.acc[3] + 1 * main.out[4] + -1 * main.acc[4])
+main.acc[3]
+Uniquely Determined: false
+Bounds: None
+
+main.out[4]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[4]
+Uniquely Determined: false
+Bounds: None
+
+constraint #6
+0 * 0 = (1 * main.out[5] + -1 * main.acc[5] + 256 * main.acc[4])
+main.out[5]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[5]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[4]
+Uniquely Determined: false
+Bounds: None
+
+constraint #7
+0 * 0 = (256 * main.acc[5] + -1 * main.acc[6] + 1 * main.out[6])
+main.acc[5]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[6]
+Uniquely Determined: false
+Bounds: None
+
+main.out[6]
+Uniquely Determined: false
+Bounds: None
+
+constraint #8
+0 * 0 = (1 * main.out[7] + 256 * main.acc[6] + -1 * main.acc[7])
+main.out[7]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[6]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[7]
+Uniquely Determined: false
+Bounds: None
+
+constraint #9
+0 * 0 = (1 * main.out[8] + 256 * main.acc[7] + -1 * main.acc[8])
+main.out[8]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[7]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[8]
+Uniquely Determined: false
+Bounds: None
+
+constraint #10
+0 * 0 = (1 * main.out[9] + 256 * main.acc[8] + -1 * main.acc[9])
+main.out[9]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[8]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[9]
+Uniquely Determined: false
+Bounds: None
+
+constraint #11
+0 * 0 = (-1 * main.acc[10] + 1 * main.out[10] + 256 * main.acc[9])
+main.acc[10]
+Uniquely Determined: false
+Bounds: None
+
+main.out[10]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[9]
+Uniquely Determined: false
+Bounds: None
+
+constraint #12
+0 * 0 = (-1 * main.acc[11] + 1 * main.out[11] + 256 * main.acc[10])
+main.acc[11]
+Uniquely Determined: false
+Bounds: None
+
+main.out[11]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[10]
+Uniquely Determined: false
+Bounds: None
+
+constraint #13
+0 * 0 = (256 * main.acc[11] + -1 * main.acc[12] + 1 * main.out[12])
+main.acc[11]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[12]
+Uniquely Determined: false
+Bounds: None
+
+main.out[12]
+Uniquely Determined: false
+Bounds: None
+
+constraint #14
+0 * 0 = (256 * main.acc[12] + 1 * main.out[13] + -1 * main.acc[13])
+main.acc[12]
+Uniquely Determined: false
+Bounds: None
+
+main.out[13]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[13]
+Uniquely Determined: false
+Bounds: None
+
+constraint #15
+0 * 0 = (1 * main.out[14] + -1 * main.acc[14] + 256 * main.acc[13])
+main.out[14]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[14]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[13]
+Uniquely Determined: false
+Bounds: None
+
+constraint #16
+0 * 0 = (256 * main.acc[14] + -1 * main.acc[15] + 1 * main.out[15])
+main.acc[14]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[15]
+Uniquely Determined: false
+Bounds: None
+
+main.out[15]
+Uniquely Determined: false
+Bounds: None
+
+constraint #17
+0 * 0 = (-1 * main.acc[16] + 1 * main.out[16] + 256 * main.acc[15])
+main.acc[16]
+Uniquely Determined: false
+Bounds: None
+
+main.out[16]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[15]
+Uniquely Determined: false
+Bounds: None
+
+constraint #18
+0 * 0 = (256 * main.acc[16] + -1 * main.acc[17] + 1 * main.out[17])
+main.acc[16]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[17]
+Uniquely Determined: false
+Bounds: None
+
+main.out[17]
+Uniquely Determined: false
+Bounds: None
+
+constraint #19
+0 * 0 = (256 * main.acc[17] + 1 * main.out[18] + -1 * main.acc[18])
+main.acc[17]
+Uniquely Determined: false
+Bounds: None
+
+main.out[18]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[18]
+Uniquely Determined: false
+Bounds: None
+
+constraint #20
+0 * 0 = (1 * main.out[19] + -1 * main.acc[19] + 256 * main.acc[18])
+main.out[19]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[19]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[18]
+Uniquely Determined: false
+Bounds: None
+
+constraint #21
+0 * 0 = (1 * main.out[20] + 256 * main.acc[19] + -1 * main.acc[20])
+main.out[20]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[19]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[20]
+Uniquely Determined: false
+Bounds: None
+
+constraint #22
+0 * 0 = (-1 * main.acc[21] + 256 * main.acc[20] + 1 * main.out[21])
+main.acc[21]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[20]
+Uniquely Determined: false
+Bounds: None
+
+main.out[21]
+Uniquely Determined: false
+Bounds: None
+
+constraint #23
+0 * 0 = (256 * main.acc[21] + 1 * main.out[22] + -1 * main.acc[22])
+main.acc[21]
+Uniquely Determined: false
+Bounds: None
+
+main.out[22]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[22]
+Uniquely Determined: false
+Bounds: None
+
+constraint #24
+0 * 0 = (1 * main.out[23] + -1 * main.acc[23] + 256 * main.acc[22])
+main.out[23]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[23]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[22]
+Uniquely Determined: false
+Bounds: None
+
+constraint #25
+0 * 0 = (1 * main.out[24] + 256 * main.acc[23] + -1 * main.acc[24])
+main.out[24]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[23]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[24]
+Uniquely Determined: false
+Bounds: None
+
+constraint #26
+0 * 0 = (-1 * main.acc[25] + 1 * main.out[25] + 256 * main.acc[24])
+main.acc[25]
+Uniquely Determined: false
+Bounds: None
+
+main.out[25]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[24]
+Uniquely Determined: false
+Bounds: None
+
+constraint #27
+0 * 0 = (-1 * main.acc[26] + 256 * main.acc[25] + 1 * main.out[26])
+main.acc[26]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[25]
+Uniquely Determined: false
+Bounds: None
+
+main.out[26]
+Uniquely Determined: false
+Bounds: None
+
+constraint #28
+0 * 0 = (256 * main.acc[26] + 1 * main.out[27] + -1 * main.acc[27])
+main.acc[26]
+Uniquely Determined: false
+Bounds: None
+
+main.out[27]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[27]
+Uniquely Determined: false
+Bounds: None
+
+constraint #29
+0 * 0 = (256 * main.acc[27] + -1 * main.acc[28] + 1 * main.out[28])
+main.acc[27]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[28]
+Uniquely Determined: false
+Bounds: None
+
+main.out[28]
+Uniquely Determined: false
+Bounds: None
+
+constraint #30
+0 * 0 = (256 * main.acc[28] + 1 * main.out[29] + -1 * main.acc[29])
+main.acc[28]
+Uniquely Determined: false
+Bounds: None
+
+main.out[29]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[29]
+Uniquely Determined: false
+Bounds: None
+
+constraint #31
+0 * 0 = (1 * main.out[30] + -1 * main.acc[30] + 256 * main.acc[29])
+main.out[30]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[30]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[29]
+Uniquely Determined: false
+Bounds: None
+
+constraint #32
+0 * 0 = (1 * main.out[31] + 256 * main.acc[30] + -1 * main.acc[31])
+main.out[31]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[30]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[31]
+Uniquely Determined: false
+Bounds: None
+
+constraint #33
+0 * 0 = (1 * main.out[32] + -1 * main.acc[32] + 256 * main.acc[31])
+main.out[32]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[32]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[31]
+Uniquely Determined: false
+Bounds: None
+
+constraint #34
+0 * 0 = (1 * main.out[33] + 256 * main.acc[32] + -1 * main.acc[33])
+main.out[33]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[32]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[33]
+Uniquely Determined: false
+Bounds: None
+
+constraint #35
+0 * 0 = (1 * main.out[34] + 256 * main.acc[33] + -1 * main.acc[34])
+main.out[34]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[33]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[34]
+Uniquely Determined: false
+Bounds: None
+
+constraint #36
+0 * 0 = (1 * main.out[35] + -1 * main.acc[35] + 256 * main.acc[34])
+main.out[35]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[35]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[34]
+Uniquely Determined: false
+Bounds: None
+
+constraint #37
+0 * 0 = (1 * main.out[36] + -1 * main.acc[36] + 256 * main.acc[35])
+main.out[36]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[36]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[35]
+Uniquely Determined: false
+Bounds: None
+
+constraint #38
+0 * 0 = (1 * main.out[37] + -1 * main.acc[37] + 256 * main.acc[36])
+main.out[37]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[37]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[36]
+Uniquely Determined: false
+Bounds: None
+
+constraint #39
+0 * 0 = (-1 * main.acc[38] + 256 * main.acc[37] + 1 * main.out[38])
+main.acc[38]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[37]
+Uniquely Determined: false
+Bounds: None
+
+main.out[38]
+Uniquely Determined: false
+Bounds: None
+
+constraint #40
+0 * 0 = (1 * main.out[39] + 256 * main.acc[38] + -1 * main.acc[39])
+main.out[39]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[38]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[39]
+Uniquely Determined: false
+Bounds: None
+
+constraint #41
+0 * 0 = (-1 * main.acc[40] + 1 * main.out[40] + 256 * main.acc[39])
+main.acc[40]
+Uniquely Determined: false
+Bounds: None
+
+main.out[40]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[39]
+Uniquely Determined: false
+Bounds: None
+
+constraint #42
+0 * 0 = (1 * main.out[41] + 256 * main.acc[40] + -1 * main.acc[41])
+main.out[41]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[40]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[41]
+Uniquely Determined: false
+Bounds: None
+
+constraint #43
+0 * 0 = (1 * main.out[42] + 256 * main.acc[41] + -1 * main.acc[42])
+main.out[42]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[41]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[42]
+Uniquely Determined: false
+Bounds: None
+
+constraint #44
+0 * 0 = (1 * main.out[43] + -1 * main.acc[43] + 256 * main.acc[42])
+main.out[43]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[43]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[42]
+Uniquely Determined: false
+Bounds: None
+
+constraint #45
+0 * 0 = (256 * main.acc[43] + 1 * main.out[44] + -1 * main.acc[44])
+main.acc[43]
+Uniquely Determined: false
+Bounds: None
+
+main.out[44]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[44]
+Uniquely Determined: false
+Bounds: None
+
+constraint #46
+0 * 0 = (1 * main.out[45] + 256 * main.acc[44] + -1 * main.acc[45])
+main.out[45]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[44]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[45]
+Uniquely Determined: false
+Bounds: None
+
+constraint #47
+0 * 0 = (-1 * main.acc[46] + 256 * main.acc[45] + 1 * main.out[46])
+main.acc[46]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[45]
+Uniquely Determined: false
+Bounds: None
+
+main.out[46]
+Uniquely Determined: false
+Bounds: None
+
+constraint #48
+0 * 0 = (1 * main.out[47] + 256 * main.acc[46] + -1 * main.acc[47])
+main.out[47]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[46]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[47]
+Uniquely Determined: false
+Bounds: None
+
+constraint #49
+0 * 0 = (1 * main.out[48] + 256 * main.acc[47] + -1 * main.acc[48])
+main.out[48]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[47]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[48]
+Uniquely Determined: false
+Bounds: None
+
+constraint #50
+0 * 0 = (1 * main.out[49] + 256 * main.acc[48] + -1 * main.acc[49])
+main.out[49]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[48]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[49]
+Uniquely Determined: false
+Bounds: None
+
+constraint #51
+0 * 0 = (-1 * main.acc[50] + 1 * main.out[50] + 256 * main.acc[49])
+main.acc[50]
+Uniquely Determined: false
+Bounds: None
+
+main.out[50]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[49]
+Uniquely Determined: false
+Bounds: None
+
+constraint #52
+0 * 0 = (256 * main.acc[50] + -1 * main.acc[51] + 1 * main.out[51])
+main.acc[50]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[51]
+Uniquely Determined: false
+Bounds: None
+
+main.out[51]
+Uniquely Determined: false
+Bounds: None
+
+constraint #53
+0 * 0 = (1 * main.out[52] + 256 * main.acc[51] + -1 * main.acc[52])
+main.out[52]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[51]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[52]
+Uniquely Determined: false
+Bounds: None
+
+constraint #54
+0 * 0 = (1 * main.out[53] + -1 * main.acc[53] + 256 * main.acc[52])
+main.out[53]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[53]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[52]
+Uniquely Determined: false
+Bounds: None
+
+constraint #55
+0 * 0 = (1 * main.out[54] + -1 * main.acc[54] + 256 * main.acc[53])
+main.out[54]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[54]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[53]
+Uniquely Determined: false
+Bounds: None
+
+constraint #56
+0 * 0 = (-1 * main.acc[55] + 256 * main.acc[54] + 1 * main.out[55])
+main.acc[55]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[54]
+Uniquely Determined: false
+Bounds: None
+
+main.out[55]
+Uniquely Determined: false
+Bounds: None
+
+constraint #57
+0 * 0 = (-1 * main.acc[56] + 256 * main.acc[55] + 1 * main.out[56])
+main.acc[56]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[55]
+Uniquely Determined: false
+Bounds: None
+
+main.out[56]
+Uniquely Determined: false
+Bounds: None
+
+constraint #58
+0 * 0 = (1 * main.out[57] + 256 * main.acc[56] + -1 * main.acc[57])
+main.out[57]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[56]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[57]
+Uniquely Determined: false
+Bounds: None
+
+constraint #59
+0 * 0 = (256 * main.acc[57] + 1 * main.out[58] + -1 * main.acc[58])
+main.acc[57]
+Uniquely Determined: false
+Bounds: None
+
+main.out[58]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[58]
+Uniquely Determined: false
+Bounds: None
+
+constraint #60
+0 * 0 = (1 * main.out[59] + -1 * main.acc[59] + 256 * main.acc[58])
+main.out[59]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[59]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[58]
+Uniquely Determined: false
+Bounds: None
+
+constraint #61
+0 * 0 = (256 * main.acc[59] + 1 * main.out[60] + -1 * main.acc[60])
+main.acc[59]
+Uniquely Determined: false
+Bounds: None
+
+main.out[60]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[60]
+Uniquely Determined: false
+Bounds: None
+
+constraint #62
+0 * 0 = (1 * main.out[61] + 256 * main.acc[60] + -1 * main.acc[61])
+main.out[61]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[60]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[61]
+Uniquely Determined: false
+Bounds: None
+
+constraint #63
+0 * 0 = (1 * main.out[62] + -1 * main.acc[62] + 256 * main.acc[61])
+main.out[62]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[62]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[61]
+Uniquely Determined: false
+Bounds: None
+
+constraint #64
+0 * 0 = (1 * main.out[63] + 256 * main.acc[62] + -1 * main.acc[63])
+main.out[63]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[62]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[63]
+Uniquely Determined: true
+Bounds: None
+
+------ All Variables ------
+
+main.out[54]
+Uniquely Determined: false
+Bounds: None
+
+main.out[33]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[43]
+Uniquely Determined: false
+Bounds: None
+
+main.out[58]
+Uniquely Determined: false
+Bounds: None
+
+main.out[28]
+Uniquely Determined: false
+Bounds: None
+
+main.out[4]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[0]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[6]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[48]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[45]
+Uniquely Determined: false
+Bounds: None
+
+main.out[62]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[23]
+Uniquely Determined: false
+Bounds: None
+
+main.out[2]
+Uniquely Determined: false
+Bounds: None
+
+main.out[11]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[19]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[37]
+Uniquely Determined: false
+Bounds: None
+
+main.out[50]
+Uniquely Determined: false
+Bounds: None
+
+main.out[10]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[8]
+Uniquely Determined: false
+Bounds: None
+
+main.out[21]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[44]
+Uniquely Determined: false
+Bounds: None
+
+main.out[39]
+Uniquely Determined: false
+Bounds: None
+
+main.out[41]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[2]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[1]
+Uniquely Determined: false
+Bounds: None
+
+main.out[9]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[15]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[18]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[63]
+Uniquely Determined: true
+Bounds: None
+
+main.acc[52]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[58]
+Uniquely Determined: false
+Bounds: None
+
+main.out[37]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[10]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[59]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[41]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[4]
+Uniquely Determined: false
+Bounds: None
+
+main.in
+Uniquely Determined: true
+Bounds: None
+
+main.acc[36]
+Uniquely Determined: false
+Bounds: None
+
+main.out[57]
+Uniquely Determined: false
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[8]
+Uniquely Determined: false
+Bounds: None
+
+main.out[25]
+Uniquely Determined: false
+Bounds: None
+
+main.out[24]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[57]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[60]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[49]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[33]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[12]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[14]
+Uniquely Determined: false
+Bounds: None
+
+main.out[18]
+Uniquely Determined: false
+Bounds: None
+
+main.out[7]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[42]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[40]
+Uniquely Determined: false
+Bounds: None
+
+main.out[44]
+Uniquely Determined: false
+Bounds: None
+
+main.out[55]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[21]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[62]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[53]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[11]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[5]
+Uniquely Determined: false
+Bounds: None
+
+main.out[22]
+Uniquely Determined: false
+Bounds: None
+
+main.out[6]
+Uniquely Determined: false
+Bounds: None
+
+main.out[35]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[16]
+Uniquely Determined: false
+Bounds: None
+
+main.out[20]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[32]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[54]
+Uniquely Determined: false
+Bounds: None
+
+main.out[12]
+Uniquely Determined: false
+Bounds: None
+
+main.out[31]
+Uniquely Determined: false
+Bounds: None
+
+main.out[38]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[46]
+Uniquely Determined: false
+Bounds: None
+
+main.out[3]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[47]
+Uniquely Determined: false
+Bounds: None
+
+main.out[53]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[56]
+Uniquely Determined: false
+Bounds: None
+
+main.out[30]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[50]
+Uniquely Determined: false
+Bounds: None
+
+main.out[43]
+Uniquely Determined: false
+Bounds: None
+
+main.out[52]
+Uniquely Determined: false
+Bounds: None
+
+main.out[61]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[24]
+Uniquely Determined: false
+Bounds: None
+
+main.out[60]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[55]
+Uniquely Determined: false
+Bounds: None
+
+main.out[56]
+Uniquely Determined: false
+Bounds: None
+
+main.out[26]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[25]
+Uniquely Determined: false
+Bounds: None
+
+main.out[34]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[31]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[51]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[17]
+Uniquely Determined: false
+Bounds: None
+
+main.out[5]
+Uniquely Determined: false
+Bounds: None
+
+main.out[23]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[28]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[9]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[26]
+Uniquely Determined: false
+Bounds: None
+
+main.out[32]
+Uniquely Determined: false
+Bounds: None
+
+main.out[48]
+Uniquely Determined: false
+Bounds: None
+
+main.out[16]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[20]
+Uniquely Determined: false
+Bounds: None
+
+main.out[40]
+Uniquely Determined: false
+Bounds: None
+
+main.out[14]
+Uniquely Determined: false
+Bounds: None
+
+main.out[17]
+Uniquely Determined: false
+Bounds: None
+
+main.out[47]
+Uniquely Determined: false
+Bounds: None
+
+main.out[42]
+Uniquely Determined: false
+Bounds: None
+
+main.out[29]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[7]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[39]
+Uniquely Determined: false
+Bounds: None
+
+main.out[59]
+Uniquely Determined: false
+Bounds: None
+
+main.out[27]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[27]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[35]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[61]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[3]
+Uniquely Determined: false
+Bounds: None
+
+main.out[19]
+Uniquely Determined: false
+Bounds: None
+
+main.out[36]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[34]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[38]
+Uniquely Determined: false
+Bounds: None
+
+main.out[15]
+Uniquely Determined: false
+Bounds: None
+
+main.out[51]
+Uniquely Determined: false
+Bounds: None
+
+main.out[45]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[22]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[13]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[29]
+Uniquely Determined: false
+Bounds: None
+
+main.out[49]
+Uniquely Determined: false
+Bounds: None
+
+main.out[46]
+Uniquely Determined: false
+Bounds: None
+
+main.out[13]
+Uniquely Determined: false
+Bounds: None
+
+main.out[63]
+Uniquely Determined: false
+Bounds: None
+
+main.acc[30]
+Uniquely Determined: false
+Bounds: None
+
+R1CS function circuit has potentially unsound constraints
+
+stderr:
+
+Mode 1: 2    Time: 0:00:00[K

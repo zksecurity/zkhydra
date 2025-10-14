@@ -1,0 +1,4 @@
+{
+  "result": "error",
+  "reason": "Circuit file not found. Might be missing in bug environment setup script."
+}

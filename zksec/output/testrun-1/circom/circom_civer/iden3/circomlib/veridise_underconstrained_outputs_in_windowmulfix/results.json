@@ -1,0 +1,17 @@
+{
+  "result": "false",
+  "reason": "Tool found wrong module; buggy module: 'WindowMulFix' (70-131)).",
+  "buggy_components": [
+    {
+      "name": "MontgomeryAdd",
+      "params": []
+    }
+  ],
+  "timed_out_components": [
+    {
+      "name": "MontgomeryDouble",
+      "params": []
+    }
+  ],
+  "need_manual_evaluation": true
+}

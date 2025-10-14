@@ -1,0 +1,10 @@
+error[P1000]: Unrecognized EOF found at 516
+Expected one of "!", "(", "-", "[", "assert", "component", "for", "if", "log", "parallel", "return", "signal", "var", "while", "{", "}", "~", r#"0x[0-9A-Fa-f]*"#, r#"[$_]*[a-zA-Z][a-zA-Z$_0-9]*"# or r#"[0-9]+"#
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits/circuits/epochKeyLite.circom:1:1
+  
+1  pragma circom 2.0.0;
+   ^ This token is invalid or unexpected here.
+  
+  = To ignore this type of result, use `--allow P1000`.
+
+circomspect: 1 issue found.

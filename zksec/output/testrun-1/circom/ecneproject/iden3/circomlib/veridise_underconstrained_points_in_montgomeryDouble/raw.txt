@@ -1,0 +1,90 @@
+stdout:
+time to prep inputs 153 milliseconds
+setup solver 169 milliseconds
+Solved for 4 variables out of 7 total variables
+Solved for 0 target variables out of 2 total target variables
+------ Bad Constraints ------
+
+constraint #2
+(2 * main.in[1]) * (1 * main.lamda) = (337396 * main.in[0] + 3 * main.x1_2 + 1 * 1)
+main.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.lamda
+Uniquely Determined: false
+Bounds: None
+
+main.x1_2
+Uniquely Determined: true
+Bounds: None
+
+constraint #3
+(-1 * main.lamda) * (1 * main.lamda) = (-2 * main.in[0] + -1 * main.out[0] + -168698 * 1)
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.lamda
+Uniquely Determined: false
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+constraint #4
+(-1 * main.in[0] + 1 * main.out[0]) * (1 * main.lamda) = (-1 * main.in[1] + -1 * main.out[1])
+main.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.lamda
+Uniquely Determined: false
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+------ All Variables ------
+
+main.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.x1_2
+Uniquely Determined: true
+Bounds: None
+
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.lamda
+Uniquely Determined: false
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+R1CS function circuit has potentially unsound constraints
+
+stderr:

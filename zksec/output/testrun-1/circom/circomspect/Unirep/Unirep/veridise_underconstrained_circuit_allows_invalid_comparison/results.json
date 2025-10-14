@@ -1,0 +1,11 @@
+{
+  "result": "false",
+  "reason": [
+    "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '66'; ground truth line: '45'-'45'",
+    "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '61'; ground truth line: '45'-'45'",
+    "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '65'; ground truth line: '45'-'45'",
+    "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '62'; ground truth line: '45'-'45'",
+    "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'"
+  ],
+  "need_manual_evaluation": true
+}

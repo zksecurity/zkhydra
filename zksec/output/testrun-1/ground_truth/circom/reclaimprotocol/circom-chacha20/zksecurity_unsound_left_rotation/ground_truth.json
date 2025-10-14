@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Wrong translation of logic into constraints",
+  "Location": {
+    "Path": "circuits/generics.circom",
+    "Function": "RotateLeft32Bits",
+    "Line": "39-45"
+  }
+}

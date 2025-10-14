@@ -1,0 +1,17 @@
+{
+  "stats": {
+    "verified": 2,
+    "failed": 1,
+    "timeout": 0
+  },
+  "buggy_components": [
+    {
+      "name": "RangeProof",
+      "params": [
+        9,
+        255
+      ]
+    }
+  ],
+  "timed_out_components": []
+}
