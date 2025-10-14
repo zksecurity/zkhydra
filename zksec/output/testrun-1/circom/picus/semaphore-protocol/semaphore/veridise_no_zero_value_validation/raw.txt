@@ -1,0 +1,3 @@
+working directory: /var/tmp/picus17602973271760297327824
+The circuit is properly constrained
+Exiting Picus with the code 8

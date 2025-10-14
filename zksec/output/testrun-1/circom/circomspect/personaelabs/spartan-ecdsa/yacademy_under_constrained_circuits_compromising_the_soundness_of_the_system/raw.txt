@@ -1,0 +1,1681 @@
+error[P1003]: The file `/home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/circuit.circom` requires version 2.1.2, which is not supported by Circomspect (version 2.0.8).
+ = To ignore this type of result, use `--allow P1003`.
+
+error[P1003]: The file `/home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom` requires version 2.1.2, which is not supported by Circomspect (version 2.0.8).
+ = To ignore this type of result, use `--allow P1003`.
+
+error[P1003]: The file `/home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom` requires version 2.1.2, which is not supported by Circomspect (version 2.0.8).
+ = To ignore this type of result, use `--allow P1003`.
+
+error[P1003]: The file `/home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom` requires version 2.1.2, which is not supported by Circomspect (version 2.0.8).
+ = To ignore this type of result, use `--allow P1003`.
+
+circomspect: analyzing function 'nbits'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:57:12
+   
+57      while (n-1<a) {
+               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:58:9
+   
+58          r++;
+            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:59:9
+   
+59          n *= 2;
+            ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:57:12
+   
+57      while (n-1<a) {
+               ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'LessEqThan'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:112:18
+    
+112      lt.in[1] <== in[1]+1;
+                      ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:112:18
+    
+109      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+    
+112      lt.in[1] <== in[1]+1;
+                      ^^^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:111:18
+    
+109      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+110  
+111      lt.in[0] <== in[0];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'Bits2Num_strict'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:76:26
+   
+76      for (var i=0; i<254; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:76:19
+   
+76      for (var i=0; i<254; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Bits2Num` to convert arrays to field elements may lead to aliasing issues.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:74:21
+   
+74      component b2n = Bits2Num(254);
+                        ^^^^^^^^^^^^^ Circomlib template `Bits2Num` instantiated here.
+   
+   = Consider using `Bits2Num_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'Num2BitsNeg'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:96:9
+   
+96          out[i] <-- (neg >> i) & 1;
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[i]` is not constrained here.
+97          out[i] * (out[i] -1 ) === 0;
+            ---------------------------- The signal `out[i]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:93:28
+   
+93      var neg = n == 0 ? 0 : 2**n - in;
+                               ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:96:21
+   
+96          out[i] <-- (neg >> i) & 1;
+                        ^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:97:9
+   
+97          out[i] * (out[i] -1 ) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:98:9
+   
+98          lc1 += out[i] * 2**i;
+            ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:95:26
+   
+95      for (var i = 0; i<n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:105:5
+    
+105      lc1 + isZero.out * 2**n === 2**n - in;
+         ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:105:33
+    
+105      lc1 + isZero.out * 2**n === 2**n - in;
+                                     ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:95:21
+   
+95      for (var i = 0; i<n; i++) {
+                        ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AliasCheck'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/aliascheck.circom:30:26
+   
+30      for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/aliascheck.circom:30:19
+   
+30      for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'MultiAND'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:84:18
+   
+84          var n2 = n-n\2;
+                     ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:88:25
+   
+88          for (i=0; i<n1; i++) ands[0].in[i] <== in[i];
+                            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:89:51
+   
+89          for (i=0; i<n2; i++) ands[1].in[i] <== in[n1+i];
+                                                      ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:89:25
+   
+89          for (i=0; i<n2; i++) ands[1].in[i] <== in[n1+i];
+                            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:88:19
+   
+88          for (i=0; i<n1; i++) ands[0].in[i] <== in[i];
+                      ^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:89:19
+   
+89          for (i=0; i<n2; i++) ands[1].in[i] <== in[n1+i];
+                      ^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CompConstant'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:39:13
+   
+39      var b = (1 << 128) -1;
+                ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:45:17
+   
+45          clsb = (ct >> (i*2)) & 1;
+                    ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:46:17
+   
+46          cmsb = (ct >> (i*2+1)) & 1;
+                    ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:47:19
+   
+47          slsb = in[i*2];
+                      ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:48:19
+   
+48          smsb = in[i*2+1];
+                      ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:51:26
+   
+51              parts[i] <== -b*smsb*slsb + b*smsb + b*slsb;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:53:26
+   
+53              parts[i] <== a*smsb*slsb - a*slsb + b*smsb - a*smsb + a;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:55:26
+   
+55              parts[i] <== b*smsb*slsb - a*smsb + a;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:57:26
+   
+57              parts[i] <== -a*smsb*slsb + a;
+                             ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:60:15
+   
+60          sum = sum + parts[i];
+                  ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:62:13
+   
+62          b = b -e;
+                ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:63:13
+   
+63          a = a +e;
+                ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:64:13
+   
+64          e = e*2;
+                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:44:21
+   
+44      for (i=0;i<127; i++) {
+                        ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/compconstant.circom:44:14
+   
+44      for (i=0;i<127; i++) {
+                 ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AND'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:34:13
+   
+34      out <== a*b;
+                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'K'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:123:5
+    
+123      signal slo <-- s & (2 ** (128) - 1);
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `slo` is not constrained here.
+    
+129      inBits.in <== slo + tQlo;
+         ------------------------ The signal `slo` is constrained here.
+    
+144      signal alo <== slo + tQlo - (carry * 2 ** 128);
+         ---------------------------------------------- The signal `slo` is constrained here.
+    
+170      theta.in[1] <== slo + tQlo;
+         -------------------------- The signal `slo` is constrained here.
+    
+177      signal klo <== (slo + tQlo + borrow.out * (2 ** 128)) - isQuotientOne.out * qlo;
+         ------------------------------------------------------------------------------- The signal `slo` is constrained here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+    = To ignore this type of result, use `--allow CS0005`.
+
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:124:5
+    
+124      signal shi <-- s >> 128;
+         ^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `shi` is not constrained here.
+    
+142      signal ahi <== shi + tQhi + carry;
+         --------------------------------- The signal `shi` is constrained here.
+    
+178      signal khi <== (shi + tQhi - borrow.out * 1)  - isQuotientOne.out * qhi;
+         ----------------------------------------------------------------------- The signal `shi` is constrained here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+    = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:118:20
+    
+118      var qlo = q & ((2 ** 128) - 1);
+                        ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:119:15
+    
+119      var qhi = q >> 128;
+                   ^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:121:22
+    
+121      var tQlo = tQ & (2 ** (128) - 1);
+                          ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:122:16
+    
+122      var tQhi = tQ >> 128;
+                    ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:123:25
+    
+123      signal slo <-- s & (2 ** (128) - 1);
+                             ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:124:20
+    
+124      signal shi <-- s >> 128;
+                        ^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:128:33
+    
+128      component inBits = Num2Bits(128 + 1);
+                                     ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:129:19
+    
+129      inBits.in <== slo + tQlo;
+                       ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:142:20
+    
+142      signal ahi <== shi + tQhi + carry;
+                        ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:144:20
+    
+144      signal alo <== slo + tQlo - (carry * 2 ** 128);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:170:21
+    
+170      theta.in[1] <== slo + tQlo;
+                         ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:177:20
+    
+177      signal klo <== (slo + tQlo + borrow.out * (2 ** 128)) - isQuotientOne.out * qlo;
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:178:20
+    
+178      signal khi <== (shi + tQhi - borrow.out * 1)  - isQuotientOne.out * qhi;
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:188:13
+    
+188          out[i + 128] <== khiBits.out[i];
+                 ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:186:30
+    
+186      for (var i = 0; i < 128; i++) {
+                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:186:21
+    
+186      for (var i = 0; i < 128; i++) {
+                         ^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:180:25
+    
+180      component kloBits = Num2Bits(256);
+                             ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+    
+    = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+    = To ignore this type of result, use `--allow CS0010`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:183:25
+    
+183      component khiBits = Num2Bits(256);
+                             ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+    
+    = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+    = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'Num2Bits_strict'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:49:26
+   
+49      for (var i=0; i<254; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:49:19
+   
+49      for (var i=0; i<254; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:46:21
+   
+46      component n2b = Num2Bits(254);
+                        ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'IsEqual'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:43:5
+   
+43      in[1] - in[0] ==> isz.in;
+        ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'Secp256k1Double'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:22:5
+   
+22      lambda <-- (3 * xPSquared) / (2 * yP);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lambda` is not constrained here.
+23      lambda * 2 * yP === 3 * xPSquared;
+        ---------------------------------- The signal `lambda` is constrained here.
+24  
+25      outX <== lambda * lambda - (2 * xP);
+        ----------------------------------- The signal `lambda` is constrained here.
+26      outY <== lambda * (xP - outX) - yP;
+        ---------------------------------- The signal `lambda` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:20:19
+   
+20      xPSquared <== xP * xP;
+                      ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:22:16
+   
+22      lambda <-- (3 * xPSquared) / (2 * yP);
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:23:5
+   
+23      lambda * 2 * yP === 3 * xPSquared;
+        ^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:23:25
+   
+23      lambda * 2 * yP === 3 * xPSquared;
+                            ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:25:14
+   
+25      outX <== lambda * lambda - (2 * xP);
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:26:14
+   
+26      outY <== lambda * (xP - outX) - yP;
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/double.circom:22:35
+   
+22      lambda <-- (3 * xPSquared) / (2 * yP);
+                                      ^^^^^^ The divisor `(2 * yP)` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'XOR'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:26:13
+   
+26      out <== a + b - 2*a*b;
+                ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'NOR'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:65:13
+   
+65      out <== a*b + 1 - a - b;
+                ^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'IsZero'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:30:5
+   
+30      inv <-- in!=0 ? 1/in : 0;
+        ^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `inv` is not constrained here.
+31  
+32      out <== -in*inv +1;
+        ------------------ The signal `inv` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:30:21
+   
+30      inv <-- in!=0 ? 1/in : 0;
+                        ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:32:13
+   
+32      out <== -in*inv +1;
+                ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:33:5
+   
+33      in*out === 0;
+        ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'Secp256k1Mul'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:34:27
+   
+34      component PIncomplete[bits-3]; 
+                              ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:37:25
+   
+37      for (var i = 0; i < bits-3; i++) {
+                            ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:54:35
+   
+54              PIncomplete[i].yP <== (2 * kBits.out[bits-i] - 1) * yP;// k_i ? xP : -xP;
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:55:49
+   
+55              PIncomplete[i].xQ <== accIncomplete[i-1].outX;
+                                                    ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:56:49
+   
+56              PIncomplete[i].yQ <== accIncomplete[i-1].outY;
+                                                    ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:59:51
+   
+59              accIncomplete[i].xP <== accIncomplete[i-1].outX;
+                                                      ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:60:51
+   
+60              accIncomplete[i].yP <== accIncomplete[i-1].outY;
+                                                      ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:37:33
+   
+37      for (var i = 0; i < bits-3; i++) {
+                                    ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:66:25
+   
+66      component PComplete[bits-3]; 
+                            ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:73:29
+   
+73          PComplete[i].yP <== (2 * kBits.out[3 - i] - 1) * yP;// k_i ? xP : -xP;
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:78:45
+   
+78              PComplete[i].xQ <== accComplete[i-1].outX;
+                                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:79:45
+   
+79              PComplete[i].yQ <== accComplete[i-1].outY;
+                                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:87:47
+   
+87              accComplete[i].xP <== accComplete[i-1].outX;
+                                                  ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:88:47
+   
+88              accComplete[i].yP <== accComplete[i-1].outY;
+                                                  ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:69:28
+   
+69      for (var i = 0; i < 3; i++) {
+                               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:98:16
+   
+98      out.xQ <== (1 - kBits.out[0]) * xP;
+                   ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:99:16
+   
+99      out.yQ <== (1 - kBits.out[0]) * -yP;
+                   ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:37:21
+   
+37      for (var i = 0; i < bits-3; i++) {
+                        ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/mul.circom:69:21
+   
+69      for (var i = 0; i < 3; i++) {
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Num2Bits'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:32:9
+   
+32          out[i] <-- (in >> i) & 1;
+            ^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[i]` is not constrained here.
+33          out[i] * (out[i] -1 ) === 0;
+            ---------------------------- The signal `out[i]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:32:21
+   
+32          out[i] <-- (in >> i) & 1;
+                        ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:33:9
+   
+33          out[i] * (out[i] -1 ) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:34:9
+   
+34          lc1 += out[i] * e2;
+            ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:35:14
+   
+35          e2 = e2+e2;
+                 ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:31:26
+   
+31      for (var i = 0; i<n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:31:21
+   
+31      for (var i = 0; i<n; i++) {
+                        ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'GreaterEqThan'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:138:18
+    
+138      lt.in[1] <== in[0]+1;
+                      ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:137:18
+    
+135      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+136  
+137      lt.in[0] <== in[1];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:138:18
+    
+135      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+    
+138      lt.in[1] <== in[0]+1;
+                      ^^^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'NAND'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:57:13
+   
+57      out <== 1 - a*b;
+                ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'NOT'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:49:13
+   
+49      out <== 1 + in - 2*in;
+                ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'LessThan'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:94:30
+   
+94      component n2b = Num2Bits(n+1);
+                                 ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:96:16
+   
+96      n2b.in <== in[0]+ (1<<n) - in[1];
+                   ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:98:13
+   
+98      out <== 1-n2b.out[n];
+                ^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:90:12
+   
+90      assert(n <= 252);
+               ^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:94:21
+   
+94      component n2b = Num2Bits(n+1);
+                        ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'ForceEqualIfEnabled'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:54:5
+   
+54      in[1] - in[0] ==> isz.in;
+        ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:56:5
+   
+56      (1 - isz.out)*enabled === 0;
+        ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'BinSum'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:88:9
+   
+88          out[k] <-- (lin >> k) & 1;
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[k]` is not constrained here.
+   
+91          out[k] * (out[k] - 1) === 0;
+            ---------------------------- The signal `out[k]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:66:22
+   
+66      var nout = nbits((2**n -1)*ops);
+                         ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:81:13
+   
+81              lin += in[j][k] * e2;
+                ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:80:26
+   
+80          for (j=0; j<ops; j++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:83:14
+   
+83          e2 = e2 + e2;
+                 ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:79:20
+   
+79      for (k=0; k<n; k++) {
+                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:88:21
+   
+88          out[k] <-- (lin >> k) & 1;
+                        ^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:91:9
+   
+91          out[k] * (out[k] - 1) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:93:9
+   
+93          lout += out[k] * e2;
+            ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:95:14
+   
+95          e2 = e2+e2;
+                 ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:87:23
+   
+87      for (k=0; k<nout; k++) {
+                          ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:79:15
+   
+79      for (k=0; k<n; k++) {
+                  ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:80:19
+   
+80          for (j=0; j<ops; j++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/binsum.circom:87:15
+   
+87      for (k=0; k<nout; k++) {
+                  ^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Secp256k1AddIncomplete'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:31:5
+   
+31      lambda <-- dy / dx;
+        ^^^^^^^^^^^^^^^^^^ The assigned signal `lambda` is not constrained here.
+32      dx * lambda === dy;
+        ------------------- The signal `lambda` is constrained here.
+33  
+34      outX <== lambda * lambda - xP - xQ;
+        ---------------------------------- The signal `lambda` is constrained here.
+35      outY <== lambda * (xP - outX) - yP;
+        ---------------------------------- The signal `lambda` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:28:12
+   
+28      dx <== xP - xQ;
+               ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:29:12
+   
+29      dy <== yP - yQ;
+               ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:31:16
+   
+31      lambda <-- dy / dx;
+                   ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:32:5
+   
+32      dx * lambda === dy;
+        ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:34:14
+   
+34      outX <== lambda * lambda - xP - xQ;
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:35:14
+   
+35      outY <== lambda * (xP - outX) - yP;
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:31:21
+   
+31      lambda <-- dy / dx;
+                        ^^ The divisor `dx` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'Bits2Num'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:62:9
+   
+62          lc1 += in[i] * e2;
+            ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:63:14
+   
+63          e2 = e2 + e2;
+                 ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:61:26
+   
+61      for (var i = 0; i<n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/bitify.circom:61:21
+   
+61      for (var i = 0; i<n; i++) {
+                        ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Secp256k1AddComplete'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:79:5
+   
+79      signal lambdaB <-- ((3 * xPSquared) / (2 * yP));
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lambdaB` is not constrained here.
+80      lambdaB * 2 * yP === 3 * xPSquared;
+        ----------------------------------- The signal `lambdaB` is constrained here.
+   
+83      signal lambda <== (lambdaB * isXEqual.out) + lambdaA;
+        ---------------------------------------------------- The signal `lambdaB` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:75:5
+   
+75      signal lambdaA <-- ((yQ - yP) / dx) * (1 - isXEqual.out);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lambdaA` is not constrained here.
+76      dx * lambdaA === dy;
+        -------------------- The signal `lambdaA` is constrained here.
+   
+83      signal lambda <== (lambdaB * isXEqual.out) + lambdaA;
+        ---------------------------------------------------- The signal `lambdaA` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:55:26
+   
+55      signal xPSquared <== xP * xP;
+                             ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:68:26
+   
+68      isXEitherZero.in <== (1 - isXpZero.out) * (1 - isXqZero.out);
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:73:19
+   
+73      signal dx <== xQ - xP;
+                      ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:74:19
+   
+74      signal dy <== (yQ - yP) * (1 - isXEqual.out);
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:75:24
+   
+75      signal lambdaA <-- ((yQ - yP) / dx) * (1 - isXEqual.out);
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:76:5
+   
+76      dx * lambdaA === dy;
+        ^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:79:25
+   
+79      signal lambdaB <-- ((3 * xPSquared) / (2 * yP));
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:80:5
+   
+80      lambdaB * 2 * yP === 3 * xPSquared;
+        ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:80:26
+   
+80      lambdaB * 2 * yP === 3 * xPSquared;
+                             ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:83:23
+   
+83      signal lambda <== (lambdaB * isXEqual.out) + lambdaA;
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:87:22
+   
+87      signal outAx <== lambda * lambda - xP - xQ;
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:88:22
+   
+88      signal outAy <== lambda * (xP - outAx) - yP;
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:91:22
+   
+91      signal outBx <== outAx * (1 - isXEitherZero.out);
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:92:22
+   
+92      signal outBy <== outAy * (1 - isXEitherZero.out);
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:95:22
+   
+95      signal outCx <== isXpZero.out * xQ;
+                         ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:96:22
+   
+96      signal outCy <== isXpZero.out * yQ;
+                         ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:99:22
+   
+99      signal outDx <== isXqZero.out * xP;
+                         ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:100:22
+    
+100      signal outDy <== isXqZero.out * yP;
+                          ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:105:24
+    
+105      zeroizeA.in[1] <== 1 - (yP + yQ);
+                            ^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:123:14
+    
+123      outX <== (outBx + outCx + outDx) * (1 - zeroize.out);
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:124:14
+    
+124      outY <== (outBy + outCy + outDy) * (1 - zeroize.out);
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system/circuits/add.circom:79:44
+   
+79      signal lambdaB <-- ((3 * xPSquared) / (2 * yP));
+                                               ^^^^^^ The divisor `(2 * yP)` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'GreaterThan'
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:125:18
+    
+122      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+    
+125      lt.in[1] <== in[0];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/comparators.circom:124:18
+    
+122      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+123  
+124      lt.in[0] <== in[1];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'OR'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/dependencies/circomlib/circuits/gates.circom:42:13
+   
+42      out <== a + b - a*b;
+                ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: 176 issues found.

@@ -1,0 +1,50 @@
+stdout:
+ Random Seed: 2630487539484477579
+
+[2K Generation: 0/500 (0)
+     Solution found in generation 0
+
+stderr:
+
+           zkFuzz      
+      ZK Circuit Fuzzer
+    
+Welcome to the zkFuzz
+
+ Loading Whitelists...
+ Parsing Templates...
+ Parsing Function...
+ Gathering Trace/Side Constraints...
+
+
+ Scanning TCCT Instances...
+
+ Counter Example:                                           
+     UnderConstrained (Non-Deterministic) 
+            `main.out[1]` is expected to be `18767440094368222523328516350944994976946187486690425007542718648728377489969` 
+     Assignment Details: 
+            main.a[2] = 1 
+            main.out[0] = 16 
+            main.n = 4 
+            main.out[1] = 4 
+            main.b[2] = 21888242871839275222246405745257275088548364400416034343698204186575808495581 
+            main.a[1] = 21888242871839275222246405745257275088548364400416034343698204186575808495524 
+            main.a[0] = 21888242871839275222246405745257275088548364400416034343698204186575808495615 
+            main.b[0] = 21888242871839275222246405745257275088548364400416034343698204186575808495599 
+            main.b[3] = 1 
+            main.out[2] = 21888242871839275222246405745257275088548364400416034343698204186575808495580 
+            main.out[3] = 5 
+            main.b[1] = 11353212724734989009024115560966094918671661003377508028295318325054623581589 
+            main.a[3] = 4 
+
+
+
+                        zkFuzz Report                        
+
+ Execution Summary:
+  Prime Number      : 21888242871839275222246405745257275088548364400416034343698204186575808495617
+  Compression Rate  : 20.00% (1/5)
+  Verification      :  NOT SAFE 
+  Execution Time    : 4.312716ms
+
+Everything went okay

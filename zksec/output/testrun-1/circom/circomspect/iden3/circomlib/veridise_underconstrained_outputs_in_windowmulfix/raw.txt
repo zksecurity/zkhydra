@@ -1,0 +1,2009 @@
+circomspect: analyzing function 'nbits'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:57:12
+   
+57      while (n-1<a) {
+               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:58:9
+   
+58          r++;
+            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:59:9
+   
+59          n *= 2;
+            ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:57:12
+   
+57      while (n-1<a) {
+               ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AliasCheck'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/aliascheck.circom:30:26
+   
+30      for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/aliascheck.circom:30:19
+   
+30      for (var i=0; i<254; i++) in[i] ==> compConstant.in[i];
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CompConstant'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:39:13
+   
+39      var b = (1 << 128) -1;
+                ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:45:17
+   
+45          clsb = (ct >> (i*2)) & 1;
+                    ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:46:17
+   
+46          cmsb = (ct >> (i*2+1)) & 1;
+                    ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:47:19
+   
+47          slsb = in[i*2];
+                      ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:48:19
+   
+48          smsb = in[i*2+1];
+                      ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:51:26
+   
+51              parts[i] <== -b*smsb*slsb + b*smsb + b*slsb;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:53:26
+   
+53              parts[i] <== a*smsb*slsb - a*slsb + b*smsb - a*smsb + a;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:55:26
+   
+55              parts[i] <== b*smsb*slsb - a*smsb + a;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:57:26
+   
+57              parts[i] <== -a*smsb*slsb + a;
+                             ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:60:15
+   
+60          sum = sum + parts[i];
+                  ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:62:13
+   
+62          b = b -e;
+                ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:63:13
+   
+63          a = a +e;
+                ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:64:13
+   
+64          e = e*2;
+                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:44:21
+   
+44      for (i=0;i<127; i++) {
+                        ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/compconstant.circom:44:14
+   
+44      for (i=0;i<127; i++) {
+                 ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'EscalarMulFix'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:239:21
+    
+239      var nsegments = (n-1)\246 +1;       // 249 probably would work. But I'm not sure and for security I keep 246
+                         ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:240:24
+    
+240      var nlastsegment = n - (nsegments-1)*249;
+                            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:244:19
+    
+244      component m2e[nsegments-1];
+                       ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:245:22
+    
+245      component adders[nsegments-1];
+                          ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:254:21
+    
+254          nseg = (s < nsegments-1) ? 249 : nlastsegment;
+                         ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:255:20
+    
+255          nWindows = ((nseg - 1)\3)+1;
+                        ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:260:36
+    
+260              segments[s].e[i] <== e[s*249+i];
+                                        ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:259:27
+    
+259          for (i=0; i<nseg; i++) {
+                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:263:26
+    
+263          for (i = nseg; i<nWindows*3; i++) {
+                              ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:263:38
+    
+263          for (i = nseg; i<nWindows*3; i++) {
+                                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:271:17
+    
+271              m2e[s-1] = Montgomery2Edwards();
+                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:272:20
+    
+272              adders[s-1] = BabyAdd();
+                        ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:274:42
+    
+274              segments[s-1].dbl[0] ==> m2e[s-1].in[0];
+                                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:274:22
+    
+274              segments[s-1].dbl[0] ==> m2e[s-1].in[0];
+                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:275:42
+    
+275              segments[s-1].dbl[1] ==> m2e[s-1].in[1];
+                                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:275:22
+    
+275              segments[s-1].dbl[1] ==> m2e[s-1].in[1];
+                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:277:17
+    
+277              m2e[s-1].out[0] ==> segments[s].base[0];
+                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:278:17
+    
+278              m2e[s-1].out[1] ==> segments[s].base[1];
+                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:281:49
+    
+281                  segments[s-1].out[0] ==> adders[s-1].x1;
+                                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:281:26
+    
+281                  segments[s-1].out[0] ==> adders[s-1].x1;
+                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:282:49
+    
+282                  segments[s-1].out[1] ==> adders[s-1].y1;
+                                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:282:26
+    
+282                  segments[s-1].out[1] ==> adders[s-1].y1;
+                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:284:45
+    
+284                  adders[s-2].xout ==> adders[s-1].x1;
+                                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:284:24
+    
+284                  adders[s-2].xout ==> adders[s-1].x1;
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:285:45
+    
+285                  adders[s-2].yout ==> adders[s-1].y1;
+                                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:285:24
+    
+285                  adders[s-2].yout ==> adders[s-1].y1;
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:287:43
+    
+287              segments[s].out[0] ==> adders[s-1].x2;
+                                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:288:43
+    
+288              segments[s].out[1] ==> adders[s-1].y2;
+                                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:252:28
+    
+252      for (s=0; s<nsegments; s++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:296:16
+    
+296          adders[nsegments-2].xout ==> out[0];
+                    ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:297:16
+    
+297          adders[nsegments-2].yout ==> out[1];
+                    ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:252:15
+    
+252      for (s=0; s<nsegments; s++) {
+                   ^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:254:17
+    
+254          nseg = (s < nsegments-1) ? 249 : nlastsegment;
+                     ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:259:19
+    
+259          for (i=0; i<nseg; i++) {
+                       ^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:263:24
+    
+263          for (i = nseg; i<nWindows*3; i++) {
+                            ^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'BabyPbk'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:102:22
+    
+102      for (i=0; i<253; i++) {
+                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:102:15
+    
+102      for (i=0; i<253; i++) {
+                   ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'GreaterEqThan'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:138:18
+    
+138      lt.in[1] <== in[0]+1;
+                      ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:138:18
+    
+135      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+    
+138      lt.in[1] <== in[0]+1;
+                      ^^^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:137:18
+    
+135      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+136  
+137      lt.in[0] <== in[1];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'BabyAdd'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:45:5
+   
+45      xout <-- (beta + gamma) / (1+ d*tau);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `xout` is not constrained here.
+46      (1+ d*tau) * xout === (beta + gamma);
+        ------------------------------------- The signal `xout` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:48:5
+   
+48      yout <-- (delta + a*beta - gamma) / (1-d*tau);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `yout` is not constrained here.
+49      (1-d*tau)*yout === (delta + a*beta - gamma);
+        -------------------------------------------- The signal `yout` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:40:14
+   
+40      beta <== x1*y2;
+                 ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:41:15
+   
+41      gamma <== y1*x2;
+                  ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:42:15
+   
+42      delta <== (-a*x1+y1)*(x2 + y2);
+                  ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:43:13
+   
+43      tau <== beta * gamma;
+                ^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:45:14
+   
+45      xout <-- (beta + gamma) / (1+ d*tau);
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:46:5
+   
+46      (1+ d*tau) * xout === (beta + gamma);
+        ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:46:28
+   
+46      (1+ d*tau) * xout === (beta + gamma);
+                               ^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:48:14
+   
+48      yout <-- (delta + a*beta - gamma) / (1-d*tau);
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:49:5
+   
+49      (1-d*tau)*yout === (delta + a*beta - gamma);
+        ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:49:25
+   
+49      (1-d*tau)*yout === (delta + a*beta - gamma);
+                            ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:45:32
+   
+45      xout <-- (beta + gamma) / (1+ d*tau);
+                                   ^^^^^^^^ The divisor `(1 + (d * tau))` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:48:42
+   
+48      yout <-- (delta + a*beta - gamma) / (1-d*tau);
+                                             ^^^^^^^ The divisor `(1 - (d * tau))` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'IsEqual'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:43:5
+   
+43      in[1] - in[0] ==> isz.in;
+        ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'GreaterThan'
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:124:18
+    
+122      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+123  
+124      lt.in[0] <== in[1];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:125:18
+    
+122      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+    
+125      lt.in[1] <== in[0];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'BinSum'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:88:9
+   
+88          out[k] <-- (lin >> k) & 1;
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[k]` is not constrained here.
+   
+91          out[k] * (out[k] - 1) === 0;
+            ---------------------------- The signal `out[k]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:66:22
+   
+66      var nout = nbits((2**n -1)*ops);
+                         ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:81:13
+   
+81              lin += in[j][k] * e2;
+                ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:80:26
+   
+80          for (j=0; j<ops; j++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:83:14
+   
+83          e2 = e2 + e2;
+                 ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:79:20
+   
+79      for (k=0; k<n; k++) {
+                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:88:21
+   
+88          out[k] <-- (lin >> k) & 1;
+                        ^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:91:9
+   
+91          out[k] * (out[k] - 1) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:93:9
+   
+93          lout += out[k] * e2;
+            ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:95:14
+   
+95          e2 = e2+e2;
+                 ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:87:23
+   
+87      for (k=0; k<nout; k++) {
+                          ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:79:15
+   
+79      for (k=0; k<n; k++) {
+                  ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:80:19
+   
+80          for (j=0; j<ops; j++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/binsum.circom:87:15
+   
+87      for (k=0; k<nout; k++) {
+                  ^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'SegmentMulFix'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:145:20
+    
+145      signal input e[nWindows*3];
+                        ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:175:44
+    
+175              windows[i].base[0] <== windows[i-1].out8[0];
+                                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:176:44
+    
+176              windows[i].base[1] <== windows[i-1].out8[1];
+                                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:177:43
+    
+177              cadders[i].in1[0] <== cadders[i-1].out[0];
+                                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:178:43
+    
+178              cadders[i].in1[1] <== cadders[i-1].out[1];
+                                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:181:36
+    
+181              windows[i].in[j] <== e[3*i+j];
+                                        ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:180:24
+    
+180          for (j=0; j<3; j++) {
+                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:183:15
+    
+183          if (i<nWindows-1) {
+                   ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:166:27
+    
+166      for (i=0; i<nWindows; i++) {
+                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:200:41
+    
+200              adders[i].in1[0] <== adders[i-1].out[0];
+                                             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:201:41
+    
+201              adders[i].in1[1] <== adders[i-1].out[1];
+                                             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:194:27
+    
+194      for (i=0; i<nWindows; i++) {
+                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:210:26
+    
+210      m2e.in[0] <== adders[nWindows-1].out[0];
+                              ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:211:26
+    
+211      m2e.in[1] <== adders[nWindows-1].out[1];
+                              ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:212:28
+    
+212      cm2e.in[0] <== cadders[nWindows-1].out[0];
+                                ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:213:28
+    
+213      cm2e.in[1] <== cadders[nWindows-1].out[1];
+                                ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:224:13
+    
+224      windows[nWindows-1].out8[0] ==> dbl[0];
+                 ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:225:13
+    
+225      windows[nWindows-1].out8[1] ==> dbl[1];
+                 ^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:166:15
+    
+166      for (i=0; i<nWindows; i++) {
+                   ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:180:19
+    
+180          for (j=0; j<3; j++) {
+                       ^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:183:13
+    
+183          if (i<nWindows-1) {
+                 ^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/escalarmulfix.circom:194:15
+    
+194      for (i=0; i<nWindows; i++) {
+                   ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Montgomery2Edwards'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:53:5
+   
+53      out[0] <-- in[0] / in[1];
+        ^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[0]` is not constrained here.
+   
+56      out[0] * in[1] === in[0];
+        ------------------------- The signal `out[0]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:54:5
+   
+54      out[1] <-- (in[0] - 1) / (in[0] + 1);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[1]` is not constrained here.
+   
+57      out[1] * (in[0] + 1) === in[0] - 1;
+        ----------------------------------- The signal `out[1]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:53:16
+   
+53      out[0] <-- in[0] / in[1];
+                   ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:54:16
+   
+54      out[1] <-- (in[0] - 1) / (in[0] + 1);
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:56:5
+   
+56      out[0] * in[1] === in[0];
+        ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:57:5
+   
+57      out[1] * (in[0] + 1) === in[0] - 1;
+        ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:57:30
+   
+57      out[1] * (in[0] + 1) === in[0] - 1;
+                                 ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:53:24
+   
+53      out[0] <-- in[0] / in[1];
+                           ^^^^^ The divisor `in[1]` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:54:31
+   
+54      out[1] <-- (in[0] - 1) / (in[0] + 1);
+                                  ^^^^^^^^^ The divisor `(in[0] + 1)` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'Num2Bits_strict'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:49:26
+   
+49      for (var i=0; i<254; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:49:19
+   
+49      for (var i=0; i<254; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:46:21
+   
+46      component n2b = Num2Bits(254);
+                        ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'Mux3'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:66:20
+   
+66      for (i=0; i<8; i++) {
+                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:70:20
+   
+70      for (i=0; i<3; i++) {
+                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:66:15
+   
+66      for (i=0; i<8; i++) {
+                  ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:70:15
+   
+70      for (i=0; i<3; i++) {
+                  ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Edwards2Montgomery'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:35:5
+   
+35      out[1] <-- out[0] / in[0];
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[1]` is not constrained here.
+   
+39      out[1] * in[0] === out[0];
+        -------------------------- The signal `out[1]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:34:5
+   
+34      out[0] <-- (1 + in[1]) / (1 - in[1]);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[0]` is not constrained here.
+   
+38      out[0] * (1-in[1]) === (1 + in[1]);
+        ----------------------------------- The signal `out[0]` is constrained here.
+39      out[1] * in[0] === out[0];
+        -------------------------- The signal `out[0]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:34:16
+   
+34      out[0] <-- (1 + in[1]) / (1 - in[1]);
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:35:16
+   
+35      out[1] <-- out[0] / in[0];
+                   ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:38:5
+   
+38      out[0] * (1-in[1]) === (1 + in[1]);
+        ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:38:29
+   
+38      out[0] * (1-in[1]) === (1 + in[1]);
+                                ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:39:5
+   
+39      out[1] * in[0] === out[0];
+        ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:34:31
+   
+34      out[0] <-- (1 + in[1]) / (1 - in[1]);
+                                  ^^^^^^^^^ The divisor `(1 - in[1])` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:35:25
+   
+35      out[1] <-- out[0] / in[0];
+                            ^^^^^ The divisor `in[0]` must be constrained to be non-zero.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+   = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'MontgomeryAdd'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:102:5
+    
+102      lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lamda` is not constrained here.
+103      lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+         ------------------------------------------------ The signal `lamda` is constrained here.
+104  
+105      out[0] <== B*lamda*lamda - A - in1[0] -in2[0];
+         --------------------------------------------- The signal `lamda` is constrained here.
+106      out[1] <== lamda * (in1[0] - out[0]) - in1[1];
+         --------------------------------------------- The signal `lamda` is constrained here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+    = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:97:13
+   
+97      var A = (2 * (a + d)) / (a - d);
+                ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:98:13
+   
+98      var B = 4 / (a - d);
+                ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:102:15
+    
+102      lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:103:5
+    
+103      lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+         ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:103:36
+    
+103      lamda * (in2[0] - in1[0]) === (in2[1] - in1[1]);
+                                        ^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:105:16
+    
+105      out[0] <== B*lamda*lamda - A - in1[0] -in2[0];
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:106:16
+    
+106      out[1] <== lamda * (in1[0] - out[0]) - in1[1];
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:102:36
+    
+102      lamda <-- (in2[1] - in1[1]) / (in2[0] - in1[0]);
+                                        ^^^^^^^^^^^^^^^ The divisor `(in2[0] - in1[0])` must be constrained to be non-zero.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+    = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'Bits2Num'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:62:9
+   
+62          lc1 += in[i] * e2;
+            ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:63:14
+   
+63          e2 = e2 + e2;
+                 ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:61:26
+   
+61      for (var i = 0; i<n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:61:21
+   
+61      for (var i = 0; i<n; i++) {
+                        ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Bits2Num_strict'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:76:26
+   
+76      for (var i=0; i<254; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:76:19
+   
+76      for (var i=0; i<254; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Bits2Num` to convert arrays to field elements may lead to aliasing issues.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:74:21
+   
+74      component b2n = Bits2Num(254);
+                        ^^^^^^^^^^^^^ Circomlib template `Bits2Num` instantiated here.
+   
+   = Consider using `Bits2Num_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'Num2BitsNeg'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:96:9
+   
+96          out[i] <-- (neg >> i) & 1;
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[i]` is not constrained here.
+97          out[i] * (out[i] -1 ) === 0;
+            ---------------------------- The signal `out[i]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:93:28
+   
+93      var neg = n == 0 ? 0 : 2**n - in;
+                               ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:96:21
+   
+96          out[i] <-- (neg >> i) & 1;
+                        ^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:97:9
+   
+97          out[i] * (out[i] -1 ) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:98:9
+   
+98          lc1 += out[i] * 2**i;
+            ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:95:26
+   
+95      for (var i = 0; i<n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:105:5
+    
+105      lc1 + isZero.out * 2**n === 2**n - in;
+         ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:105:33
+    
+105      lc1 + isZero.out * 2**n === 2**n - in;
+                                     ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:95:21
+   
+95      for (var i = 0; i<n; i++) {
+                        ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'IsZero'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:30:5
+   
+30      inv <-- in!=0 ? 1/in : 0;
+        ^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `inv` is not constrained here.
+31  
+32      out <== -in*inv +1;
+        ------------------ The signal `inv` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:30:21
+   
+30      inv <-- in!=0 ? 1/in : 0;
+                        ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:32:13
+   
+32      out <== -in*inv +1;
+                ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:33:5
+   
+33      in*out === 0;
+        ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'MontgomeryDouble'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:137:5
+    
+137      lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `lamda` is not constrained here.
+138      lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+         -------------------------------------------------- The signal `lamda` is constrained here.
+139  
+140      out[0] <== B*lamda*lamda - A - 2*in[0];
+         -------------------------------------- The signal `lamda` is constrained here.
+141      out[1] <== lamda * (in[0] - out[0]) - in[1];
+         ------------------------------------------- The signal `lamda` is constrained here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+    = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:129:13
+    
+129      var A = (2 * (a + d)) / (a - d);
+                 ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:130:13
+    
+130      var B = 4 / (a - d);
+                 ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:135:14
+    
+135      x1_2 <== in[0] * in[0];
+                  ^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:137:15
+    
+137      lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:138:5
+    
+138      lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+         ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:138:30
+    
+138      lamda * (2*B*in[1]) === (3*x1_2 + 2*A*in[0] + 1 );
+                                  ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:140:16
+    
+140      out[0] <== B*lamda*lamda - A - 2*in[0];
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:141:16
+    
+141      out[1] <== lamda * (in[0] - out[0]) - in[1];
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/montgomery.circom:137:44
+    
+137      lamda <-- (3*x1_2 + 2*A*in[0] + 1 ) / (2*B*in[1]);
+                                                ^^^^^^^^^ The divisor `((2 * B) * in[1])` must be constrained to be non-zero.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+    = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: analyzing template 'ForceEqualIfEnabled'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:54:5
+   
+54      in[1] - in[0] ==> isz.in;
+        ^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:56:5
+   
+56      (1 - isz.out)*enabled === 0;
+        ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'WindowMulFix'
+circomspect: analyzing template 'BabyDbl'
+circomspect: analyzing template 'Num2Bits'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:32:9
+   
+32          out[i] <-- (in >> i) & 1;
+            ^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[i]` is not constrained here.
+33          out[i] * (out[i] -1 ) === 0;
+            ---------------------------- The signal `out[i]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:32:21
+   
+32          out[i] <-- (in >> i) & 1;
+                        ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:33:9
+   
+33          out[i] * (out[i] -1 ) === 0;
+            ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:34:9
+   
+34          lc1 += out[i] * e2;
+            ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:35:14
+   
+35          e2 = e2+e2;
+                 ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:31:26
+   
+31      for (var i = 0; i<n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/bitify.circom:31:21
+   
+31      for (var i = 0; i<n; i++) {
+                        ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'LessThan'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:94:30
+   
+94      component n2b = Num2Bits(n+1);
+                                 ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:96:16
+   
+96      n2b.in <== in[0]+ (1<<n) - in[1];
+                   ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:98:13
+   
+98      out <== 1-n2b.out[n];
+                ^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:90:12
+   
+90      assert(n <= 252);
+               ^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:94:21
+   
+94      component n2b = Num2Bits(n+1);
+                        ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'LessEqThan'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:112:18
+    
+112      lt.in[1] <== in[1]+1;
+                      ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:112:18
+    
+109      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+    
+112      lt.in[1] <== in[1]+1;
+                      ^^^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` should typically be constrained to the input size
+     /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/comparators.circom:111:18
+    
+109      component lt = LessThan(n);
+         -------------------------- Circomlib template `LessThan` instantiated here.
+110  
+111      lt.in[0] <== in[0];
+                      ^^^^^ This input to `LessThan` should be constrained to `n` bits.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'MultiMux3'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:38:13
+   
+38      s10 <== s[1] * s[0];
+                ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:42:23
+   
+42           a210[i] <==  ( c[i][ 7]-c[i][ 6]-c[i][ 5]+c[i][ 4] - c[i][ 3]+c[i][ 2]+c[i][ 1]-c[i][ 0] ) * s10;
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:43:23
+   
+43            a21[i] <==  ( c[i][ 6]-c[i][ 4]-c[i][ 2]+c[i][ 0] ) * s[1];
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:44:23
+   
+44            a20[i] <==  ( c[i][ 5]-c[i][ 4]-c[i][ 1]+c[i][ 0] ) * s[0];
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:45:25
+   
+45             a2[i] <==  ( c[i][ 4]-c[i][ 0] );
+                            ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:47:23
+   
+47            a10[i] <==  ( c[i][ 3]-c[i][ 2]-c[i][ 1]+c[i][ 0] ) * s10;
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:48:23
+   
+48             a1[i] <==  ( c[i][ 2]-c[i][ 0] ) * s[1];
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:49:23
+   
+49             a0[i] <==  ( c[i][ 1]-c[i][ 0] ) * s[0];
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:52:22
+     
+52              out[i] <== ( a210[i] + a21[i] + a20[i] + a2[i] ) * s[2] +
+    ^
+53                        (  a10[i] +  a1[i] +  a0[i] +  a[i] );
+    ^ Field element arithmetic here.
+     
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:40:24
+   
+40      for (var i=0; i<n; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/mux3.circom:40:19
+   
+40      for (var i=0; i<n; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'BabyCheck'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:79:12
+   
+79      x2 <== x*x;
+               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:80:12
+   
+80      y2 <== y*y;
+               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:82:5
+   
+82      a*x2 + y2 === 1 + d*x2*y2;
+        ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix/circuits/babyjub.circom:82:19
+   
+82      a*x2 + y2 === 1 + d*x2*y2;
+                      ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: 210 issues found.

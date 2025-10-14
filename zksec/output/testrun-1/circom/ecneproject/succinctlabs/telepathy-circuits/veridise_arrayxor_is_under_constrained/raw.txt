@@ -1,0 +1,28 @@
+stdout:
+time to prep inputs 65 milliseconds
+setup solver 32 milliseconds
+Solved for 0 variables out of 4 total variables
+Solved for 0 target variables out of 4 total target variables
+------ Bad Constraints ------
+
+------ All Variables ------
+
+main.out[3]
+Uniquely Determined: false
+Bounds: None
+
+main.out[2]
+Uniquely Determined: false
+Bounds: None
+
+main.out[0]
+Uniquely Determined: false
+Bounds: None
+
+main.out[1]
+Uniquely Determined: false
+Bounds: None
+
+R1CS function circuit has potentially unsound constraints
+
+stderr:

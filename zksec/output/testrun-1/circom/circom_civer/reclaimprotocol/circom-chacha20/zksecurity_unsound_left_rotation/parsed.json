@@ -1,0 +1,16 @@
+{
+  "stats": {
+    "verified": 0,
+    "failed": 1,
+    "timeout": 0
+  },
+  "buggy_components": [
+    {
+      "name": "RotateLeft32Bits",
+      "params": [
+        3
+      ]
+    }
+  ],
+  "timed_out_components": []
+}

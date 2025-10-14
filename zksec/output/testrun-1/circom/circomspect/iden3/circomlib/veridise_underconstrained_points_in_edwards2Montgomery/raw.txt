@@ -1,0 +1,91 @@
+circomspect: analyzing template 'Edwards2Montgomery'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:8:5
+   
+ 8      out[1] <-- out[0] / in[0];
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[1]` is not constrained here.
+   
+12      out[1] * in[0] === out[0];
+        -------------------------- The signal `out[1]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:7:5
+   
+ 7      out[0] <-- (1 + in[1]) / (1 - in[1]);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[0]` is not constrained here.
+   
+11      out[0] * (1-in[1]) === (1 + in[1]);
+        ----------------------------------- The signal `out[0]` is constrained here.
+12      out[1] * in[0] === out[0];
+        -------------------------- The signal `out[0]` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:7:16
+  
+7      out[0] <-- (1 + in[1]) / (1 - in[1]);
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+  = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:8:16
+  
+8      out[1] <-- out[0] / in[0];
+                  ^^^^^^^^^^^^^^ Field element arithmetic here.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+  = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:11:5
+   
+11      out[0] * (1-in[1]) === (1 + in[1]);
+        ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:11:29
+   
+11      out[0] * (1-in[1]) === (1 + in[1]);
+                                ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:12:5
+   
+12      out[1] * in[0] === out[0];
+        ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:7:31
+  
+7      out[0] <-- (1 + in[1]) / (1 - in[1]);
+                                 ^^^^^^^^^ The divisor `(1 - in[1])` must be constrained to be non-zero.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+  = To ignore this type of result, use `--allow CS0015`.
+
+warning[CS0015]: In signal assignments containing division, the divisor needs to be constrained to be non-zero
+   /home/tom/development/state-of-zk-security-tools/zksec/bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery/circuits/montgomery.circom:8:25
+  
+8      out[1] <-- out[0] / in[0];
+                           ^^^^^ The divisor `in[0]` must be constrained to be non-zero.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-devision.
+  = To ignore this type of result, use `--allow CS0015`.
+
+circomspect: 9 issues found.
