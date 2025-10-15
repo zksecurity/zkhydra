@@ -17,7 +17,6 @@ from utils.runner import (
 from utils.tools_resolver import resolve_tools
 
 BASE_DIR = Path.cwd()
-REPO_DIR = BASE_DIR.parent
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,8 +42,8 @@ def main() -> None:
         tool_registry = resolve_tools(dsl, config.tools[dsl])
 
         for bug in config.bugs[dsl]:
-            bug_path = REPO_DIR / bug
-            bug_name = remove_first_n_dirs(bug, 5)
+            bug_path = BASE_DIR / bug
+            bug_name = remove_first_n_dirs(bug, 4)
 
             if not bug_path.exists():
                 logging.error(f"Bug path does not exist: {bug_path}")
@@ -171,7 +170,7 @@ def summarize_tool_results(
         summarize_results(dsl, tool, bug_name, output_result, output_result_tool)
 
 
-def remove_first_n_dirs(path: str, n: int = 5) -> str:
+def remove_first_n_dirs(path: str, n: int = 4) -> str:
     """Drop the first n path components from a string path safely.
 
     If n >= number of components, returns the last component or empty string.

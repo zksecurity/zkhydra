@@ -3,7 +3,7 @@ import shutil
 from pathlib import Path
 from typing import Any, Dict
 
-from ..utils import (
+from .utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
@@ -135,7 +135,7 @@ def compare_zkbugs_ground_truth(
             "reason": "Tool found sound constraints but the circuit is unsound.",
         }
     elif tool_result == "Timed out":
-        output = {"result": "timeout", "reason": "Reached zksec threshold."}
+        output = {"result": "timeout", "reason": "Reached zkhydra threshold."}
     elif tool_result == "Circuit file not found":
         output = {
             "result": "error",

@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 TOOLS_DIR="$ROOT_DIR/tools"
 
-cd "$TOOLS_DIR/circom/circom_civer"
+cd "$TOOLS_DIR/circom_civer"
 echo "[info] In $(pwd)"
 cargo build --release
 

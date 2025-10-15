@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict
 
-from ..utils import (
+from .utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
@@ -107,7 +107,7 @@ def compare_zkbugs_ground_truth(
     ):
         is_correct = True
     elif tool_result == "Timed out":
-        reason = "Reached zksec threshold."
+        reason = "Reached zkhydra threshold."
     elif (
         tool_result
         == "Tool cannot determine whether the circuit is properly constrained"
@@ -124,7 +124,7 @@ def compare_zkbugs_ground_truth(
 
     if is_correct:
         output = {"result": "correct"}
-    elif reason == "Reached zksec threshold.":
+    elif reason == "Reached zkhydra threshold.":
         output = {"result": "timeout", "reason": reason}
     elif reason == "Picus Tool Error":
         output = {"result": "error", "reason": reason}

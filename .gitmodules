@@ -1,59 +1,60 @@
 ##############################
 # Bugs                       #
 ##############################
-[submodule "zksec/bugs/zkbugs"]
-	path = zksec/bugs/zkbugs
+[submodule "bugs/zkbugs"]
+	path = bugs/zkbugs
 	url = https://github.com/zksecurity/zkbugs.git
 
 ##############################
 # Tools 					 #
 ##############################
 [submodule "circom_civer"]
-	path = zksec/tools/circom/circom_civer
+	path = tools/circom_civer
 	url = https://github.com/costa-group/circom_civer.git
 
 [submodule "circomspect"]
-	path = zksec/tools/circom/circomspect
+	path = tools/circomspect
 	url = https://github.com/trailofbits/circomspect.git
 
 [submodule "ecneproject"]
-	path = zksec/tools/circom/ecneproject
+	path = tools/ecneproject
 	url = https://github.com/franklynwang/EcneProject.git
 
 [submodule "picus"]
-	path = zksec/tools/circom/picus
+	path = tools/picus
 	url = https://github.com/Veridise/Picus.git
 
 [submodule "r1cs-solver"]
-	path = zksec/tools/circom/r1cs-solver
+	path = tools/r1cs-solver
 	url = https://github.com/faulhornlabs/r1cs-solver.git
 
 [submodule "zkfuzz"]
-	path = zksec/tools/circom/zkfuzz
+	path = tools/zkfuzz
 	url = https://github.com/Koukyosyumei/zkFuzz.git
 
 [submodule "gnark-lean-extractor"]
-	path = zksec/tools/gnark/gnark-lean-extractor
+	path = tools/gnark-lean-extractor
 	url = https://github.com/reilabs/gnark-lean-extractor.git
 
+[submodule "tools/picus-gnark"]
+	path = tools/picus-gnark
+	url = https://github.com/Veridise/picus_gnark.git
+
 [submodule "pilspector"]
-	path = zksec/tools/pil/pilspector
+	path = tools/pilspector
 	url = https://github.com/Schaeff/pilspector.git
 
 [submodule "sierra-analyzer"]
-	path = zksec/tools/cairo/sierra-analyzer
+	path = tools/sierra-analyzer
 	url = https://github.com/FuzzingLabs/sierra-analyzer.git
 
 ##############################
 # Helpers                    #
 ##############################
-[submodule "zksec/helpers/cvc5"]
-	path = zksec/helpers/cvc5
+[submodule "helpers/cvc5"]
+	path = helpers/cvc5
 	url = https://github.com/cvc5/cvc5.git
 
-[submodule "zksec/helpers/rewriter"]
-	path = zksec/helpers/rewriter
+[submodule "helpers/rewriter"]
+	path = helpers/rewriter
 	url = https://github.com/mit-plv/rewriter.git
-[submodule "zksec/tools/picus_gnark"]
-	path = zksec/tools/picus_gnark
-	url = https://github.com/Veridise/picus_gnark.git

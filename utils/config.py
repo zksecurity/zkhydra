@@ -50,11 +50,11 @@ def load_config(
 
     output_dir = Path(app_section.get("output", "./output"))
     dynamic_name = bool(app_section.get("dynamic_name", False))
-    static_name = app_section.get("static_name", "zksec")
+    static_name = app_section.get("static_name", "zkhydra")
 
     if dynamic_name:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        output_dir = base_dir / output_dir / f"zksec_{timestamp}"
+        output_dir = base_dir / output_dir / f"zkhydra_{timestamp}"
     else:
         output_dir = base_dir / output_dir / static_name
 

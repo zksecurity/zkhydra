@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 BASE_DIR = Path.cwd()
-ZKBUGS_DIR = Path(__file__).resolve().parent / "zkbugs"
+ZKBUGS_DIR = Path(__file__).resolve().parent
 SCRIPT_DIR = Path(ZKBUGS_DIR) / "scripts"
 
 

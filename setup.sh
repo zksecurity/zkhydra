@@ -32,7 +32,7 @@ run_step() {
 }
 
 main() {
-  info "Starting zksec tool setup"
+  info "Starting zkhydra tool setup"
 
   # Ensure we’re running from the script’s directory
   cd "$(dirname "$0")"

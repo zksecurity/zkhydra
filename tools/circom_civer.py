@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ..utils import (
+from .utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
@@ -50,6 +50,7 @@ def execute(bug_path: str, timeout: int) -> str:
         "500000",
         "--O0",
     ]
+    logging.debug(f"Running: '{shlex.join(cmd)}'")
     result = run_command(cmd, timeout, tool="circom_civer", bug=bug_path)
 
     return result
@@ -72,14 +73,14 @@ def parse_output(
     buggy_components: List[Any] = []
     timed_out_components: List[Any] = []
 
-    context: Optional[str] = None  # track section
+    context: Optional[str] = None
 
     for raw_line in bug_info:
         line = (raw_line or "").strip()
         if line == "[Timed out]":
             context = "timeout"
-            buggy_components = ["Reached zksec threshold."]
-            timed_out_components = ["Reached zksec threshold."]
+            buggy_components = ["Reached zkhydra threshold."]
+            timed_out_components = ["Reached zkhydra threshold."]
             continue
         # --- Track context (which section we are in) ---
         if line.startswith("Components that do not satisfy weak safety"):
@@ -187,7 +188,7 @@ def compare_zkbugs_ground_truth(
     last_lines: Optional[str] = None
 
     for component in buggy_components:
-        if component == "Reached zksec threshold.":
+        if component == "Reached zkhydra threshold.":
             timed_out = True
             break
         comp_name = component.get("name")
@@ -236,7 +237,7 @@ def compare_zkbugs_ground_truth(
         output = {"result": "correct"}
     else:
         if timed_out:
-            output = {"result": "timeout", "reason": "Reached zksec threshold."}
+            output = {"result": "timeout", "reason": "Reached zkhydra threshold."}
         else:
             if not buggy_components:
                 reason = "Tool found no module that do not satisfy weak safety."

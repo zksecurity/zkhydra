@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from ..utils import (
+from .utils import (
     check_files_exist,
     get_tool_result_parsed,
     run_command,
@@ -90,7 +90,7 @@ def parse_output(
     for raw_line in bug_info:
         line = (raw_line or "").rstrip("\n")
         if line == "[Timed out]":
-            warnings = ["Reached zksec threshold."]
+            warnings = ["Reached zkhydra threshold."]
             break
         if line.startswith("circomspect: analyzing function") or line.startswith(
             "circomspect: analyzing template"
@@ -151,7 +151,7 @@ def compare_zkbugs_ground_truth(
     if warnings == "No Warnings Found":
         output = {"result": "false", "reason": warnings}
         return output
-    elif warnings == ["Reached zksec threshold."]:
+    elif warnings == ["Reached zkhydra threshold."]:
         output = {"result": "timeout", "reason": warnings}
         return output
     elif warnings == "No Warnings Found for vulnerable function":

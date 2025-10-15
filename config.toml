@@ -1,0 +1,124 @@
+[app]
+# Log level (one of: DEBUG, INFO, WARNING, ERROR, CRITICAL)
+log_level = "INFO"
+
+# Timeout for each execution (per tool per bug) in seconds
+timeout = 1800
+
+# Output directory
+output = "./output"
+file_logging = true
+dynamic_name = true
+static_name = "zkhydra"
+
+# App stages
+## Set to false to skip a stage
+setup_bug_environment = true
+execute_tools = true
+cleanup_bug_environment = true
+generate_ground_truth = true
+parse_raw_tool_output = true
+analyze_tool_results = true
+summarize_tool_results = true
+
+[circom]
+# List of tools to use
+tools = [
+    "circom_civer",
+    "circomspect",
+    "EcneProject",
+    "Picus",
+    "zkFuzz"
+]
+
+# List of bugs to analyze -- total 24 bugs
+bugs = [
+    ## 0xbok
+    "bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+    ## darkforest-eth
+    "bugs/zkbugs/dataset/circom/darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
+    ## iden3
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd",
+    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
+    ## personaelabs
+    "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+    "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+    ## reclaimprotocol
+    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
+    ## semaphore-protocol
+    "bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+    ## succinctlabs
+    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained",
+    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+    ## Unirep
+    "bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+    "bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+    ## zkopru-network
+    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+]
+
+# List of unreproducible bugs -- total 7 bugs
+unreproducible_bugs = [
+    ## personaelabs
+    "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_Knowledge_of_any_member_signature_allow_to_generate_proof_of_membership",
+    ## privacy-scaling-explorations
+    "bugs/zkbugs/dataset/circom/privacy-scaling-explorations/maci/hashcloak_data_are_not_fully_verified_during_state_update",
+    "bugs/zkbugs/dataset/circom/privacy-scaling-explorations/maci/ProcessMessages_circuit_to_prevent_message_censorship_by_the_coordinator",
+    # reclaimprotocol
+    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Potentially_Easy_to_Misuse_Interface",
+    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_Addition_Gadget",
+    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_XOR_gadget",
+    # zkopru-network
+    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_Circuit_Does_Not_Check_the_ERC_20_Sum_Correctly_",
+]
+
+[pil]
+tools = [
+    # "pilspector"
+]
+
+# List of bugs to analyze -- total 2 bugs
+bugs = [
+    "bugs/zkbugs/dataset/pil/0xPolygonHermez/zkevm-proverjs/hexens_Missing_constraint_in_PIL_leading_to_execution_flow_hijack",
+    "bugs/zkbugs/dataset/pil/0xPolygonHermez/zkevm-proverjs/hexens_Missing_constraint_in_PIL_leading_to_proving_fake_inclusion_in_the_SMT",
+]
+
+# List of unreproducible bugs -- total 0 bugs
+unreproducible_bugs = [
+]
+
+
+
+[cairo]
+tools = [
+    # "sierra-analyzer"
+]
+
+# List of bugs to analyze -- total 8 bugs
+bugs = [
+    ## HerodotusDev
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Behaviour_is_undefined_if_mmr_len_is_not_range_checked",
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Behaviour_is_undefined_if_mmr_offset_is_not_range_checked",
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Behaviour_is_undefined_if_peaks_len_is_not_range_checked",
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Behaviour_is_undefined_if_position_is_not_range_checked",
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Function_doesnt_ensure_that_y_is_a_power_of_two",
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Implicitly_requires_value_to_fit_into_128_32_160_bits",
+    "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Missing_range_checks_for_negative_values",
+    # ## starkware-libs
+    "bugs/zkbugs/dataset/cairo/starkware-libs/stark-perpetual/abdk_This_function_cannot_handle_the_case_when_n_risk_factor_segments_is_zero",
+]
+
+# List of unreproducible bugs -- total 0 bugs
+unreproducible_bugs = [
+]

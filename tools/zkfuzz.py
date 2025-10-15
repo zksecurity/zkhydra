@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from ..utils import (
+from .utils import (
     change_directory,
     check_files_exist,
     get_tool_result_parsed,
@@ -114,7 +114,7 @@ def compare_zkbugs_ground_truth(
     reason = ""
 
     if status == "Timed out":
-        reason = "Reached zksec threshold."
+        reason = "Reached zkhydra threshold."
     elif status == "tool error":
         reason = vulnerability or "tool error"
     elif status == "found_bug":
@@ -142,7 +142,7 @@ def compare_zkbugs_ground_truth(
 
     if is_correct:
         output = {"result": "correct"}
-    elif reason == "Reached zksec threshold.":
+    elif reason == "Reached zkhydra threshold.":
         output = {"result": "timeout", "reason": reason}
     elif reason in ("tool error", "Tool Error"):
         output = {"result": "error", "reason": reason}

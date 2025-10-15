@@ -16,7 +16,8 @@ def resolve_tools(dsl: str, tools: List[str]) -> Dict[str, ToolInfo]:
     """Dynamically import tool modules for a DSL and return callables metadata."""
     loaded: Dict[str, ToolInfo] = {}
     for tool in tools:
-        module_path = f"tools.{dsl}.{tool}"
+        logging.debug(f"Resolving tool: {tool}")
+        module_path = f"tools.{tool}"
         try:
             module = importlib.import_module(module_path)
         except ImportError as e:
