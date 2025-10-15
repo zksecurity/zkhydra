@@ -20,16 +20,16 @@
 
 ## Execution
 
-Navigate into the source code:
-
-```Bash
-cd zksec
-```
-
 Execute `main.py`, by default it uses the `config.toml` specifying the bugs, tools, and output:
 
 ```Bash
-uv run main.py
+uv run main.py 
+```
+
+Otherwise, you can specify a particular config file:
+
+```Bash
+uv run main.py --config config.toml
 ```
 
 ## Development
@@ -37,5 +37,5 @@ uv run main.py
 To format the codebase, run:
 
 ```Bash
-cd zksec && uv run black . && uv run isort . --profile black
+uv run black . && uv run isort . --profile black
 ```

@@ -1,5 +1,0 @@
-{
-  "result": "false",
-  "reason": "Tool found wrong module (tool found: 'Secp256k1Double'; buggy module: 'EfficientECDSA')",
-  "need_manual_evaluation": true
-}

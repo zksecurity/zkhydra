@@ -1,5 +1,0 @@
-{
-  "result": "false",
-  "reason": "Tool found correct module, but lines didn't match (tool found lines: '4-4'; buggy lines: '9-9')",
-  "need_manual_evaluation": true
-}
