@@ -34,38 +34,50 @@ tools = [
 # List of bugs to analyze -- total 24 bugs
 bugs = [
     ## 0xbok
-    "bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+    # "bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+    # ## Unirep
+    # "bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+    # "bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
     ## darkforest-eth
-    "bugs/zkbugs/dataset/circom/darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
+    # "bugs/zkbugs/dataset/circom/darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
     ## iden3
     "bugs/zkbugs/dataset/circom/iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
     "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_window4",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd",
-    "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
-    ## personaelabs
-    "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
-    "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
-    ## reclaimprotocol
-    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
-    ## semaphore-protocol
-    "bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation",
-    ## succinctlabs
-    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
-    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
-    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
-    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained",
-    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
-    "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
-    ## Unirep
-    "bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
-    "bugs/zkbugs/dataset/circom/Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
-    ## zkopru-network
-    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd",
+    # "bugs/zkbugs/dataset/circom/iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
+    # "bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits",
+    # ## personaelabs
+    # "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+    # "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+    # ## reclaimprotocol
+    # "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
+    # ## selfxyz
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_forbidden_country_check_bypass_via_packed_byte_overflow",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_boolean_constraints_in_the_merkle_tree_path_leads_to_an_attacker_being_able_to_craft_a_fake_merkle_proof_for_an_arbitrary_leaf",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates",
+    # "bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices",
+    # ## semaphore-protocol
+    # "bugs/zkbugs/dataset/circom/semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+    # ## succinctlabs
+    # "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+    # "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+    # "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+    # "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained",
+    # "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+    # "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+    # ## tangle-network
+    # "bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
+    # ## zkopru-network
+    # "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
 ]
 
 # List of unreproducible bugs -- total 7 bugs
