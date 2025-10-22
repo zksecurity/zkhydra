@@ -8,7 +8,7 @@ TOOLS_DIR="$ROOT_DIR/tools"
 
 
 # Install EcneProject
-cd "$TOOLS_DIR/EcneProject/Circom_Functions"
+cd "$TOOLS_DIR/ecneproject/Circom_Functions"
 git clone https://github.com/iden3/circomlib
 cd ..
 
@@ -19,12 +19,13 @@ curl -fsSL https://install.julialang.org | sh -s -- -y
 sudo apt install just
 
 # Resolving dependencies
-julia --project=.
+# julia --project=.
 
 # In the Julia REPL
 # Resolve Julia dependencies
 julia --project=. -e '
 using Pkg
+Pkg.update()
 Pkg.resolve()
 Pkg.update()
 Pkg.instantiate()

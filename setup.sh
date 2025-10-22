@@ -62,7 +62,7 @@ main() {
   run_step "picus" "$CIRCOM_DIR/picus.sh" || true
   run_step "zkfuzz" "$CIRCOM_DIR/zkfuzz.sh" || true
   ## Pil
-  run_step "pilspector" "$PIL_DIR/pilspector.sh" || true
+  # run_step "pilspector" "$PIL_DIR/pilspector.sh" || true
 
   ok "All setup steps completed (some steps may have been skipped if scripts were missing)."
 }

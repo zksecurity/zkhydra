@@ -50,7 +50,6 @@ def execute(bug_path: str, timeout: int) -> str:
         "500000",
         "--O0",
     ]
-    logging.debug(f"Running: '{shlex.join(cmd)}'")
     result = run_command(cmd, timeout, tool="circom_civer", bug=bug_path)
 
     return result

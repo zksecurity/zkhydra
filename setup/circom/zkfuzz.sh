@@ -8,7 +8,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 TOOLS_DIR="$ROOT_DIR/tools"
 
 # zkFuzz Installation
-cd "$TOOLS_DIR/zkFuzz"
+cd "$TOOLS_DIR/zkfuzz"
 if cargo build --release > /dev/null 2>&1; then
     echo "[info] zkFuzz installed successfully."
 else
