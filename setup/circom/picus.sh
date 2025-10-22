@@ -9,7 +9,7 @@ TOOLS_DIR="$ROOT_DIR/tools"
 HELPERS_DIR="$ROOT_DIR/helpers"
 
 # Install Racket
-if ! command -v racket &> /dev/null; then
+if ! command -v c &> /dev/null; then
     echo "[info] Installing Racket..."
     sudo apt update
     sudo apt install -y racket
@@ -34,10 +34,10 @@ if [ ! -f "build/Makefile" ]; then
 fi
 
 cd build
-make -j4 install > /dev/null 2>&1
+sudo make -j4 install
 
 # Install Picus
-cd "$TOOLS_DIR/Picus"
+cd "$TOOLS_DIR/picus"
 
 raco pkg install || true
 
