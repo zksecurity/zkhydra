@@ -1,4 +1,4 @@
-# State of ZK Security Tools
+# zkHydra
 
 ## Notes
 
