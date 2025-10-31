@@ -46,9 +46,9 @@ def execute(bug_path: str, timeout: int) -> str:
     """
     logging.debug(f"bug_path='{bug_path}'")
 
-    circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
-    if not check_files_exist(circuit_file):
-        return "[Circuit file not found]"
+    circuit_file = Path(bug_path) # / "circuits" / "circuit.circom"
+    # if not check_files_exist(circuit_file):
+    #     return "[Circuit file not found]"
 
     if shutil.which("circomspect") is None:
         logging.error("'circomspect' CLI not found in PATH")
