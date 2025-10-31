@@ -1,0 +1,1556 @@
+stdout:
+time to prep inputs 188 milliseconds
+setup solver 179 milliseconds
+Solved for 323 variables out of 323 total variables
+Solved for 1 target variables out of 1 total target variables
+------ Bad Constraints ------
+
+------ All Variables ------
+
+main.claimRevNonce.in[61]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[243]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[175]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[39]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[36]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[109]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[10]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[131]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[187]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[166]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[107]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[148]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[101]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[11]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[188]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[29]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[56]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[54]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[49]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[1]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[96]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[27]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[47]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[135]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[40]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[24]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[3]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[154]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[203]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[119]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[146]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[200]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[34]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[76]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[171]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[174]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[108]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[61]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[78]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[161]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[130]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[194]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[21]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[28]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[169]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[178]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[89]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[66]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[249]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[33]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[69]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[206]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[82]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[72]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[16]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[24]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[42]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[86]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claim[4]
+Uniquely Determined: true
+Bounds: None
+
+main.claimRevNonce.in[13]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[19]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[17]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[220]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[228]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[6]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[211]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[7]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[32]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[190]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[19]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[141]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[49]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[17]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[136]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[227]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[83]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[25]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[147]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[209]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[122]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[4]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[39]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[170]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[67]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.in
+Uniquely Determined: true
+Bounds: None
+
+main.v0Bits.out[21]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[208]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[34]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[18]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[158]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[196]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[106]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[88]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[110]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[191]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[14]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[240]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[252]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[40]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[103]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[57]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.out
+Uniquely Determined: true
+Bounds: [0, 18446744073709551615]
+
+main.v0Bits.out[9]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[43]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[231]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[185]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[68]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[181]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[124]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[111]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[137]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[253]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[151]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[33]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[165]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[160]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[44]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[221]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[12]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[114]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[2]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[238]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[239]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[47]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[229]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[192]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[20]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[121]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[157]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[120]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[248]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[163]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[42]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[115]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[50]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[129]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[251]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[74]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[46]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[46]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[123]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[22]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[234]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[245]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[242]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[11]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[241]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[172]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[126]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[93]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[104]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[84]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[213]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[37]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[153]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[87]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[55]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[41]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[210]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[20]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[105]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[44]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[23]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[48]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[144]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[232]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[55]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[139]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[92]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[0]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[63]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[35]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[6]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[59]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[54]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[204]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[132]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[14]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[51]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[65]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[202]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[59]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[62]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[31]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[219]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[45]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[94]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[53]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[162]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[2]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[57]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[60]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[182]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[176]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[10]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[237]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[212]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[223]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[37]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[155]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[207]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[233]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[38]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[43]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[189]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[60]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[41]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[199]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[142]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[100]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[16]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[8]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[127]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[216]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[156]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[164]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[71]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[81]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[4]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[70]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[62]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[152]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[117]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[150]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[29]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[5]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[195]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[90]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[13]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[138]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[198]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[36]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[3]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[58]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[143]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[177]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[77]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[52]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[63]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[1]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[28]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[224]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[31]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[95]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[226]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[27]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[140]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[50]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[32]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[80]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[48]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[15]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.revNonce
+Uniquely Determined: true
+Bounds: [0, 18446744073709551615]
+
+main.v0Bits.out[197]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[236]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[214]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[5]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[8]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[113]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[218]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[85]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[173]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[12]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[133]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[247]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[184]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[25]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[7]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[125]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[23]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[45]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[235]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[205]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[98]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[246]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[193]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[186]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[244]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[134]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[75]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[51]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[15]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[168]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[97]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[180]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[112]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[201]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[159]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[128]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[0]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[22]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[38]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[167]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[118]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[91]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[30]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[225]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[56]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[64]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[179]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[215]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[30]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[18]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[149]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[26]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[52]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[183]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[58]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[9]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.claimRevNonce.in[26]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[116]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[250]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[145]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[35]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[99]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[102]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[230]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[73]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[79]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.claimRevNonce.in[53]
+Uniquely Determined: true
+Bounds: [0, 1]
+
+main.v0Bits.out[217]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.v0Bits.out[222]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+R1CS function circuit has sound constraints (No trusted functions needed!)
+
+stderr:
+
+Mode 1: 2    Time: 0:00:00[K

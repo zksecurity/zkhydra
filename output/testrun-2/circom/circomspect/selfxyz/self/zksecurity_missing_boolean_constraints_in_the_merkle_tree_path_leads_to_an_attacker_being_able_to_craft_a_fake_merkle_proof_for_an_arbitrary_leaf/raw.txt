@@ -1,0 +1,5 @@
+stdout:
+circomspect: analyzing template 'BinaryMerkleRoot'
+circomspect: No issues found.
+
+stderr:

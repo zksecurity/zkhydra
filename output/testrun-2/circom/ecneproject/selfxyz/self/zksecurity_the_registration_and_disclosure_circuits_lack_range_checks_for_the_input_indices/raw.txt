@@ -1,0 +1,126 @@
+stdout:
+time to prep inputs 148 milliseconds
+setup solver 163 milliseconds
+Solved for 25 variables out of 25 total variables
+Solved for 1 target variables out of 1 total target variables
+------ Bad Constraints ------
+
+------ All Variables ------
+
+main.raw_dsc_actual_length
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.lt.n2b.out[4]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[8]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[7]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.out
+Uniquely Determined: true
+Bounds: [1, 1]
+
+main.LessEqThan_11_293.lt.out
+Uniquely Determined: true
+Bounds: [1, 1]
+All possible values: BigInt[0, 1]
+
+main.dsc_pubKey_actual_size
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.lt.n2b.out[1]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[9]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[0]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[12]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.lt.n2b.out[5]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[11]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.n2b.out[10]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.LessEqThan_11_293.lt.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.lt.n2b.out[2]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.dsc_pubKey_offset
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.lt.n2b.in
+Uniquely Determined: true
+Bounds: [0, 8191]
+
+main.LessEqThan_11_293.lt.n2b.out[3]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.dsc_pubKey_offset_in_range
+Uniquely Determined: true
+Bounds: [1, 1]
+All possible values: BigInt[1]
+
+main.LessEqThan_11_293.lt.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.LessEqThan_11_293.lt.n2b.out[6]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+R1CS function circuit has sound constraints (No trusted functions needed!)
+
+stderr:
+
+Mode 1: 2    Time: 0:00:00[K
+Mode 1: 26    Time: 0:00:00[K

@@ -1,5 +1,0 @@
-{
-  "result": "false",
-  "reason": "Tool found wrong module (tool found: 'Edwards2Montgomery'; buggy module: 'OwnershipProof')",
-  "need_manual_evaluation": true
-}

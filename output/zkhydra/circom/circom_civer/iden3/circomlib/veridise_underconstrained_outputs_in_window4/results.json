@@ -1,5 +1,0 @@
-{
-  "result": "false",
-  "reason": "Tool found wrong module (tool found: 'MontgomeryAdd'; buggy module: 'Window4')",
-  "need_manual_evaluation": true
-}

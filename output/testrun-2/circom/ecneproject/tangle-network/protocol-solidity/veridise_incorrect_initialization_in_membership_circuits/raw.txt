@@ -1,0 +1,59 @@
+stdout:
+time to prep inputs 155 milliseconds
+setup solver 173 milliseconds
+Solved for 11 variables out of 11 total variables
+Solved for 0 target variables out of 0 total target variables
+------ Bad Constraints ------
+
+------ All Variables ------
+
+main.set[2]
+Uniquely Determined: true
+Bounds: None
+
+main.diffs[1]
+Uniquely Determined: true
+Bounds: None
+
+main.product[3]
+Uniquely Determined: true
+Bounds: [0, 0]
+All possible values: BigInt[0]
+
+main.diffs[2]
+Uniquely Determined: true
+Bounds: None
+
+main.set[1]
+Uniquely Determined: true
+Bounds: None
+
+main.diffs[0]
+Uniquely Determined: true
+Bounds: None
+
+main.element
+Uniquely Determined: true
+Bounds: None
+
+main.product[1]
+Uniquely Determined: true
+Bounds: None
+
+main.product[2]
+Uniquely Determined: true
+Bounds: None
+
+main.product[0]
+Uniquely Determined: true
+Bounds: None
+
+main.set[0]
+Uniquely Determined: true
+Bounds: None
+
+R1CS function circuit has sound constraints (No trusted functions needed!)
+
+stderr:
+
+Mode 1: 2    Time: 0:00:00[K

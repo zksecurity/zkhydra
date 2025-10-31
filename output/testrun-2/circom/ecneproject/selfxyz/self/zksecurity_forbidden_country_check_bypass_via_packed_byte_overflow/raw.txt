@@ -1,0 +1,326 @@
+stdout:
+time to prep inputs 166 milliseconds
+setup solver 181 milliseconds
+Solved for 65 variables out of 68 total variables
+Solved for 1 target variables out of 1 total target variables
+------ Bad Constraints ------
+
+constraint #21
+(1 * main.IsEqual_82_3130[0].isz.in) * (1 * main.IsEqual_82_3130[0].isz.inv) = (1 * 1 + -1 * main.IsEqual_82_3130[0].isz.out)
+main.IsEqual_82_3130[0].isz.in
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].isz.inv
+Uniquely Determined: false
+Bounds: None
+
+main.IsEqual_82_3130[0].isz.out
+Uniquely Determined: true
+Bounds: None
+
+constraint #25
+(1 * main.IsEqual_82_3130[1].isz.in) * (1 * main.IsEqual_82_3130[1].isz.inv) = (-1 * main.IsEqual_82_3130[1].isz.out + 1 * 1)
+main.IsEqual_82_3130[1].isz.out
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].isz.inv
+Uniquely Determined: false
+Bounds: None
+
+main.IsEqual_82_3130[1].isz.in
+Uniquely Determined: true
+Bounds: None
+
+constraint #29
+(1 * main.IsEqual_82_3130[2].isz.in) * (1 * main.IsEqual_82_3130[2].isz.inv) = (-1 * main.IsEqual_82_3130[2].isz.out + 1 * 1)
+main.IsEqual_82_3130[2].isz.in
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[2].isz.inv
+Uniquely Determined: false
+Bounds: None
+
+main.IsEqual_82_3130[2].isz.out
+Uniquely Determined: true
+Bounds: None
+
+------ All Variables ------
+
+main.country[2]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][18]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][17]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][22]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[2].in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[2].isz.in
+Uniquely Determined: true
+Bounds: None
+
+main.forbidden_countries_list[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][29]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][7]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][26]
+Uniquely Determined: true
+Bounds: None
+
+main.is_equal[0][0]
+Uniquely Determined: true
+Bounds: None
+
+main.country[1]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][16]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][25]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][24]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][20]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][14]
+Uniquely Determined: true
+Bounds: None
+
+main.equality_result[0][3]
+Uniquely Determined: true
+Bounds: [0, 0]
+All possible values: BigInt[0]
+
+main.IsEqual_82_3130[2].out
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][3]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][5]
+Uniquely Determined: true
+Bounds: None
+
+main.equality_result[0][2]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][30]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][1]
+Uniquely Determined: true
+Bounds: None
+
+main.forbidden_countries_list[1]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].isz.out
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][28]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.out[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][12]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][21]
+Uniquely Determined: true
+Bounds: None
+
+main.forbidden_countries_list_packed[0]
+Uniquely Determined: true
+Bounds: None
+
+main.equality_result[0][1]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].isz.in
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].isz.inv
+Uniquely Determined: false
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][4]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].out
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].isz.in
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].isz.out
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][11]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][6]
+Uniquely Determined: true
+Bounds: None
+
+main.equality_result[0][0]
+Uniquely Determined: true
+Bounds: [1, 1]
+All possible values: BigInt[1]
+
+main.IsEqual_82_3130[2].isz.out
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][23]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[2].in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][8]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][19]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].isz.inv
+Uniquely Determined: false
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][0]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].in[1]
+Uniquely Determined: true
+Bounds: None
+
+main.forbidden_countries_list[2]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[0].in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.in[2]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][15]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[1].out
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][9]
+Uniquely Determined: true
+Bounds: None
+
+main.is_equal[0][1]
+Uniquely Determined: true
+Bounds: None
+
+main.country[0]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][13]
+Uniquely Determined: true
+Bounds: None
+
+main.IsEqual_82_3130[2].isz.inv
+Uniquely Determined: false
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][2]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][10]
+Uniquely Determined: true
+Bounds: None
+
+main.is_equal[0][2]
+Uniquely Determined: true
+Bounds: None
+
+main.PackBytes_89_3494.intSums[0][27]
+Uniquely Determined: true
+Bounds: None
+
+R1CS function circuit has sound constraints (No trusted functions needed!)
+
+stderr:
+
+Mode 1: 2    Time: 0:00:00[K

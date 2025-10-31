@@ -1,0 +1,9 @@
+error[P1000]: Unrecognized token `{` found. Expected one of `(`.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices/circuits/snippet_register_id.circom:6:28
+  
+6  template SnippetRegisterID {
+                              ^ This token is invalid or unexpected here.
+  
+  = To ignore this type of result, use `--allow P1000`.
+
+circomspect: 1 issue found.

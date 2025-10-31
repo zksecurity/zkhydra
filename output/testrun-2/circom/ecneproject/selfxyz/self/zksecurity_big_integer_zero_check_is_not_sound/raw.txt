@@ -1,0 +1,45 @@
+stdout:
+time to prep inputs 161 milliseconds
+setup solver 176 milliseconds
+Solved for 8 variables out of 8 total variables
+Solved for 0 target variables out of 0 total target variables
+------ Bad Constraints ------
+
+------ All Variables ------
+
+main.carryRangeCheck.out[1]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.carryRangeCheck.out[2]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.carry[0]
+Uniquely Determined: true
+Bounds: None
+
+main.carryRangeCheck.out[0]
+Uniquely Determined: true
+Bounds: [0, 1]
+All possible values: BigInt[0, 1]
+
+main.in[0]
+Uniquely Determined: true
+Bounds: None
+
+main.carryRangeCheck.in
+Uniquely Determined: true
+Bounds: [0, 7]
+
+main.in[1]
+Uniquely Determined: true
+Bounds: None
+
+R1CS function circuit has sound constraints (No trusted functions needed!)
+
+stderr:
+
+Mode 1: 2    Time: 0:00:00[K

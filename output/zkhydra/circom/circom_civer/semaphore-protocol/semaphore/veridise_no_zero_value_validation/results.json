@@ -1,5 +1,0 @@
-{
-  "result": "false",
-  "reason": "Tool found no module that do not satisfy weak safety. Component might have timed out.",
-  "need_manual_evaluation": true
-}

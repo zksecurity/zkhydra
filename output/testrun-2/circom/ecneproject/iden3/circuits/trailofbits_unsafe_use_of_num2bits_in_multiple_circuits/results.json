@@ -1,0 +1,4 @@
+{
+  "result": "false",
+  "reason": "Tool found sound constraints but the circuit is unsound."
+}

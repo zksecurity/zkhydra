@@ -1,0 +1,922 @@
+circomspect: analyzing function 'EMAIL_ADDR_MAX_BYTES'
+circomspect: analyzing function 'computeIntChunkLength'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:28:21
+   
+28      var numChunks = (byteLength - remain) / packSize;
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:30:9
+   
+30          numChunks += 1;
+            ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:29:9
+   
+29      if (remain > 0) {
+            ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing function 'log2Ceil'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:264:13
+    
+264      var n = a - 1;
+                 ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:268:9
+    
+268          r++;
+             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:267:12
+    
+267      while (n > 0) {
+                ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing function 'MAX_BYTES_IN_FIELD'
+circomspect: analyzing function 'DOMAIN_MAX_BYTES'
+circomspect: analyzing template 'DigitBytesToInt'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:119:17
+    
+119      signal sums[n+1];
+                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:123:14
+    
+123          sums[i + 1] <== 10 * sums[i] + (in[i] - 48);
+                  ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:123:25
+    
+123          sums[i + 1] <== 10 * sums[i] + (in[i] - 48);
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:122:27
+    
+122      for(var i = 0; i < n; i++) {
+                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:122:20
+    
+122      for(var i = 0; i < n; i++) {
+                        ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AssertZeroPadding'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:160:32
+    
+160          lessThans[i].in[0] <== startIndex - 1;
+                                    ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:163:9
+    
+163          lessThans[i].out * in[i] === 0;
+             ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:158:38
+    
+158      for (var i = 0; i < maxArrayLen; i++) {
+                                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:158:21
+    
+158      for (var i = 0; i < maxArrayLen; i++) {
+                         ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:160:32
+    
+160          lessThans[i].in[0] <== startIndex - 1;
+                                    ^^^^^^^^^^^^^^ `(startIndex - 1)` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:161:32
+    
+161          lessThans[i].in[1] <== i;
+                                    ^ `i` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'PackBytes'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:53:23
+   
+53              var idx = packSize * i + j;
+                          ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:57:46
+   
+57                  intSums[i][j] <== intSums[i][j-1];
+                                                 ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:65:35
+   
+65                  intSums[i][j] <== intSums[i][j-1] + (1 << (8*j)) * in[idx];
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:52:36
+   
+52          for(var j=0; j < packSize; j++) {
+                                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:51:34
+   
+51      for (var i = 0; i < maxInts; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:72:31
+   
+72          out[i] <== intSums[i][packSize-1];
+                                  ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:71:34
+   
+71      for (var i = 0; i < maxInts; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:51:21
+   
+51      for (var i = 0; i < maxInts; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:52:22
+   
+52          for(var j=0; j < packSize; j++) {
+                         ^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:56:16
+   
+56              if(idx >= maxBytes) {
+                   ^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:71:21
+   
+71      for (var i = 0; i < maxInts; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PackBits'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:210:24
+    
+210      var numElements = (numBits + bitsPerElement - 1) \ bitsPerElement;
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:216:23
+    
+216              var idx = i * bitsPerElement + j;
+                           ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:219:17
+    
+219                  sum += in[idx] * (1 << (bitsPerElement - 1 - j));
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:215:45
+    
+215          for (var j = 0; j < bitsPerElement; j++) {
+                                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:213:38
+    
+213      for (var i = 0; i < numElements; i++) {
+                                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:213:21
+    
+213      for (var i = 0; i < numElements; i++) {
+                         ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:215:25
+    
+215          for (var j = 0; j < bitsPerElement; j++) {
+                             ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:217:17
+    
+217              if (idx < numBits) {
+                     ^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CountSubstringOccurrences'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:239:17
+    
+239              if (i + j < maxLen) {
+                     ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:240:41
+    
+240                  matches[i].in[j] <== in[i + j];
+                                             ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:238:46
+    
+238          for (var j = 0; j < maxSubstringLen; j++) {
+                                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:236:33
+    
+236      for (var i = 0; i < maxLen; i++) {
+                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:250:33
+    
+250      for (var i = 0; i < maxLen; i++) {
+                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:228:12
+    
+228      assert(maxLen >= maxSubstringLen);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:236:21
+    
+236      for (var i = 0; i < maxLen; i++) {
+                         ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:238:25
+    
+238          for (var j = 0; j < maxSubstringLen; j++) {
+                             ^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:239:17
+    
+239              if (i + j < maxLen) {
+                     ^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:250:21
+    
+250      for (var i = 0; i < maxLen; i++) {
+                         ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'Slice'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:182:23
+    
+182      signal output out[end - start];    
+                           ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:185:13
+    
+185          out[i - start] <== in[i];
+                 ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:184:34
+    
+184      for (var i = start; i < end; i++) {
+                                      ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:177:12
+    
+177      assert(n >= end);
+                ^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:178:12
+    
+178      assert(start >= 0);
+                ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:179:12
+    
+179      assert(end >= start);
+                ^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:184:25
+    
+184      for (var i = start; i < end; i++) {
+                             ^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'SplitBytesToWords'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:144:30
+    
+144      for (var i = 0 ; i < l ; i++){
+                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:152:16
+    
+152              if(i*n + j >=  8 * l){
+                    ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:152:28
+    
+152              if(i*n + j >=  8 * l){
+                                ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:156:48
+    
+156                  bits2num[i].in[j] <== num2bits[l - (( i * n + j) \ 8) - 1].out[ ((i * n + j) % 8)];
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:156:83
+    
+156                  bits2num[i].in[j] <== num2bits[l - (( i * n + j) \ 8) - 1].out[ ((i * n + j) % 8)];
+                                                                                       ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:151:33
+    
+151          for(var j = 0 ; j < n ; j++){
+                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:149:30
+    
+149      for (var i = 0 ; i < k ; i++){
+                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:160:29
+    
+160      for( var i = 0 ; i< k ; i++){
+                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:144:22
+    
+144      for (var i = 0 ; i < l ; i++){
+                          ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:149:22
+    
+149      for (var i = 0 ; i < k ; i++){
+                          ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:151:25
+    
+151          for(var j = 0 ; j < n ; j++){
+                             ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:152:16
+    
+152              if(i*n + j >=  8 * l){
+                    ^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:160:22
+    
+160      for( var i = 0 ; i< k ; i++){
+                          ^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Bits2Num` to convert arrays to field elements may lead to aliasing issues.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:150:23
+    
+150          bits2num[i] = Bits2Num(n);
+                           ^^^^^^^^^^^ Circomlib template `Bits2Num` instantiated here.
+    
+    = Consider using `Bits2Num_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+    = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'ProveCountryIsNotInList'
+circomspect: analyzing template 'PackByteSubArray'
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:87:12
+   
+87      assert(maxSubArrayLen < maxArrayLen);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AssertBit'
+warning[CA01]: The signal `in` is not constrained by the template.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:170:5
+    
+170      signal input in;
+         ^^^^^^^^^^^^^^^ This signal does not occur in a constraint.
+    
+    = To ignore this type of result, use `--allow CA01`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:171:5
+    
+171      in * (in - 1) === 0;
+         ^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'SelectSubArray'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:98:20
+   
+98          out[i] <== gts[i].out * shifter.out[i];
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:93:41
+   
+93      for (var i = 0; i < maxSubArrayLen; i++) {
+                                            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:79:12
+   
+79      assert(maxSubArrayLen < maxArrayLen);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:93:21
+   
+93      for (var i = 0; i < maxSubArrayLen; i++) {
+                        ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CalculateTotal'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:61:21
+   
+61          sums[i] <== sums[i - 1] + nums[i];
+                        ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:60:26
+   
+60      for (var i=1; i < n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:64:18
+   
+64      sum <== sums[n - 1];
+                     ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:60:19
+   
+60      for (var i=1; i < n; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'VarShiftLeft'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:128:27
+    
+128              var offset = (i + (1 << j)) % maxArrayLen;
+                               ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:131:31
+    
+131                  tmp[j][i] <== n2b.out[j] * (in[offset] - in[i]) + in[i];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:133:31
+    
+133                  tmp[j][i] <== n2b.out[j] * (tmp[j-1][offset] - tmp[j-1][i]) + tmp[j-1][i];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:127:42
+    
+127          for (var i = 0; i < maxArrayLen; i++) {
+                                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:126:36
+    
+126      for (var j = 0; j < bitLength; j++) {
+                                        ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:140:24
+    
+140          out[i] <== tmp[bitLength - 1][i];
+                            ^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:139:41
+    
+139      for (var i = 0; i < maxOutArrayLen; i++) {
+                                             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:113:12
+    
+113      assert(maxOutArrayLen <= maxArrayLen);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:126:21
+    
+126      for (var j = 0; j < bitLength; j++) {
+                         ^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:127:25
+    
+127          for (var i = 0; i < maxArrayLen; i++) {
+                             ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:139:21
+    
+139      for (var i = 0; i < maxOutArrayLen; i++) {
+                         ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:122:21
+    
+122      component n2b = Num2Bits(bitLength);
+                         ^^^^^^^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+    
+    = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+    = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'CheckSubstringMatch'
+circomspect: analyzing template 'ByteMask'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:197:20
+    
+197          out[i] <== in[i] * mask[i];
+                        ^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:194:36
+    
+194      for (var i = 0; i < maxLength; i++) {
+                                        ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/bytes.circom:194:21
+    
+194      for (var i = 0; i < maxLength; i++) {
+                         ^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'ItemAtIndex'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:34:36
+   
+34          calcTotalValue.nums[i] <== eqs[i].out * in[i];
+                                       ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:28:38
+   
+28      for (var i = 0; i < maxArrayLen; i ++) {
+                                         ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/array.circom:28:21
+   
+28      for (var i = 0; i < maxArrayLen; i ++) {
+                        ^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: 96 issues found.
