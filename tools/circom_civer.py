@@ -195,10 +195,7 @@ def compare_zkbugs_ground_truth(
         # logging.debug(
         #     f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
         # )
-        logging.debug(
-            f"Found buggy component in '{bug_name}': '{comp_name}'"
-        )
-        
+        logging.debug(f"Found buggy component in '{bug_name}': '{comp_name}'")
 
         # params = comp_params
         # if not params:
