@@ -46,7 +46,7 @@ def execute(bug_path: str, timeout: int) -> str:
     """
     logging.debug(f"bug_path='{bug_path}'")
 
-    circuit_file = Path(bug_path) # / "circuits" / "circuit.circom"
+    circuit_file = Path(bug_path)  # / "circuits" / "circuit.circom"
     # if not check_files_exist(circuit_file):
     #     return "[Circuit file not found]"
 
