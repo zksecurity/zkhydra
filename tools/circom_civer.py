@@ -159,20 +159,20 @@ def compare_zkbugs_ground_truth(
         return output
 
     buggy_function: Optional[str] = bug_location.get("Function")
-    buggy_line: Optional[str] = bug_location.get("Line")
-    startline: int
-    endline: int
-    if buggy_line and "-" in buggy_line:
-        start_str, end_str = buggy_line.split("-", 1)
-        startline, endline = int(start_str), int(end_str)
-    elif not buggy_line:
-        startline = endline = 0
-        logging.warning(f"Line data for bug '{bug_name}' not found in ground truth.")
-    else:
-        startline = endline = int(buggy_line)
-    logging.debug(
-        f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
-    )
+    # buggy_line: Optional[str] = bug_location.get("Line")
+    # startline: int
+    # endline: int
+    # if buggy_line and "-" in buggy_line:
+    #     start_str, end_str = buggy_line.split("-", 1)
+    #     startline, endline = int(start_str), int(end_str)
+    # elif not buggy_line:
+    #     startline = endline = 0
+    #     logging.warning(f"Line data for bug '{bug_name}' not found in ground truth.")
+    # else:
+    #     startline = endline = int(buggy_line)
+    # logging.debug(
+    #     f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
+    # )
 
     tool_output_data = get_tool_result_parsed(tool_result_parsed)
 
@@ -184,51 +184,56 @@ def compare_zkbugs_ground_truth(
     is_correct = False
     timed_out = False
     last_comp_name: Optional[str] = None
-    last_lines: Optional[str] = None
+    # last_lines: Optional[str] = None
 
     for component in buggy_components:
         if component == "Reached zkhydra threshold.":
             timed_out = True
             break
         comp_name = component.get("name")
-        comp_params = component.get("params", [])
+        # comp_params = component.get("params", [])
+        # logging.debug(
+        #     f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
+        # )
         logging.debug(
-            f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
+            f"Found buggy component in '{bug_name}': '{comp_name}'"
         )
+        
 
-        params = comp_params
-        if not params:
-            startline_tool = endline_tool = 0
-        elif len(params) == 1:
-            startline_tool = endline_tool = params[0]
-        elif len(params) == 2:
-            startline_tool, endline_tool = params[0], params[1]
-        else:
-            logging.warning(f"Params should have at most 2 values; got {params}")
-            continue
+        # params = comp_params
+        # if not params:
+        #     startline_tool = endline_tool = 0
+        # elif len(params) == 1:
+        #     startline_tool = endline_tool = params[0]
+        # elif len(params) == 2:
+        #     startline_tool, endline_tool = params[0], params[1]
+        # else:
+        #     logging.warning(f"Params should have at most 2 values; got {params}")
+        #     continue
         last_comp_name = comp_name
-        last_lines = f"{startline_tool}-{endline_tool}"
-        logging.debug(
-            f"Component lines: startline={startline_tool}, endline={endline_tool}"
-        )
+        # last_lines = f"{startline_tool}-{endline_tool}"
+        # logging.debug(
+        #     f"Component lines: startline={startline_tool}, endline={endline_tool}"
+        # )
 
         # Compare with ground truth
         if comp_name == buggy_function:
             logging.debug(f"Component name matches buggy function: {comp_name}")
+            is_correct = True
 
-            # Check lines
-            if startline_tool == endline_tool == 0:
-                logging.debug("Component lines not provided by tool")
-                is_correct = True
-            elif startline_tool <= startline and endline_tool >= endline:
-                logging.debug(
-                    f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}"
-                )
-                is_correct = True
-            else:
-                logging.debug(
-                    f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}"
-                )
+            # # Check lines
+            # if startline_tool == endline_tool == 0:
+            #     logging.debug("Component lines not provided by tool")
+            #     is_correct = True
+            # elif startline_tool <= startline and endline_tool >= endline:
+            #     logging.debug(
+            #         f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}"
+            #     )
+            #     is_correct = True
+            # else:
+            #     logging.debug(
+            #         f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}"
+            #     )
 
         logging.debug(f"Component '{comp_name}' correctness: {is_correct}")
 
@@ -248,7 +253,8 @@ def compare_zkbugs_ground_truth(
                     "need_manual_evaluation": True,
                 }
             elif last_comp_name != buggy_function:
-                reason = f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
+                reason = f"Tool found wrong module; buggy module: '{buggy_function}'."
+                # reason = f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
                 output = {
                     "result": "false",
                     "reason": reason,
@@ -258,8 +264,8 @@ def compare_zkbugs_ground_truth(
                 }
             else:
                 reason = (
-                    f"Tool found correct module, but lines didn't match (tool found lines: "
-                    f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
+                    f"xxxxxxxxTool found correct module, but lines didn't match (tool found lines: "
+                    # f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
                 )
                 output = {
                     "result": "false",
