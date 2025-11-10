@@ -31,7 +31,7 @@ tools = [
     "zkFuzz"
 ]
 
-# List of bugs to analyze -- total 24 bugs
+# List of bugs to analyze
 bugs = [
     ## 0xbok
     "bugs/zkbugs/dataset/circom/0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
@@ -80,7 +80,7 @@ bugs = [
     "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
 ]
 
-# List of unreproducible bugs -- total 7 bugs
+# List of unreproducible bugs
 unreproducible_bugs = [
     ## personaelabs
     "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_Knowledge_of_any_member_signature_allow_to_generate_proof_of_membership",
@@ -100,24 +100,22 @@ tools = [
     # "pilspector"
 ]
 
-# List of bugs to analyze -- total 2 bugs
+# List of bugs to analyze
 bugs = [
     "bugs/zkbugs/dataset/pil/0xPolygonHermez/zkevm-proverjs/hexens_Missing_constraint_in_PIL_leading_to_execution_flow_hijack",
     "bugs/zkbugs/dataset/pil/0xPolygonHermez/zkevm-proverjs/hexens_Missing_constraint_in_PIL_leading_to_proving_fake_inclusion_in_the_SMT",
 ]
 
-# List of unreproducible bugs -- total 0 bugs
+# List of unreproducible bugs
 unreproducible_bugs = [
 ]
-
-
 
 [cairo]
 tools = [
     # "sierra-analyzer"
 ]
 
-# List of bugs to analyze -- total 8 bugs
+# List of bugs to analyze
 bugs = [
     ## HerodotusDev
     "bugs/zkbugs/dataset/cairo/HerodotusDev/offchain-evm-headers-processor/abdk_Behaviour_is_undefined_if_mmr_len_is_not_range_checked",
@@ -131,6 +129,6 @@ bugs = [
     "bugs/zkbugs/dataset/cairo/starkware-libs/stark-perpetual/abdk_This_function_cannot_handle_the_case_when_n_risk_factor_segments_is_zero",
 ]
 
-# List of unreproducible bugs -- total 0 bugs
+# List of unreproducible bugs
 unreproducible_bugs = [
 ]
