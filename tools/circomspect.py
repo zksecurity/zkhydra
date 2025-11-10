@@ -210,7 +210,6 @@ def compare_zkbugs_ground_truth(
             reason.append(
                 f"Tool found wrong vulnerability ('{tool_vulnerability}'); ground truth vulnerability: '{gt_vulnerability}'"
             )
-            manual_evaluation = True
     if is_correct:
         output = {"result": "correct"}
     else:
