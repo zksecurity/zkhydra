@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Wrong translation of logic into constraints",
+  "Location": {
+    "Path": "circuits/circuits/utils/crypto/merkle-trees/smt.circom",
+    "Function": "BinaryMerkleRoot",
+    "Line": "57-59"
+  }
+}

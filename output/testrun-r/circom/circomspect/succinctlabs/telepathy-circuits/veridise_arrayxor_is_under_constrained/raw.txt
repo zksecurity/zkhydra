@@ -1,0 +1,55 @@
+circomspect: analyzing template 'ArrayXOR'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained/circuits/hash_to_field.circom:9:9
+  
+9          out[i] <-- a[i] ^ b[i];
+           ^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `out[i]` is not constrained here.
+  
+  = Consider if it is possible to rewrite the statement using `<==` instead.
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+  = To ignore this type of result, use `--allow CS0005`.
+
+warning[CA01]: The signals `out[n]` are not constrained by the template.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained/circuits/hash_to_field.circom:6:5
+  
+6      signal output out[n];
+       ^^^^^^^^^^^^^^^^^^^^ These signals do not occur in a constraint.
+  
+  = To ignore this type of result, use `--allow CA01`.
+
+warning[CA01]: The signals `a[n]` are not constrained by the template.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained/circuits/hash_to_field.circom:4:5
+  
+4      signal input a[n];
+       ^^^^^^^^^^^^^^^^^ These signals do not occur in a constraint.
+  
+  = To ignore this type of result, use `--allow CA01`.
+
+warning[CA01]: The signals `b[n]` are not constrained by the template.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained/circuits/hash_to_field.circom:5:5
+  
+5      signal input b[n];
+       ^^^^^^^^^^^^^^^^^ These signals do not occur in a constraint.
+  
+  = To ignore this type of result, use `--allow CA01`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained/circuits/hash_to_field.circom:8:28
+  
+8      for (var i = 0; i < n; i++) {
+                              ^^^ Field element arithmetic here.
+  
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+  = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained/circuits/hash_to_field.circom:8:21
+  
+8      for (var i = 0; i < n; i++) {
+                       ^^^^^ Field element comparison here.
+  
+  = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+  = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: 6 issues found.

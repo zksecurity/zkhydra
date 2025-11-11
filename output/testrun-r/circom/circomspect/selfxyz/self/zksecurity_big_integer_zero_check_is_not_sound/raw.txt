@@ -1,0 +1,114 @@
+circomspect: analyzing template 'BigIntIsZero'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:10:12
+   
+10      assert(MAX_CHUNK_SIZE + EPSILON <= 253);
+               ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:15:25
+   
+15      for (var i = 0; i < CHUNK_NUMBER - 1; i++){
+                            ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:17:26
+   
+17              carry[i] <== in[i] / 2 ** CHUNK_SIZE;
+                             ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:20:26
+   
+20              carry[i] <== (in[i] + carry[i - 1]) / 2 ** CHUNK_SIZE;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:15:43
+   
+15      for (var i = 0; i < CHUNK_NUMBER - 1; i++){
+                                              ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:23:42
+   
+23      component carryRangeCheck = Num2Bits(MAX_CHUNK_SIZE + EPSILON - CHUNK_SIZE);
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:24:28
+   
+24      carryRangeCheck.in <== carry[CHUNK_NUMBER - 2] + (1 << (MAX_CHUNK_SIZE + EPSILON - CHUNK_SIZE - 1));
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:25:5
+   
+25      in[CHUNK_NUMBER - 1] + carry[CHUNK_NUMBER - 2] === 0;
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+   /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:6:12
+  
+6      assert(CHUNK_NUMBER >= 2);
+              ^^^^^^^^^^^^^^^^^ Field element comparison here.
+  
+  = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+  = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+  = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:10:12
+   
+10      assert(MAX_CHUNK_SIZE + EPSILON <= 253);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:15:21
+   
+15      for (var i = 0; i < CHUNK_NUMBER - 1; i++){
+                        ^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound/circuits/bigInt.circom:23:33
+   
+23      component carryRangeCheck = Num2Bits(MAX_CHUNK_SIZE + EPSILON - CHUNK_SIZE);
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: 12 issues found.

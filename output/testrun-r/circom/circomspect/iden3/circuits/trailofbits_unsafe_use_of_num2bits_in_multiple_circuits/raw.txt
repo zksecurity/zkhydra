@@ -1,0 +1,69 @@
+circomspect: analyzing template 'getClaimRevNonce'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:16:25
+   
+16      for (var i=0; i<64; i++) {
+                            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:22:24
+   
+22      for (var i=0; i<8; i++) {
+                           ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:25:26
+   
+25      for (var i=0; i<254; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:16:19
+   
+16      for (var i=0; i<64; i++) {
+                      ^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:22:19
+   
+22      for (var i=0; i<8; i++) {
+                      ^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:25:19
+   
+25      for (var i=0; i<254; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits/circuits/circuit.circom:14:24
+   
+14      component v0Bits = Num2Bits(254);
+                           ^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: 7 issues found.

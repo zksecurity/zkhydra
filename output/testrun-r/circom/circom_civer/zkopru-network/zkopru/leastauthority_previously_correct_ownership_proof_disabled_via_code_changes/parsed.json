@@ -1,0 +1,13 @@
+{
+  "stats": {
+    "verified": null,
+    "failed": null,
+    "timeout": null
+  },
+  "buggy_components": [
+    "Reached zkhydra threshold."
+  ],
+  "timed_out_components": [
+    "Reached zkhydra threshold."
+  ]
+}

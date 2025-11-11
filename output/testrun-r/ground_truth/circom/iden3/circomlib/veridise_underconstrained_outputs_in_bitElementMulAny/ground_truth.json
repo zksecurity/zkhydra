@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Under-Constrained",
+  "Impact": "Soundness",
+  "Root Cause": "Unsafe Reuse of Circuit",
+  "Location": {
+    "Path": "circuits/escalarmulany.circom",
+    "Function": "BitElementMulAny",
+    "Line": "21-22"
+  }
+}

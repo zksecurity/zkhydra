@@ -1,0 +1,57 @@
+circomspect: analyzing template 'SetMembership'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits/circuits/circuit.circom:18:18
+   
+18    signal product[length + 1];
+                     ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits/circuits/circuit.circom:22:18
+   
+22      diffs[i] <== set[i] - element;
+                     ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits/circuits/circuit.circom:23:13
+   
+23      product[i + 1] <== product[i] * diffs[i];
+                ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits/circuits/circuit.circom:23:24
+   
+23      product[i + 1] <== product[i] * diffs[i];
+                           ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits/circuits/circuit.circom:21:31
+   
+21    for (var i = 0; i < length; i++) {
+                                  ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits/circuits/circuit.circom:21:19
+   
+21    for (var i = 0; i < length; i++) {
+                      ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: 6 issues found.

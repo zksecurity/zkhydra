@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Computational/Hints Error",
+  "Impact": "Soundness",
+  "Root Cause": "Wrong translation of logic into constraints",
+  "Location": {
+    "Path": "",
+    "Function": "BigIntIsZero",
+    "Line": "05-26"
+  }
+}

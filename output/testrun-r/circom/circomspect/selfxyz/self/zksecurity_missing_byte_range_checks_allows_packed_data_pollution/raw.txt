@@ -1,0 +1,2815 @@
+circomspect: analyzing function 'DOMAIN_MAX_BYTES'
+circomspect: analyzing function 'log2Ceil'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:264:13
+    
+264      var n = a - 1;
+                 ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:268:9
+    
+268          r++;
+             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:267:12
+    
+267      while (n > 0) {
+                ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing function 'genderPosition'
+circomspect: analyzing function 'pinCodePosition'
+circomspect: analyzing function 'computeIntChunkLength'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:28:21
+   
+28      var numChunks = (byteLength - remain) / packSize;
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:30:9
+   
+30          numChunks += 1;
+            ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:29:9
+   
+29      if (remain > 0) {
+            ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing function 'getSiblingsLength'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:79:34
+   
+79      for (var i = 0; i < nLevels; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:84:12
+   
+84      return length + 1;
+               ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:79:21
+   
+79      for (var i = 0; i < nLevels; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing function 'photoPackSize'
+circomspect: analyzing function 'div_ceil'
+warning[CS0006]: The variable `ret` is assigned a value, but this value is never read.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:84:5
+   
+84      var ret = 0;
+        ^^^^^^^^^^^ The value assigned to `ret` here is never read.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-variable-or-parameter.
+   = To ignore this type of result, use `--allow CS0006`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:88:15
+   
+88          ret = m \ n + 1;
+                  ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing function 'namePosition'
+circomspect: analyzing function 'phnoPosition'
+circomspect: analyzing function 'dobPosition'
+circomspect: analyzing function 'EMAIL_ADDR_MAX_BYTES'
+circomspect: analyzing function 'photoPosition'
+circomspect: analyzing function 'referenceIdPosition'
+circomspect: analyzing function 'nameMaxLength'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:19:12
+   
+19      return 2 * maxFieldByteSize();
+               ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing function 'statePosition'
+circomspect: analyzing function 'maxFieldByteSize'
+circomspect: analyzing function 'MAX_BYTES_IN_FIELD'
+circomspect: analyzing template 'EXTRACT_QR_DATA'
+warning[CS0006]: The signal `age` is not used by the template.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:387:5
+    
+387      signal output age;
+         ^^^^^^^^^^^^^^^^^ This signal is unused and could be removed.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-variable-or-parameter.
+    = To ignore this type of result, use `--allow CS0006`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:396:23
+    
+396      signal n255Filter[maxDataLength + 1];
+                           ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:410:39
+    
+410          indexBeforePhoto[i].in[1] <== delimiterIndices[photoPosition() - 1] + 1;
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:412:41
+    
+412          is255AndIndexBeforePhoto[i] <== is255[i].out * indexBeforePhoto[i].out;
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:415:20
+    
+415          n255Filter[i + 1] <== is255AndIndexBeforePhoto[i] * 255 + n255Filter[i];
+                        ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:415:31
+    
+415          n255Filter[i + 1] <== is255AndIndexBeforePhoto[i] * 255 + n255Filter[i];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:417:31
+    
+417          nDelimitedData[i] <== is255AndIndexBeforePhoto[i] * n255Filter[i] + data[i];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:403:40
+    
+403      for (var i = 0; i < maxDataLength; i++) {
+                                            ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:433:59
+    
+433      dobExtractor.startDelimiterIndex <== delimiterIndices[dobPosition() - 1];
+                                                               ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:449:63
+    
+449      pinCodeExtractor.startDelimiterIndex <== delimiterIndices[pinCodePosition() - 1];
+                                                                   ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:456:74
+    
+456      phnoLast4DigitCodeExtractor.startDelimiterIndex <== delimiterIndices[phnoPosition() - 1];
+                                                                              ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:469:61
+    
+469      photoExtractor.startDelimiterIndex <== delimiterIndices[photoPosition() - 1];
+                                                                 ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:470:33
+    
+470      photoExtractor.endIndex <== qrDataPaddedLength - 1;
+                                     ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:403:21
+    
+403      for (var i = 0; i < maxDataLength; i++) {
+                         ^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:409:39
+    
+409          indexBeforePhoto[i].in[0] <== i;
+                                           ^ `i` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:410:39
+    
+410          indexBeforePhoto[i].in[1] <== delimiterIndices[photoPosition() - 1] + 1;
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `(delimiterIndices[(photoPosition() - 1)] + 1)` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0018]: The output signal `day` defined by the template `TimestampExtractor` is not constrained in `EXTRACT_QR_DATA`.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:474:36
+    
+474      component timestampExtractor = TimestampExtractor(maxDataLength);
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The template `TimestampExtractor` is instantiated here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+    = To ignore this type of result, use `--allow CS0018`.
+
+warning[CS0018]: The output signal `month` defined by the template `TimestampExtractor` is not constrained in `EXTRACT_QR_DATA`.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:474:36
+    
+474      component timestampExtractor = TimestampExtractor(maxDataLength);
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The template `TimestampExtractor` is instantiated here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+    = To ignore this type of result, use `--allow CS0018`.
+
+warning[CS0018]: The output signal `year` defined by the template `TimestampExtractor` is not constrained in `EXTRACT_QR_DATA`.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:474:36
+    
+474      component timestampExtractor = TimestampExtractor(maxDataLength);
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The template `TimestampExtractor` is instantiated here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+    = To ignore this type of result, use `--allow CS0018`.
+
+circomspect: analyzing template 'VC_AND_DISCLOSE_Aadhaar'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:81:43
+   
+81      signal input forbidden_countries_list[MAX_FORBIDDEN_COUNTRIES_LIST_LENGTH * 3];
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:137:34
+    
+137      signal isMinimumAgeValid <== isAgeGreaterThanMinimumAge * minimumAge ;
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:142:23
+    
+142      revealData[0] <== gender * sel_bits[0];
+                           ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:146:20
+    
+146          revealData[i + 1] <== yob[i] * sel_bits[i + 1];
+                        ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:146:31
+    
+146          revealData[i + 1] <== yob[i] * sel_bits[i + 1];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:145:28
+    
+145      for (var i = 0; i < 4; i++){
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:151:20
+    
+151          revealData[i + 5] <== mob[i] * sel_bits[i + 5];
+                        ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:151:31
+    
+151          revealData[i + 5] <== mob[i] * sel_bits[i + 5];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:150:28
+    
+150      for (var i = 0; i < 2; i++){
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:156:20
+    
+156          revealData[i + 7] <== dob[i] * sel_bits[i + 7];
+                        ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:156:31
+    
+156          revealData[i + 7] <== dob[i] * sel_bits[i + 7];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:155:28
+    
+155      for (var i = 0; i < 2; i++){
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:160:20
+    
+160          revealData[i + 9] <== name[i] * sel_bits[i + 9];
+                        ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:160:31
+    
+160          revealData[i + 9] <== name[i] * sel_bits[i + 9];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:159:42
+    
+159      for (var i = 0; i < nameMaxLength(); i++){
+                                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:164:20
+    
+164          revealData[i + 71] <== aadhaar_last_4digits[i] * sel_bits[i + 71];
+                        ^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:164:32
+    
+164          revealData[i + 71] <== aadhaar_last_4digits[i] * sel_bits[i + 71];
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:163:28
+    
+163      for (var i = 0; i < 4; i++){
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:168:20
+    
+168          revealData[i + 75] <== pincode[i] * sel_bits[i + 75];
+                        ^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:168:32
+    
+168          revealData[i + 75] <== pincode[i] * sel_bits[i + 75];
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:167:28
+    
+167      for (var i = 0; i < 6; i++){
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:172:20
+    
+172          revealData[i + 81] <== state[i] * sel_bits[i + 81];
+                        ^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:172:32
+    
+172          revealData[i + 81] <== state[i] * sel_bits[i + 81];
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:171:45
+    
+171      for (var i = 0; i < maxFieldByteSize(); i++){
+                                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:176:20
+    
+176          revealData[i + 112] <== ph_no_last_4digits[i] * sel_bits[i + 112];
+                        ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:176:33
+    
+176          revealData[i + 112] <== ph_no_last_4digits[i] * sel_bits[i + 112];
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:175:28
+    
+175      for (var i = 0; i < 4; i++){
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:179:40
+    
+179      signal output reveal_photoHash <== photoHash * sel_bits[116];
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:181:25
+    
+181      revealData[116] <== ofac_name_dob.ofacCheckResult * sel_bits[117];
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:182:25
+    
+182      revealData[117] <== ofac_name_yob.ofacCheckResult * sel_bits[118];
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:196:45
+    
+196      var chunkLength = computeIntChunkLength(MAX_FORBIDDEN_COUNTRIES_LIST_LENGTH * 3);
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:199:22
+    
+199      signal dummy <== user_identifier + user_identifier;
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:145:21
+    
+145      for (var i = 0; i < 4; i++){
+                         ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:150:21
+    
+150      for (var i = 0; i < 2; i++){
+                         ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:155:21
+    
+155      for (var i = 0; i < 2; i++){
+                         ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:159:21
+    
+159      for (var i = 0; i < nameMaxLength(); i++){
+                         ^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:163:21
+    
+163      for (var i = 0; i < 4; i++){
+                         ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:167:21
+    
+167      for (var i = 0; i < 6; i++){
+                         ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:171:21
+    
+171      for (var i = 0; i < maxFieldByteSize(); i++){
+                         ^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:175:21
+    
+175      for (var i = 0; i < 4; i++){
+                         ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0017]: Intermediate signals should typically occur in at least two separate constraints.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/vc_and_disclose_aadhaar.circom:199:5
+    
+199      signal dummy <== user_identifier + user_identifier;
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         
+         The intermediate signal `dummy` is declared here.
+         The intermediate signal `dummy` is constrained here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#under-constrained-signal.
+    = To ignore this type of result, use `--allow CS0017`.
+
+circomspect: analyzing template 'AssertBit'
+warning[CA01]: The signal `in` is not constrained by the template.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:170:5
+    
+170      signal input in;
+         ^^^^^^^^^^^^^^^ This signal does not occur in a constraint.
+    
+    = To ignore this type of result, use `--allow CA01`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:171:5
+    
+171      in * (in - 1) === 0;
+         ^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'BinaryMerkleRoot'
+circomspect: analyzing template 'Slice'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:182:23
+    
+182      signal output out[end - start];    
+                           ^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:185:13
+    
+185          out[i - start] <== in[i];
+                 ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:184:34
+    
+184      for (var i = start; i < end; i++) {
+                                      ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:177:12
+    
+177      assert(n >= end);
+                ^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:178:12
+    
+178      assert(start >= 0);
+                ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:179:12
+    
+179      assert(end >= start);
+                ^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:184:25
+    
+184      for (var i = start; i < end; i++) {
+                             ^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CalculateTotal'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:61:21
+   
+61          sums[i] <== sums[i - 1] + nums[i];
+                        ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:60:26
+   
+60      for (var i=1; i < n; i++) {
+                             ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:64:18
+   
+64      sum <== sums[n - 1];
+                     ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:60:19
+   
+60      for (var i=1; i < n; i++) {
+                      ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PhotoExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:298:26
+    
+298      var photoMaxLength = photoPackSize() * maxFieldByteSize();
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:299:23
+    
+299      var bytesLength = photoMaxLength + 1;
+                           ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:305:33
+    
+305      subArraySelector.length <== endIndex - startDelimiterIndex + 1;
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:310:25
+    
+310      shiftedBytes[0] === photoPosition() * 255;
+                             ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:317:39
+    
+317          outInt.in[i] <== shiftedBytes[i + 1]; // +1 to skip the delimiter
+                                           ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:316:41
+    
+316      for (var i = 0; i < photoMaxLength; i ++) {
+                                             ^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:316:21
+    
+316      for (var i = 0; i < photoMaxLength; i ++) {
+                         ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PackBits'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:210:24
+    
+210      var numElements = (numBits + bitsPerElement - 1) \ bitsPerElement;
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:216:23
+    
+216              var idx = i * bitsPerElement + j;
+                           ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:219:17
+    
+219                  sum += in[idx] * (1 << (bitsPerElement - 1 - j));
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:215:45
+    
+215          for (var j = 0; j < bitsPerElement; j++) {
+                                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:213:38
+    
+213      for (var i = 0; i < numElements; i++) {
+                                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:213:21
+    
+213      for (var i = 0; i < numElements; i++) {
+                         ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:215:25
+    
+215          for (var j = 0; j < bitsPerElement; j++) {
+                             ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:217:17
+    
+217              if (idx < numBits) {
+                     ^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AssertBytes'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:76:28
+   
+76      for (var i = 0; i < k; i++) {
+                               ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:76:21
+   
+76      for (var i = 0; i < k; i++) {
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AgeExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:73:26
+   
+73      signal ageByYear <== currentYear - year - 1;
+                             ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:80:38
+   
+80      signal dayGt <== GreaterThan(5)([currentDay + 1, day]);
+                                         ^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:82:39
+   
+82      signal isHigherDayOnSameMonth <== monthEq * dayGt;
+                                          ^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:84:27
+   
+84      signal output age <== ageByYear + (monthGt + isHigherDayOnSameMonth);
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'ValidateDelimiterIndices'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:339:71
+    
+339          delimiter_idx_less_than_nxt_idx[i].in[1] <== delimiterIndices[i + 1];
+                                                                           ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:333:28
+    
+333      for(var i = 0; i < 17; i++) {
+                                ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:333:20
+    
+333      for(var i = 0; i < 17; i++) {
+                        ^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:347:43
+    
+347      is_last_delimiter_idx_valid.in[1] <== maxDataLength;
+                                               ^^^^^^^^^^^^^ `maxDataLength` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:339:54
+    
+339          delimiter_idx_less_than_nxt_idx[i].in[1] <== delimiterIndices[i + 1];
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^ `delimiterIndices[(i + 1)]` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0018]: The output signal `out` defined by the template `LessThan` is not constrained in `ValidateDelimiterIndices`.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:337:46
+    
+337          delimiter_idx_less_than_nxt_idx[i] = LessThan(12);
+                                                  ^^^^^^^^^^^^ The template `LessThan` is instantiated here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+    = To ignore this type of result, use `--allow CS0018`.
+
+warning[CS0018]: The output signal `out` defined by the template `LessThan` is not constrained in `ValidateDelimiterIndices`.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:345:45
+    
+345      component is_last_delimiter_idx_valid = LessThan(12);
+                                                 ^^^^^^^^^^^^ The template `LessThan` is instantiated here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+    = To ignore this type of result, use `--allow CS0018`.
+
+circomspect: analyzing template 'DigitBytesToInt'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:119:17
+    
+119      signal sums[n+1];
+                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:123:14
+    
+123          sums[i + 1] <== 10 * sums[i] + (in[i] - 48);
+                  ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:123:25
+    
+123          sums[i + 1] <== 10 * sums[i] + (in[i] - 48);
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:122:27
+    
+122      for(var i = 0; i < n; i++) {
+                               ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:122:20
+    
+122      for(var i = 0; i < n; i++) {
+                        ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'TimestampExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:113:19
+    
+113      timestamp <== dateToUnixTime.out - 19800; // 19800 is the offset for IST
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'SMTVerify'
+warning[CS0005]: Using the signal assignment operator `<--` does not constrain the assigned signal.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:26:5
+   
+26      signal depth <-- getSiblingsLength(siblings, nLength);
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ The assigned signal `depth` is not constrained here.
+   
+51      pathShifter.shift <== (nLength - depth);
+        --------------------------------------- The signal `depth` is constrained here.
+   
+60      signal computedRoot <== BinaryMerkleRoot(nLength)(leafOrZero, depth, path, siblings);
+                                ------------------------------------------------------------ The signal `depth` is constrained here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#signal-assignment.
+   = To ignore this type of result, use `--allow CS0005`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:34:34
+   
+34      for (var i = 0; i < nLength; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:45:49
+   
+45          path_in_bits[i] = path_in_bits_reversed[nLength-1-i];
+                                                    ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:44:34
+   
+44      for (var i = 0; i < nLength; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:51:28
+   
+51      pathShifter.shift <== (nLength - depth);
+                               ^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:57:27
+   
+57      signal leafOrZero <== leaf * (1 - isClosestZero);
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:68:27
+   
+68      signal output out <== computedRootIsValid * isInclusionOrNonInclusionValid;
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:34:21
+   
+34      for (var i = 0; i < nLength; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:44:21
+   
+44      for (var i = 0; i < nLength; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Bits2Num` to convert arrays to field elements may lead to aliasing issues.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:33:26
+   
+33      component bits2Num = Bits2Num(nLength);
+                             ^^^^^^^^^^^^^^^^^ Circomlib template `Bits2Num` instantiated here.
+   
+   = Consider using `Bits2Num_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/smt.circom:41:47
+   
+41      signal path_in_bits_reversed[nLength] <== Num2Bits(nLength)(smallKey);
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+   
+   = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+   = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'ByteMask'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:197:20
+    
+197          out[i] <== in[i] * mask[i];
+                        ^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:194:36
+    
+194      for (var i = 0; i < maxLength; i++) {
+                                        ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:194:21
+    
+194      for (var i = 0; i < maxLength; i++) {
+                         ^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PhnoLast4DigitCodeExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:225:22
+    
+225      var byteLength = pinCodeMaxLength + 2; // 2 delimiters
+                          ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:230:33
+    
+230      subArraySelector.length <== endDelimiterIndex - startDelimiterIndex + 1;
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:235:25
+    
+235      shiftedBytes[0] === phnoPosition() * 255;
+                             ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:236:25
+    
+236      shiftedBytes[5] === (phnoPosition() + 1) * 255;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'CountryNotInList'
+circomspect: analyzing template 'CustomHasher'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:20:32
+   
+20          for (var i = 0; i < k; i++){
+                                   ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:31:38
+   
+31          for (var i = 0; i < rounds ; i ++){
+                                         ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:37:21
+   
+37                  if (i * 16 + j < k){
+                        ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:38:46
+   
+38                      hash[i].inputs[j] <== in[i * 16 + j];
+                                                 ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:36:38
+   
+36              for (var j = 0; j < 16 ; j ++){
+                                         ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:35:38
+   
+35          for (var i = 0; i < rounds ; i ++){
+                                         ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:46:39
+   
+46          for (var i = 0 ; i < rounds ; i++) {
+                                          ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:18:9
+   
+18      if (k < 16){ // if k is less than 16, we can use a single poseidon hash
+            ^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:20:25
+   
+20          for (var i = 0; i < k; i++){
+                            ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:29:16
+   
+29          assert(rounds < 17);
+                   ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:31:25
+   
+31          for (var i = 0; i < rounds ; i ++){
+                            ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:35:25
+   
+35          for (var i = 0; i < rounds ; i ++){
+                            ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:36:29
+   
+36              for (var j = 0; j < 16 ; j ++){
+                                ^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:37:21
+   
+37                  if (i * 16 + j < k){
+                        ^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/customHashers.circom:46:26
+   
+46          for (var i = 0 ; i < rounds ; i++) {
+                             ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'VarShiftLeft'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:128:27
+    
+128              var offset = (i + (1 << j)) % maxArrayLen;
+                               ^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:131:31
+    
+131                  tmp[j][i] <== n2b.out[j] * (in[offset] - in[i]) + in[i];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:133:31
+    
+133                  tmp[j][i] <== n2b.out[j] * (tmp[j-1][offset] - tmp[j-1][i]) + tmp[j-1][i];
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:127:42
+    
+127          for (var i = 0; i < maxArrayLen; i++) {
+                                              ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:126:36
+    
+126      for (var j = 0; j < bitLength; j++) {
+                                        ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:140:24
+    
+140          out[i] <== tmp[bitLength - 1][i];
+                            ^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:139:41
+    
+139      for (var i = 0; i < maxOutArrayLen; i++) {
+                                             ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:113:12
+    
+113      assert(maxOutArrayLen <= maxArrayLen);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:126:21
+    
+126      for (var j = 0; j < bitLength; j++) {
+                         ^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:127:25
+    
+127          for (var i = 0; i < maxArrayLen; i++) {
+                             ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:139:21
+    
+139      for (var i = 0; i < maxOutArrayLen; i++) {
+                         ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Num2Bits` to convert field elements to bits may lead to aliasing issues.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:122:21
+    
+122      component n2b = Num2Bits(bitLength);
+                         ^^^^^^^^^^^^^^^^^^^ Circomlib template `Num2Bits` instantiated here.
+    
+    = Consider using `Num2Bits_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+    = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'DOBExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:45:25
+   
+45      shiftedBytes[0] === dobPosition() * 255;
+                            ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:46:26
+   
+46      shiftedBytes[11] === (dobPosition() + 1) * 255;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'OFAC_NAME_DOB_AADHAAR'
+circomspect: analyzing template 'PackByteSubArray'
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:87:12
+   
+87      assert(maxSubArrayLen < maxArrayLen);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PackBytes'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:53:23
+   
+53              var idx = packSize * i + j;
+                          ^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:57:46
+   
+57                  intSums[i][j] <== intSums[i][j-1];
+                                                 ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:65:35
+   
+65                  intSums[i][j] <== intSums[i][j-1] + (1 << (8*j)) * in[idx];
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:52:36
+   
+52          for(var j=0; j < packSize; j++) {
+                                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:51:34
+   
+51      for (var i = 0; i < maxInts; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:72:31
+   
+72          out[i] <== intSums[i][packSize-1];
+                                  ^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:71:34
+   
+71      for (var i = 0; i < maxInts; i++) {
+                                     ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:51:21
+   
+51      for (var i = 0; i < maxInts; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:52:22
+   
+52          for(var j=0; j < packSize; j++) {
+                         ^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:56:16
+   
+56              if(idx >= maxBytes) {
+                   ^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:71:21
+   
+71      for (var i = 0; i < maxInts; i++) {
+                        ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'OFAC_NAME_YOB_AADHAAR'
+circomspect: analyzing template 'NameExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:127:53
+    
+127      signal startDelimiterIndex <== delimiterIndices[namePosition() - 1];
+                                                         ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:130:25
+    
+130      var nameMaxLength = 2 * maxFieldByteSize();
+                             ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:131:22
+    
+131      var byteLength = nameMaxLength + 1;
+                          ^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:139:33
+    
+139      subArraySelector.length <== endDelimiterIndex - startDelimiterIndex;
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:143:25
+    
+143      shiftedBytes[0] === namePosition() * 255;
+                             ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:149:34
+    
+149      endDelimiterSelector.out === (namePosition() + 1) * 255;
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:152:33
+    
+152          out[i] <== shiftedBytes[i + 1]; // +1 to skip the delimiter
+                                     ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:151:40
+    
+151      for (var i = 0; i < nameMaxLength; i ++) {
+                                            ^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:151:21
+    
+151      for (var i = 0; i < nameMaxLength; i ++) {
+                         ^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'ExtractData'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:253:53
+    
+253      signal startDelimiterIndex <== delimiterIndices[extractPosition - 1];
+                                                         ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:257:22
+    
+257      var byteLength = extractMaxLength + 1;
+                          ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:265:33
+    
+265      subArraySelector.length <== endDelimiterIndex - startDelimiterIndex;
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:269:25
+    
+269      shiftedBytes[0] === extractPosition * 255;
+                             ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:275:34
+    
+275      endDelimiterSelector.out === (extractPosition + 1) * 255;
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:278:33
+    
+278          out[i] <== shiftedBytes[i + 1]; // +1 to skip the delimiter
+                                     ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:277:43
+    
+277      for (var i = 0; i < extractMaxLength; i ++) {
+                                               ^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:277:21
+    
+277      for (var i = 0; i < extractMaxLength; i ++) {
+                         ^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'CheckSubstringMatch'
+circomspect: analyzing template 'CountSubstringOccurrences'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:239:17
+    
+239              if (i + j < maxLen) {
+                     ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:240:41
+    
+240                  matches[i].in[j] <== in[i + j];
+                                             ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:238:46
+    
+238          for (var j = 0; j < maxSubstringLen; j++) {
+                                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:236:33
+    
+236      for (var i = 0; i < maxLen; i++) {
+                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:250:33
+    
+250      for (var i = 0; i < maxLen; i++) {
+                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:228:12
+    
+228      assert(maxLen >= maxSubstringLen);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:236:21
+    
+236      for (var i = 0; i < maxLen; i++) {
+                         ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:238:25
+    
+238          for (var j = 0; j < maxSubstringLen; j++) {
+                             ^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:239:17
+    
+239              if (i + j < maxLen) {
+                     ^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:250:21
+    
+250      for (var i = 0; i < maxLen; i++) {
+                         ^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'AssertZeroPadding'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:160:32
+    
+160          lessThans[i].in[0] <== startIndex - 1;
+                                    ^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:163:9
+    
+163          lessThans[i].out * in[i] === 0;
+             ^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:158:38
+    
+158      for (var i = 0; i < maxArrayLen; i++) {
+                                          ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:158:21
+    
+158      for (var i = 0; i < maxArrayLen; i++) {
+                         ^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:160:32
+    
+160          lessThans[i].in[0] <== startIndex - 1;
+                                    ^^^^^^^^^^^^^^ `(startIndex - 1)` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+warning[CS0014]: Inputs to `LessThan` need to be constrained to ensure that they are non-negative
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:161:32
+    
+161          lessThans[i].in[1] <== i;
+                                    ^ `i` needs to be constrained to ensure that it is <= p/2.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unconstrained-less-than.
+    = To ignore this type of result, use `--allow CS0014`.
+
+circomspect: analyzing template 'SelectSubArray'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:98:20
+   
+98          out[i] <== gts[i].out * shifter.out[i];
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:93:41
+   
+93      for (var i = 0; i < maxSubArrayLen; i++) {
+                                            ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:79:12
+   
+79      assert(maxSubArrayLen < maxArrayLen);
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:93:21
+   
+93      for (var i = 0; i < maxSubArrayLen; i++) {
+                        ^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PinCodeExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:193:22
+    
+193      var byteLength = pinCodeMaxLength + 2; // 2 delimiters
+                          ^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:198:33
+    
+198      subArraySelector.length <== endDelimiterIndex - startDelimiterIndex + 1;
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:203:25
+    
+203      shiftedBytes[0] === pinCodePosition() * 255;
+                             ^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:204:25
+    
+204      shiftedBytes[7] === (pinCodePosition() + 1) * 255;
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'GenderExtractor'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:173:40
+    
+173      nDelimitedDataShiftedToDob[11] === genderPosition() * 255;
+                                            ^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/extractQrData.circom:174:40
+    
+174      nDelimitedDataShiftedToDob[13] === (genderPosition() + 1) * 255;
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+circomspect: analyzing template 'SplitBytesToWords'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:144:30
+    
+144      for (var i = 0 ; i < l ; i++){
+                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:152:16
+    
+152              if(i*n + j >=  8 * l){
+                    ^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:152:28
+    
+152              if(i*n + j >=  8 * l){
+                                ^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:156:48
+    
+156                  bits2num[i].in[j] <== num2bits[l - (( i * n + j) \ 8) - 1].out[ ((i * n + j) % 8)];
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:156:83
+    
+156                  bits2num[i].in[j] <== num2bits[l - (( i * n + j) \ 8) - 1].out[ ((i * n + j) % 8)];
+                                                                                       ^^^^^^^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:151:33
+    
+151          for(var j = 0 ; j < n ; j++){
+                                     ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:149:30
+    
+149      for (var i = 0 ; i < k ; i++){
+                                  ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:160:29
+    
+160      for( var i = 0 ; i< k ; i++){
+                                 ^^^ Field element arithmetic here.
+    
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+    = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:144:22
+    
+144      for (var i = 0 ; i < l ; i++){
+                          ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:149:22
+    
+149      for (var i = 0 ; i < k ; i++){
+                          ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:151:25
+    
+151          for(var j = 0 ; j < n ; j++){
+                             ^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:152:16
+    
+152              if(i*n + j >=  8 * l){
+                    ^^^^^^^^^^^^^^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:160:22
+    
+160      for( var i = 0 ; i< k ; i++){
+                          ^^^^ Field element comparison here.
+    
+    = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+    = To ignore this type of result, use `--allow CS0003`.
+
+warning[CS0010]: Using `Bits2Num` to convert arrays to field elements may lead to aliasing issues.
+     /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/bytes.circom:150:23
+    
+150          bits2num[i] = Bits2Num(n);
+                           ^^^^^^^^^^^ Circomlib template `Bits2Num` instantiated here.
+    
+    = Consider using `Bits2Num_strict` if the input size may be >= than the prime size.
+    = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#non-strict-binary-conversion.
+    = To ignore this type of result, use `--allow CS0010`.
+
+circomspect: analyzing template 'DigitBytesToTimestamp'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:50:25
+   
+50      var maxLeapYears = (maxYears - 1972) \ 4;   // 1972 is first leap year since epoch
+                            ^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:51:21
+   
+51      var arrLength = 14 + maxLeapYears + maxLeapYears;
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:54:23
+   
+54      daysPassed[0] <== (year - 1970) * 365;
+                          ^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:55:23
+   
+55      daysPassed[1] <== day - 1;
+                          ^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:60:37
+   
+60          isCurrentMonth[i].in[0] <== month - 1;
+                                        ^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:63:20
+   
+63          daysPassed[i + 2] <== isCurrentMonth[i].out * daysTillPreviousMonth[i];     // Add days till previous month
+                       ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:63:31
+   
+63          daysPassed[i + 2] <== isCurrentMonth[i].out * daysTillPreviousMonth[i];     // Add days till previous month
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:58:29
+   
+58      for (var i = 0; i < 12; i++) {
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:72:52
+   
+72          isLeapYearLessThanCurrentYear[i].in[0] <== year - 1972;
+                                                       ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:73:52
+   
+73          isLeapYearLessThanCurrentYear[i].in[1] <== i * 4;
+                                                       ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:76:44
+   
+76          isLeapYearCurrentYear[i].in[0] <== year - 1972;
+                                               ^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:77:44
+   
+77          isLeapYearCurrentYear[i].in[1] <== i * 4;
+                                               ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:79:20
+   
+79          daysPassed[14 + i] <== isLeapYearLessThanCurrentYear[i].out;        // Add 1 day for each leap year
+                       ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:84:20
+   
+84          daysPassed[14 + maxLeapYears + i] <== isLeapYearCurrentYear[i].out * isCurrentMonthAfterFeb[i].out; // Add 1 days if current year is leap and date is after Feb
+                       ^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:84:47
+   
+84          daysPassed[14 + maxLeapYears + i] <== isLeapYearCurrentYear[i].out * isCurrentMonthAfterFeb[i].out; // Add 1 days if current year is leap and date is after Feb
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:70:39
+   
+70      for (var i = 0; i < maxLeapYears; i++) {
+                                          ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:90:33
+   
+90          totalDaysPassed[i]  <== totalDaysPassed[i - 1] + daysPassed[i];
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:89:36
+   
+89      for (var i = 1; i < arrLength; i++) {
+                                       ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:93:13
+   
+93      out <== totalDaysPassed[arrLength -1] * 86400 + hour * 3600 + minute * 60 + second;
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:34:12
+   
+34      assert(year >= 1970);
+               ^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:35:12
+   
+35      assert(year <= maxYears);
+               ^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:36:12
+   
+36      assert(month >= 1);
+               ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:37:12
+   
+37      assert(month <= 12);
+               ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:38:12
+   
+38      assert(day >= 1);
+               ^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:39:12
+   
+39      assert(day <= 31);
+               ^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:40:12
+   
+40      assert(hour >= 0);
+               ^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:41:12
+   
+41      assert(hour <= 23);
+               ^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:42:12
+   
+42      assert(minute >= 0);
+               ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:43:12
+   
+43      assert(minute <= 59);
+               ^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:44:12
+   
+44      assert(second >= 0);
+               ^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:45:12
+   
+45      assert(second <= 59);
+               ^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:58:21
+   
+58      for (var i = 0; i < 12; i++) {
+                        ^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:70:21
+   
+70      for (var i = 0; i < maxLeapYears; i++) {
+                        ^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/pack.circom:89:21
+   
+89      for (var i = 1; i < arrLength; i++) {
+                        ^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'PackBytesAndPoseidon'
+circomspect: analyzing template 'ItemAtIndex'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:34:36
+   
+34          calcTotalValue.nums[i] <== eqs[i].out * in[i];
+                                       ^^^^^^^^^^^^^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:28:38
+   
+28      for (var i = 0; i < maxArrayLen; i ++) {
+                                         ^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/array.circom:28:21
+   
+28      for (var i = 0; i < maxArrayLen; i ++) {
+                        ^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: analyzing template 'VERIFY_COMMITMENT'
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:44:28
+   
+44          nullifierHasher.in[i + 1] <== yob[i];
+                               ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:43:29
+   
+43      for (var i = 0; i < 4 ; i++){
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:48:28
+   
+48          nullifierHasher.in[i + 5] <== mob[i];
+                               ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:47:29
+   
+47      for (var i = 0; i < 2 ; i++){
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:52:28
+   
+52          nullifierHasher.in[i + 7] <== dob[i];
+                               ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:51:29
+   
+51      for (var i = 0; i < 2 ; i++){
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:56:28
+   
+56          nullifierHasher.in[i + 9] <== name[i];
+                               ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:55:30
+   
+55      for (var i = 0; i < 62 ; i++){
+                                 ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:60:28
+   
+60          nullifierHasher.in[i + 71] <== aadhaar_last_4digits[i];
+                               ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:59:29
+   
+59      for (var i = 0; i < 4 ; i++){
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:69:29
+   
+69          packedCommitment.in[i + 1] <== pincode[i];
+                                ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:68:29
+   
+68      for (var i = 0; i < 6 ; i++){
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:73:29
+   
+73          packedCommitment.in[i + 7] <== state[i];
+                                ^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:72:46
+   
+72      for (var i = 0; i < maxFieldByteSize() ; i++){
+                                                 ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:77:29
+   
+77          packedCommitment.in[i + 38] <== ph_no_last_4digits[i];
+                                ^^^^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0004]: Field element arithmetic could overflow, which may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:76:29
+   
+76      for (var i = 0; i < 4 ; i++){
+                                ^^^ Field element arithmetic here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-arithmetic.
+   = To ignore this type of result, use `--allow CS0004`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:43:21
+   
+43      for (var i = 0; i < 4 ; i++){
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:47:21
+   
+47      for (var i = 0; i < 2 ; i++){
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:51:21
+   
+51      for (var i = 0; i < 2 ; i++){
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:55:21
+   
+55      for (var i = 0; i < 62 ; i++){
+                        ^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:59:21
+   
+59      for (var i = 0; i < 4 ; i++){
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:68:21
+   
+68      for (var i = 0; i < 6 ; i++){
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:72:21
+   
+72      for (var i = 0; i < maxFieldByteSize() ; i++){
+                        ^^^^^^^^^^^^^^^^^^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+note[CS0003]: Comparisons with field elements greater than `p/2` may produce unexpected results.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/aadhaar/disclose/verify_commitment.circom:76:21
+   
+76      for (var i = 0; i < 4 ; i++){
+                        ^^^^^ Field element comparison here.
+   
+   = Field elements are always normalized to the interval `(-p/2, p/2]` before they are compared.
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#field-element-comparison.
+   = To ignore this type of result, use `--allow CS0003`.
+
+circomspect: 296 issues found.

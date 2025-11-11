@@ -1,0 +1,4 @@
+{
+  "result": "found_bug",
+  "vulnerability": "UnderConstrained (Unused-Output)"
+}

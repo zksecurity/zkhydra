@@ -1,0 +1,825 @@
+{
+  "circom": {
+    "circom_civer": {
+      "count": {
+        "correct": 7,
+        "false": 26,
+        "error": 0,
+        "timeout": 1
+      },
+      "correct": [
+        {
+          "bug_name": "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd"
+        },
+        {
+          "bug_name": "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained"
+        }
+      ],
+      "false": [
+        {
+          "bug_name": "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+          "reason": "Tool found wrong module; buggy module: 'BitElementMulAny'.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+          "reason": "Tool found wrong module; buggy module: 'Window4'.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+          "reason": "Tool found wrong module; buggy module: 'WindowMulFix'.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+          "reason": "Tool found wrong module; buggy module: 'EfficientECDSA'.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_forbidden_country_check_bypass_via_packed_byte_overflow",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_boolean_constraints_in_the_merkle_tree_path_leads_to_an_attacker_being_able_to_craft_a_fake_merkle_proof_for_an_arbitrary_leaf",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
+          "reason": "Tool found no module that do not satisfy weak safety.",
+          "need_manual_evaluation": true
+        }
+      ],
+      "error": [],
+      "timeout": [
+        {
+          "bug_name": "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+          "reason": "Reached zkhydra threshold."
+        }
+      ]
+    },
+    "circomspect": {
+      "count": {
+        "correct": 6,
+        "false": 28,
+        "error": 0,
+        "timeout": 0
+      },
+      "correct": [
+        {
+          "bug_name": "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble"
+        },
+        {
+          "bug_name": "semaphore-protocol/semaphore/veridise_no_zero_value_validation"
+        }
+      ],
+      "false": [
+        {
+          "bug_name": "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+          "reason": [
+            "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '65'; ground truth line: '45'-'45'",
+            "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '62'; ground truth line: '45'-'45'",
+            "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '61'; ground truth line: '45'-'45'",
+            "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '66'; ground truth line: '45'-'45'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'"
+          ],
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+          "reason": [
+            "Tool found wrong vulnerability ('UnnecessarySignalAssignment'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+          "reason": [
+            "Tool found wrong vulnerability ('UnusedVariableValue'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound",
+          "reason": [
+            "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Computational/Hints Error'"
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_forbidden_country_check_bypass_via_packed_byte_overflow",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_boolean_constraints_in_the_merkle_tree_path_leads_to_an_attacker_being_able_to_craft_a_fake_merkle_proof_for_an_arbitrary_leaf",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution",
+          "reason": [
+            "Tool found correct vulnerability ('under-constrained'), but wrong line: tool found: '199'; ground truth line: '41'-'198'"
+          ],
+          "need_manual_evaluation": true
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('UnusedOutputSignal'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+          "reason": [
+            "Tool found wrong vulnerability ('UnusedVariableValue'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+          "reason": [
+            "Tool found wrong vulnerability ('UnusedVariableValue'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+          "reason": [
+            "Tool found wrong vulnerability ('UnusedVariableValue'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('UnusedOutputSignal'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+          "reason": [
+            "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        },
+        {
+          "bug_name": "tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
+          "reason": [
+            "circomspect found no warnings for vulnerable function."
+          ]
+        },
+        {
+          "bug_name": "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+          "reason": [
+            "Tool found wrong vulnerability ('UnusedVariableValue'); ground truth vulnerability: 'Under-Constrained'",
+            "Tool found wrong vulnerability ('UnusedOutputSignal'); ground truth vulnerability: 'Under-Constrained'"
+          ]
+        }
+      ],
+      "error": [],
+      "timeout": []
+    },
+    "ecneproject": {
+      "count": {
+        "correct": 0,
+        "false": 31,
+        "error": 3,
+        "timeout": 0
+      },
+      "correct": [],
+      "false": [
+        {
+          "bug_name": "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_forbidden_country_check_bypass_via_packed_byte_overflow",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_boolean_constraints_in_the_merkle_tree_path_leads_to_an_attacker_being_able_to_craft_a_fake_merkle_proof_for_an_arbitrary_leaf",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
+          "reason": "Missing or inconclusive result from parsing."
+        },
+        {
+          "bug_name": "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+          "reason": "Missing or inconclusive result from parsing."
+        }
+      ],
+      "error": [
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+          "reason": "Circuit file not found. Might be missing in bug environment setup script."
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+          "reason": "Circuit file not found. Might be missing in bug environment setup script."
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+          "reason": "Circuit file not found. Might be missing in bug environment setup script."
+        }
+      ],
+      "timeout": []
+    },
+    "picus": {
+      "count": {
+        "correct": 6,
+        "false": 4,
+        "error": 24,
+        "timeout": 0
+      },
+      "correct": [
+        {
+          "bug_name": "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained"
+        }
+      ],
+      "false": [
+        {
+          "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained",
+          "reason": "Tool cannot determine whether the circuit is properly constrained"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny",
+          "reason": "Tool cannot determine whether the circuit is properly constrained"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_window4",
+          "reason": "Tool cannot determine whether the circuit is properly constrained"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix",
+          "reason": "Tool cannot determine whether the circuit is properly constrained"
+        }
+      ],
+      "error": [
+        {
+          "bug_name": "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_forbidden_country_check_bypass_via_packed_byte_overflow",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_boolean_constraints_in_the_merkle_tree_path_leads_to_an_attacker_being_able_to_craft_a_fake_merkle_proof_for_an_arbitrary_leaf",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
+          "reason": "Picus Tool Error"
+        },
+        {
+          "bug_name": "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+          "reason": "Picus Tool Error"
+        }
+      ],
+      "timeout": []
+    },
+    "zkfuzz": {
+      "count": {
+        "correct": 16,
+        "false": 8,
+        "error": 3,
+        "timeout": 7
+      },
+      "correct": [
+        {
+          "bug_name": "Unirep/Unirep/veridise_missing_range_checks_on_comparison_circuits"
+        },
+        {
+          "bug_name": "darkforest-eth/darkforest-v0.3/daira_hopwood_darkforest_v0_3_missing_bit_length_check"
+        },
+        {
+          "bug_name": "iden3/circomlib/kobi_gurkan_mimc_hash_assigned_but_not_constrained"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_decoder_accepting_bogus_output_signal"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_bitElementMulAny"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_window4"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_outputs_in_windowmulfix"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_edwards2Montgomery"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomery2Edwards"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryAdd"
+        },
+        {
+          "bug_name": "iden3/circomlib/veridise_underconstrained_points_in_montgomeryDouble"
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_under_constrained_circuits_compromising_the_soundness_of_the_system"
+        },
+        {
+          "bug_name": "reclaimprotocol/circom-chacha20/zksecurity_unsound_left_rotation"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_the_registration_and_disclosure_circuits_lack_range_checks_for_the_input_indices"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_arrayxor_is_under_constrained"
+        },
+        {
+          "bug_name": "zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes"
+        }
+      ],
+      "false": [
+        {
+          "bug_name": "0xbok/circom-bigint/veridise_missing_range_checks_in_bigmod",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "iden3/circuits/trailofbits_unsafe_use_of_num2bits_in_multiple_circuits",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_big_integer_zero_check_is_not_sound",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_forbidden_country_check_bypass_via_packed_byte_overflow",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_incorrect_handling_of_point_doubling_can_allow_signature_forgery",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
+          "reason": "Tool found no counter example"
+        },
+        {
+          "bug_name": "tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
+          "reason": "Tool found no counter example"
+        }
+      ],
+      "error": [
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_including_ill-formed_bigints_in_public_key_commitment",
+          "reason": "Tool found previous errors"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/trailofbits_prover_can_lock_user_funds_by_supplying_non-reduced_Y_values_to_G1BigIntToSignFlag",
+          "reason": "Tool found previous errors"
+        },
+        {
+          "bug_name": "succinctlabs/telepathy-circuits/veridise_template_CoreVerifyPubkeyG1_does_not_perform_input_validation_simplified",
+          "reason": "Tool found previous errors"
+        }
+      ],
+      "timeout": [
+        {
+          "bug_name": "Unirep/Unirep/veridise_underconstrained_circuit_allows_invalid_comparison",
+          "reason": "Reached zkhydra threshold."
+        },
+        {
+          "bug_name": "personaelabs/spartan-ecdsa/yacademy_input_signal_s_is_not_constrained_in_eff_ecdsa_circom",
+          "reason": "Reached zkhydra threshold."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier",
+          "reason": "Reached zkhydra threshold."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_boolean_constraints_in_the_merkle_tree_path_leads_to_an_attacker_being_able_to_craft_a_fake_merkle_proof_for_an_arbitrary_leaf",
+          "reason": "Reached zkhydra threshold."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution",
+          "reason": "Reached zkhydra threshold."
+        },
+        {
+          "bug_name": "selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates",
+          "reason": "Reached zkhydra threshold."
+        },
+        {
+          "bug_name": "semaphore-protocol/semaphore/veridise_no_zero_value_validation",
+          "reason": "Reached zkhydra threshold."
+        }
+      ]
+    }
+  }
+}

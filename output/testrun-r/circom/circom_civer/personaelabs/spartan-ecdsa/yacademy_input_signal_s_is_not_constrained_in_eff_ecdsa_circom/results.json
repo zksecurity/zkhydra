@@ -1,0 +1,31 @@
+{
+  "result": "false",
+  "reason": "Tool found wrong module; buggy module: 'EfficientECDSA'.",
+  "buggy_components": [
+    {
+      "name": "Secp256k1Double",
+      "params": []
+    },
+    {
+      "name": "Secp256k1AddIncomplete",
+      "params": []
+    }
+  ],
+  "timed_out_components": [
+    {
+      "name": "Secp256k1AddComplete",
+      "params": []
+    },
+    {
+      "name": "Num2Bits",
+      "params": [
+        256
+      ]
+    },
+    {
+      "name": "K",
+      "params": []
+    }
+  ],
+  "need_manual_evaluation": true
+}

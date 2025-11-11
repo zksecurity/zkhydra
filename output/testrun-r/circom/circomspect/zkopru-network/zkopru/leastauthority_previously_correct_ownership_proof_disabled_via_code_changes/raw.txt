@@ -1,0 +1,20 @@
+circomspect: analyzing template 'OwnershipProof'
+warning[CS0006]: The signal `out` is not used by the template.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes/circuits/ownership_proof.circom:11:5
+   
+11      signal output out; // @audit To suppress "snarkJS: Error: Scalar size does not match"
+        ^^^^^^^^^^^^^^^^^ This signal is unused and could be removed.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-variable-or-parameter.
+   = To ignore this type of result, use `--allow CS0006`.
+
+warning[CS0018]: The output signal `out` defined by the template `EdDSAPoseidonVerifier` is not constrained in `OwnershipProof`.
+    /home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes/circuits/ownership_proof.circom:13:23
+   
+13      component eddsa = EdDSAPoseidonVerifier();
+                          ^^^^^^^^^^^^^^^^^^^^^^^ The template `EdDSAPoseidonVerifier` is instantiated here.
+   
+   = For more details, see https://github.com/trailofbits/circomspect/blob/main/doc/analysis_passes.md#unused-output-signal.
+   = To ignore this type of result, use `--allow CS0018`.
+
+circomspect: 2 issues found.

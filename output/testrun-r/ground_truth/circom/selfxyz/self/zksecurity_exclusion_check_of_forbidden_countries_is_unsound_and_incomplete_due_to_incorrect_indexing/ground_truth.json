@@ -1,0 +1,10 @@
+{
+  "Vulnerability": "Computational/Hints Error",
+  "Impact": "Soundness and Completeness",
+  "Root Cause": "Wrong translation of logic into constraints",
+  "Location": {
+    "Path": "circuits/circuits/utils/passport/disclose/proveCountryIsNotInList.circom",
+    "Function": "ProveCountryIsNotInList",
+    "Line": "12-18"
+  }
+}

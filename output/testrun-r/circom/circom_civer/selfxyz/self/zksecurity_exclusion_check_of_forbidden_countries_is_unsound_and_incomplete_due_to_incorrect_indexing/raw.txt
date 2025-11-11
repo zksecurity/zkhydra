@@ -1,0 +1,6 @@
+stdout:
+
+stderr:
+[0m[1m[38;5;9merror[P1003][0m[1m: File "/home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_exclusion_check_of_forbidden_countries_is_unsound_and_incomplete_due_to_incorrect_indexing/circuits/circuit.circom" requires pragma version (2, 1, 9) that is not supported by the compiler (version (2, 1, 6))[0m
+
+[31mprevious errors were found[0m

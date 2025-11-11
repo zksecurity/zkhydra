@@ -1,0 +1,30 @@
+stdout:
+
+stderr:
+ERROR: LoadError: ArgumentError: Package ArgParse [c7e460c6-2fb9-53a9-8c5b-16f535851c63] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+Stacktrace:
+  [1] _require(pkg::Base.PkgId, env::String)
+    @ Base ./loading.jl:2515
+  [2] __require_prelocked(uuidkey::Base.PkgId, env::String)
+    @ Base ./loading.jl:2388
+  [3] #invoke_in_world#3
+    @ ./essentials.jl:1089 [inlined]
+  [4] invoke_in_world
+    @ ./essentials.jl:1086 [inlined]
+  [5] _require_prelocked(uuidkey::Base.PkgId, env::String)
+    @ Base ./loading.jl:2375
+  [6] macro expansion
+    @ ./loading.jl:2314 [inlined]
+  [7] macro expansion
+    @ ./lock.jl:273 [inlined]
+  [8] __require(into::Module, mod::Symbol)
+    @ Base ./loading.jl:2271
+  [9] #invoke_in_world#3
+    @ ./essentials.jl:1089 [inlined]
+ [10] invoke_in_world
+    @ ./essentials.jl:1086 [inlined]
+ [11] require(into::Module, mod::Symbol)
+    @ Base ./loading.jl:2260
+in expression starting at /home/tom/Development/zkhydra/tools/ecneproject/src/Ecne.jl:5

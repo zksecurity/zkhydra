@@ -1,0 +1,9 @@
+{
+  "result": "false",
+  "reason": [
+    "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+    "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+    "Tool found wrong vulnerability ('SignalAssignmentStatement'); ground truth vulnerability: 'Under-Constrained'",
+    "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Under-Constrained'"
+  ]
+}

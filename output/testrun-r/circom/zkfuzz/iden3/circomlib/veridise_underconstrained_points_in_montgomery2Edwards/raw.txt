@@ -1,0 +1,41 @@
+stdout:
+ Random Seed: 4587815056426733868
+
+[2K Generation: 0/500 (0)
+     Solution found in generation 0
+
+stderr:
+
+           zkFuzz      
+      ZK Circuit Fuzzer
+    
+Welcome to the zkFuzz
+
+ Loading Whitelists...
+ Parsing Templates...
+ Parsing Function...
+ Gathering Trace/Side Constraints...
+
+
+ Scanning TCCT Instances...
+
+ Counter Example:                                           
+     UnderConstrained (Non-Deterministic) 
+            `main.out[0]` is expected to be `0` 
+     Assignment Details: 
+            main.out[1] = 21888242871839275222246405745257275088548364400416034343698204186575808495616 
+            main.in[1] = 0 
+            main.in[0] = 0 
+            main.out[0] = 8 
+
+
+
+                        zkFuzz Report                        
+
+ Execution Summary:
+  Prime Number      : 21888242871839275222246405745257275088548364400416034343698204186575808495617
+  Compression Rate  : 50.00% (2/4)
+  Verification      :  NOT SAFE 
+  Execution Time    : 5.418974ms
+
+Everything went okay
