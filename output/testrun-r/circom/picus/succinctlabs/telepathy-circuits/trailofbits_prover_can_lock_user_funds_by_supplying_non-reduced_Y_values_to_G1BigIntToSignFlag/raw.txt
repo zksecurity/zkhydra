@@ -1,2 +1,0 @@
-working directory: /var/tmp/picus17628204551762820455796
-Exiting Picus with the code 50

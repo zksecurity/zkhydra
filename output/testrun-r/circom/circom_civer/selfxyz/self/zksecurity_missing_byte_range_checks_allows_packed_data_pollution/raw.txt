@@ -1,6 +1,0 @@
-stdout:
-
-stderr:
-[0m[1m[38;5;9merror[P1003][0m[1m: File "/home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_missing_byte_range_checks_allows_packed_data_pollution/circuits/circuit.circom" requires pragma version (2, 1, 9) that is not supported by the compiler (version (2, 1, 6))[0m
-
-[31mprevious errors were found[0m

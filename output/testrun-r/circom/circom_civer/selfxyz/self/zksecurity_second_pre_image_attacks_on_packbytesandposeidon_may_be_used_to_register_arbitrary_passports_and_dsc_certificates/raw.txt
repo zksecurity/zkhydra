@@ -1,6 +1,0 @@
-stdout:
-
-stderr:
-[0m[1m[38;5;9merror[P1003][0m[1m: File "/home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_second_pre_image_attacks_on_packbytesandposeidon_may_be_used_to_register_arbitrary_passports_and_dsc_certificates/circuits/circuit.circom" requires pragma version (2, 1, 9) that is not supported by the compiler (version (2, 1, 6))[0m
-
-[31mprevious errors were found[0m

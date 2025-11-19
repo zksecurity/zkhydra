@@ -1,6 +1,0 @@
-stdout:
-
-stderr:
-[0m[1m[38;5;9merror[P1003][0m[1m: File "/home/tom/Development/zkhydra/bugs/zkbugs/dataset/circom/selfxyz/self/zksecurity_an_attacker_can_craft_a_fake_non_inclusion_proof_for_a_given_key_due_to_an_aliasing_bug_in_the_smt_verifier/circuits/circuit.circom" requires pragma version (2, 1, 9) that is not supported by the compiler (version (2, 1, 6))[0m
-
-[31mprevious errors were found[0m

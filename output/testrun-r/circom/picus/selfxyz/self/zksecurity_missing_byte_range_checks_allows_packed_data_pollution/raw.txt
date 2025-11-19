@@ -1,2 +1,0 @@
-working directory: /var/tmp/picus17628131391762813139437
-Exiting Picus with the code 1

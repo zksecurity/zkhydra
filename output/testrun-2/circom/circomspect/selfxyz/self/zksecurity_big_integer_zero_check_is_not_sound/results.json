@@ -1,7 +1,0 @@
-{
-  "result": "false",
-  "reason": [
-    "Tool found wrong vulnerability ('NonStrictBinaryConversion'); ground truth vulnerability: 'Computational/Hints Error'"
-  ],
-  "need_manual_evaluation": true
-}
