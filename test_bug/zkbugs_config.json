@@ -1,0 +1,14 @@
+{
+  "test_bug": {
+    "Project": "https://github.com/test/test",
+    "Commit": "0x0000000000000000000000000000000000000000",
+    "Vulnerability": "Under-Constrained",
+    "Impact": "The output signal c is assigned but not constrained, allowing a prover to set it to any value.",
+    "Root Cause": "Missing constraint on the output signal",
+    "Location": {
+      "Function": "Multiplier",
+      "Line": "8",
+      "File": "circuit.circom"
+    }
+  }
+}
