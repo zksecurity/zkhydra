@@ -1,0 +1,22 @@
+services:
+  zkhydra:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: zkhydra:latest
+    container_name: zkhydra
+    volumes:
+      # Mount the output directory to persist results
+      - ./output:/zkhydra/output
+      # Mount config files
+      - ./config.toml:/zkhydra/config.toml
+      - ./configs:/zkhydra/configs
+      # Mount bugs directory (if exists locally, otherwise uses container's clone)
+      - ./bugs:/zkhydra/bugs
+      # Mount test_bug directory
+      - ./test_bug:/zkhydra/test_bug
+    working_dir: /zkhydra
+    # Default command - can be overridden
+    command: /bin/bash
+    # Uncomment to run main.py by default
+    # command: uv run main.py

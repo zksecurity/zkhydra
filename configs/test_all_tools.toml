@@ -1,0 +1,35 @@
+# Run ALL tools against test_bug circuit
+[app]
+# Log level (one of: DEBUG, INFO, WARNING, ERROR, CRITICAL)
+log_level = "INFO"
+
+# Timeout for each execution (per tool per bug) in seconds
+timeout = 1800
+
+# Output directory
+output = "./output"
+file_logging = true
+dynamic_name = false
+static_name = "test_all_tools"
+
+# App stages - Set to false to skip a stage
+setup_bug_environment = false  # Skip setup - not needed for most static analysis tools
+execute_tools = true
+cleanup_bug_environment = false  # Skip cleanup since we didn't setup
+generate_ground_truth = true   # Generate from test_bug/zkbugs_config.json
+parse_raw_tool_output = true   # Parse tool output into structured JSON
+analyze_tool_results = true    # Compare against ground truth
+summarize_tool_results = true  # Generate summary.json with all results
+
+[circom]
+# All available circom tools
+tools = [
+    "circomspect",      # Static analyzer/linter (fast)
+    "circom_civer",     # Static analysis with CVC5 backend
+    "Picus",            # Symbolic execution with Rosette
+    "EcneProject",      # Julia-based analysis
+    "zkFuzz"            # Fuzzing tool
+]
+
+# Only test the test_bug circuit
+bugs = ["test_bug"]
