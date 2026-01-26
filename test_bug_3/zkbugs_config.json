@@ -1,0 +1,14 @@
+{
+  "test_bug_3": {
+    "Project": "https://github.com/test/test",
+    "Commit": "0x0000000000000000000000000000000000000000",
+    "Vulnerability": "None",
+    "Impact": "This circuit is properly constrained and contains no vulnerabilities.",
+    "Root Cause": "N/A - No bug present",
+    "Location": {
+      "Function": "IsZero",
+      "Line": "1",
+      "File": "circuit.circom"
+    }
+  }
+}
