@@ -14,11 +14,10 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from utils.logger import setup_logging
 from utils.tools_resolver import resolve_tools
-from utils.runner import execute_tool_on_bug
 from tools.utils import ensure_dir
 
 BASE_DIR = Path.cwd()
@@ -140,59 +139,92 @@ def expand_tools_list(tools_str: str, dsl: str) -> List[str]:
     return [t.strip().lower() for t in tools_str.split(",") if t.strip()]
 
 
-def analyze_mode(args: argparse.Namespace) -> None:
+def setup_output_directory(base_output: Path, mode: str) -> Tuple[Path, str]:
     """
-    Analyze mode: Run tools on a circuit and report findings.
+    Create timestamped output directory.
 
-    Does NOT use ground truth comparison.
-    Outputs:
-    - Summary (findings count, analysis time, etc.)
-    - Findings list (one-liners per tool)
-    - Raw outputs
-    - Summary JSON file
+    Args:
+        base_output: Base output directory
+        mode: Mode name (analyze or evaluate)
+
+    Returns:
+        Tuple of (output_directory_path, timestamp)
     """
-    logging.info(f"Running in ANALYZE mode")
-    logging.info(f"Input: {args.input}")
-    logging.info(f"Tools: {args.tools}")
-
-    # Validate input file exists
-    if not args.input.exists():
-        logging.error(f"Input file not found: {args.input}")
-        sys.exit(1)
-
-    # Parse tools list (expand 'all' if needed)
-    tools_list = expand_tools_list(args.tools, args.dsl)
-    if not tools_list:
-        logging.error("No tools specified")
-        sys.exit(1)
-    logging.info(f"Loading tools: {tools_list}")
-
-    # Resolve tool modules
-    tool_registry = resolve_tools(args.dsl, tools_list)
-    if not tool_registry:
-        logging.error("No tools loaded successfully")
-        sys.exit(1)
-
-    # Setup output directory
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_dir = args.output / f"analyze_{timestamp}"
+    output_dir = base_output / f"{mode}_{timestamp}"
     ensure_dir(output_dir)
-    logging.info(f"Output directory: {output_dir}")
+    return output_dir, timestamp
 
-    # Determine what to pass to tools
-    # Some tools expect a file path, others expect a directory
-    input_path = args.input
+
+def prepare_circuit_paths(input_path: Path) -> Tuple[Path, Path]:
+    """
+    Determine circuit file and directory paths from input.
+
+    Args:
+        input_path: Input path (file or directory)
+
+    Returns:
+        Tuple of (circuit_directory, circuit_file)
+    """
     if input_path.is_file():
-        # Input is a file - some tools need the parent directory
-        input_dir = input_path.parent.parent if input_path.parent.name == "circuits" else input_path.parent
-        input_file = input_path
+        # Input is a file - extract parent directory
+        circuit_dir = (
+            input_path.parent.parent
+            if input_path.parent.name == "circuits"
+            else input_path.parent
+        )
+        circuit_file = input_path
     else:
         # Input is a directory
-        input_dir = input_path
-        input_file = input_path / "circuits" / "circuit.circom"
+        circuit_dir = input_path
+        circuit_file = input_path / "circuits" / "circuit.circom"
 
-    # Run each tool and collect results
+    return circuit_dir, circuit_file
+
+
+def get_tool_input_path(tool_name: str, circuit_file: Path, circuit_dir: Path) -> str:
+    """
+    Determine what path to pass to a specific tool.
+
+    Args:
+        tool_name: Name of the tool
+        circuit_file: Path to circuit file
+        circuit_dir: Path to circuit directory
+
+    Returns:
+        Path string to pass to tool
+    """
+    # circomspect works with file paths directly, others expect directories
+    if tool_name == "circomspect":
+        return str(circuit_file)
+    else:
+        return str(circuit_dir)
+
+
+def execute_tools(
+    tools_list: List[str],
+    tool_registry: Dict,
+    circuit_file: Path,
+    circuit_dir: Path,
+    output_dir: Path,
+    timeout: int,
+) -> Dict:
+    """
+    Execute all tools and collect results.
+
+    Args:
+        tools_list: List of tool names to run
+        tool_registry: Loaded tool modules
+        circuit_file: Path to circuit file
+        circuit_dir: Path to circuit directory
+        output_dir: Output directory for results
+        timeout: Timeout per tool in seconds
+
+    Returns:
+        Dictionary of results per tool
+    """
     results = {}
+
     for tool_name in tools_list:
         if tool_name not in tool_registry:
             logging.warning(f"Tool '{tool_name}' failed to load, skipping")
@@ -211,14 +243,10 @@ def analyze_mode(args: argparse.Namespace) -> None:
 
         try:
             # Determine what path to pass to this tool
-            # circomspect works with file paths directly, others expect directories
-            if tool_name == "circomspect":
-                tool_input = str(input_file)
-            else:
-                tool_input = str(input_dir)
+            tool_input = get_tool_input_path(tool_name, circuit_file, circuit_dir)
 
             # Execute tool
-            raw_output = tool_module.execute(tool_input, args.timeout)
+            raw_output = tool_module.execute(tool_input, timeout)
 
             # Write raw output
             with open(raw_output_file, "w", encoding="utf-8") as f:
@@ -237,12 +265,15 @@ def analyze_mode(args: argparse.Namespace) -> None:
                 }
                 logging.warning(f"{tool_name}: Timed out after {execution_time:.2f}s")
             # Check if tool returned an error marker
-            elif any(marker in raw_output for marker in [
-                "[Circuit file not found]",
-                "[Binary not found",
-                "[Error:",
-                "[File not found]",
-            ]):
+            elif any(
+                marker in raw_output
+                for marker in [
+                    "[Circuit file not found]",
+                    "[Binary not found",
+                    "[Error:",
+                    "[File not found]",
+                ]
+            ):
                 # Extract error message
                 error_msg = raw_output.strip()
                 results[tool_name] = {
@@ -282,6 +313,49 @@ def analyze_mode(args: argparse.Namespace) -> None:
                 "raw_output_file": str(raw_output_file),
             }
 
+    return results
+
+
+def analyze_mode(args: argparse.Namespace) -> None:
+    """
+    Analyze mode: Run tools on a circuit and report findings.
+
+    Does NOT use ground truth comparison.
+    """
+    logging.info(f"Running in ANALYZE mode")
+    logging.info(f"Input: {args.input}")
+    logging.info(f"Tools: {args.tools}")
+
+    # Validate input file exists
+    if not args.input.exists():
+        logging.error(f"Input file not found: {args.input}")
+        sys.exit(1)
+
+    # Parse tools list (expand 'all' if needed)
+    tools_list = expand_tools_list(args.tools, args.dsl)
+    if not tools_list:
+        logging.error("No tools specified")
+        sys.exit(1)
+    logging.info(f"Loading tools: {tools_list}")
+
+    # Resolve tool modules
+    tool_registry = resolve_tools(args.dsl, tools_list)
+    if not tool_registry:
+        logging.error("No tools loaded successfully")
+        sys.exit(1)
+
+    # Setup output directory
+    output_dir, timestamp = setup_output_directory(args.output, "analyze")
+    logging.info(f"Output directory: {output_dir}")
+
+    # Determine circuit paths
+    circuit_dir, circuit_file = prepare_circuit_paths(args.input)
+
+    # Execute all tools
+    results = execute_tools(
+        tools_list, tool_registry, circuit_file, circuit_dir, output_dir, args.timeout
+    )
+
     # Generate summary
     summary = {
         "mode": "analyze",
@@ -297,7 +371,9 @@ def analyze_mode(args: argparse.Namespace) -> None:
             "timeout": sum(1 for r in results.values() if r.get("status") == "timeout"),
         },
         "total_findings": sum(
-            r.get("findings_count", 0) for r in results.values() if r.get("status") == "success"
+            r.get("findings_count", 0)
+            for r in results.values()
+            if r.get("status") == "success"
         ),
         "total_execution_time": sum(r.get("execution_time", 0) for r in results.values()),
     }
@@ -314,12 +390,6 @@ def analyze_mode(args: argparse.Namespace) -> None:
 def evaluate_mode(args: argparse.Namespace) -> None:
     """
     Evaluate mode: Run tools and compare against ground truth.
-
-    Uses ground truth from JSON config.
-    Outputs:
-    - Ground truth file
-    - Results comparison (TP, FP, FN)
-    - Evaluation file with TODO items for manual review
     """
     logging.info(f"Running in EVALUATE mode")
     logging.info(f"Input config: {args.input}")
@@ -366,9 +436,8 @@ def evaluate_mode(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     # Setup output directory
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_dir = args.output / f"evaluate_{timestamp}"
-    ensure_dir(output_dir)
+    output_dir, timestamp = setup_output_directory(args.output, "evaluate")
+    logging.info(f"Output directory: {output_dir}")
 
     # Save ground truth
     ground_truth_file = output_dir / "ground_truth.json"
@@ -381,58 +450,45 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     with open(ground_truth_file, "w", encoding="utf-8") as f:
         json.dump(ground_truth, f, indent=2)
 
-    logging.info(f"Output directory: {output_dir}")
+    # Determine circuit paths
+    circuit_dir, _ = prepare_circuit_paths(circuit_file)
 
-    # Determine what to pass to tools
-    # circuit_file is already resolved, but tools need directory for most cases
-    if circuit_file.is_file():
-        circuit_dir = circuit_file.parent.parent if circuit_file.parent.name == "circuits" else circuit_file.parent
-    else:
-        circuit_dir = circuit_file
+    # Execute all tools (same as analyze mode)
+    tool_results = execute_tools(
+        tools_list, tool_registry, circuit_file, circuit_dir, output_dir, args.timeout
+    )
 
-    # Run tools and evaluate
+    # Now do evaluation-specific processing (parse & compare)
     evaluation_results = {}
     for tool_name in tools_list:
-        if tool_name not in tool_registry:
-            logging.warning(f"Tool '{tool_name}' failed to load, skipping")
+        if tool_name not in tool_results:
             continue
 
-        logging.info(f"Running {tool_name}...")
-        tool_module = tool_registry[tool_name]
+        tool_result = tool_results[tool_name]
 
-        # Create output directory
+        if tool_result["status"] != "success":
+            # Copy status from execution
+            evaluation_results[tool_name] = {
+                "status": tool_result["status"],
+                "execution_time": tool_result["execution_time"],
+                "error": tool_result.get("error"),
+            }
+            continue
+
+        tool_module = tool_registry[tool_name]
         tool_output_dir = output_dir / tool_name
-        ensure_dir(tool_output_dir)
         raw_output_file = tool_output_dir / "raw.txt"
         parsed_output_file = tool_output_dir / "parsed.json"
         results_file = tool_output_dir / "results.json"
 
-        start_time = time.time()
-
         try:
-            # Determine what path to pass to this tool
-            # circomspect works with file paths directly, others expect directories
-            if tool_name == "circomspect":
-                tool_input = str(circuit_file)
-            else:
-                tool_input = str(circuit_dir)
-
-            # Execute tool
-            raw_output = tool_module.execute(tool_input, args.timeout)
-
-            # Write raw output
-            with open(raw_output_file, "w", encoding="utf-8") as f:
-                f.write(raw_output)
-
-            execution_time = time.time() - start_time
-
             # Parse output using tool's parser
             if hasattr(tool_module, "parse_output"):
                 parsed = tool_module.parse_output(raw_output_file, ground_truth_file)
                 with open(parsed_output_file, "w", encoding="utf-8") as f:
                     json.dump(parsed, f, indent=2)
             else:
-                parsed = {"raw": raw_output}
+                parsed = {"raw": "No parser available"}
 
             # Compare with ground truth
             if hasattr(tool_module, "compare_zkbugs_ground_truth"):
@@ -446,20 +502,21 @@ def evaluate_mode(args: argparse.Namespace) -> None:
 
             evaluation_results[tool_name] = {
                 "status": "success",
-                "execution_time": round(execution_time, 2),
+                "execution_time": tool_result["execution_time"],
                 "result": comparison.get("result"),
                 "reason": comparison.get("reason", []),
                 "needs_manual_review": comparison.get("need_manual_evaluation", False),
             }
 
-            logging.info(f"{tool_name}: {comparison.get('result')} in {execution_time:.2f}s")
+            logging.info(
+                f"{tool_name}: {comparison.get('result')} in {tool_result['execution_time']:.2f}s"
+            )
 
         except Exception as e:
-            execution_time = time.time() - start_time
-            logging.error(f"{tool_name} failed: {e}")
+            logging.error(f"{tool_name} evaluation failed: {e}")
             evaluation_results[tool_name] = {
                 "status": "error",
-                "execution_time": round(execution_time, 2),
+                "execution_time": tool_result["execution_time"],
                 "error": str(e),
             }
 
@@ -498,26 +555,32 @@ def parse_findings_from_output(tool_name: str, raw_output: str) -> List[Dict]:
                     else:
                         location = "unknown"
 
-                    findings.append({
-                        "code": code,
-                        "location": location,
-                        "description": line.strip(),
-                    })
+                    findings.append(
+                        {
+                            "code": code,
+                            "location": location,
+                            "description": line.strip(),
+                        }
+                    )
                 except:
                     pass
 
     elif tool_name == "circom_civer":
         # Parse circom_civer output
         if "FAIL" in raw_output or "ERROR" in raw_output:
-            findings.append({
-                "type": "verification_failure",
-                "description": "Circuit verification failed",
-            })
+            findings.append(
+                {
+                    "type": "verification_failure",
+                    "description": "Circuit verification failed",
+                }
+            )
         elif "UNSAT" in raw_output:
-            findings.append({
-                "type": "satisfiability",
-                "description": "Unsatisfiable constraints detected",
-            })
+            findings.append(
+                {
+                    "type": "satisfiability",
+                    "description": "Unsatisfiable constraints detected",
+                }
+            )
 
     # Add more tool-specific parsers as needed
 
@@ -535,7 +598,9 @@ def generate_evaluation_summary(
 
     # Count results
     correct = sum(1 for r in evaluation_results.values() if r.get("result") == "correct")
-    false_results = sum(1 for r in evaluation_results.values() if r.get("result") == "false")
+    false_results = sum(
+        1 for r in evaluation_results.values() if r.get("result") == "false"
+    )
     timeouts = sum(1 for r in evaluation_results.values() if r.get("result") == "timeout")
     errors = sum(1 for r in evaluation_results.values() if r.get("status") == "error")
     needs_review = [
@@ -625,7 +690,7 @@ def print_analyze_summary(summary: Dict) -> None:
                 for idx, finding in enumerate(result["findings"][:10], 1):  # Show first 10
                     desc = finding.get("description", finding.get("type", "Unknown"))
                     print(f"    {idx}. {desc}")
-                if result['findings_count'] > 10:
+                if result["findings_count"] > 10:
                     print(f"    ... and {result['findings_count'] - 10} more")
 
         elif status == "failed":
@@ -648,7 +713,7 @@ def print_evaluate_summary(summary: Dict) -> None:
     print("\n" + "-" * 80)
     print("STATISTICS:")
     print("-" * 80)
-    stats = summary['statistics']
+    stats = summary["statistics"]
     print(f"Total Tools:         {stats['total_tools']}")
     print(f"True Positives:      {stats['true_positives']}")
     print(f"False Negatives:     {stats['false_negatives']}")
@@ -669,7 +734,9 @@ def print_evaluate_summary(summary: Dict) -> None:
                 "unknown": "?",
             }.get(result.get("result"), "?")
 
-            print(f"\n{tool_name.upper()}: {status_symbol} {result.get('result', 'unknown').upper()}")
+            print(
+                f"\n{tool_name.upper()}: {status_symbol} {result.get('result', 'unknown').upper()}"
+            )
             print(f"  Time: {result['execution_time']}s")
             if result.get("reason"):
                 print(f"  Reason: {result['reason']}")
