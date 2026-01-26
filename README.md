@@ -1,8 +1,11 @@
 # zkHydra
 
-A tool runner framework for executing and evaluating zero-knowledge circuit security analysis tools. zkHydra supports multiple DSLs (Circom, PIL, Cairo) and provides a standardized way to run security tools against a curated dataset of known bugs (zkbugs).
+A tool runner framework for zero-knowledge circuit security analysis. zkHydra orchestrates multiple security analysis tools and provides two operational modes:
 
-## Implemented Tools
+- **Analyze Mode**: Run security tools on any circuit and get findings
+- **Evaluate Mode**: Compare tool results against ground truth for accuracy evaluation
+
+## Supported Tools
 
 - **circomspect** - Static analyzer and linter for Circom circuits
 - **circom_civer** - Static analysis using CVC5 SMT solver backend
@@ -12,131 +15,291 @@ A tool runner framework for executing and evaluating zero-knowledge circuit secu
 
 ## Installation
 
-> [!NOTE]
-> This project has been tested on Ubuntu 24.04.3 LTS.
-
-### Option 1: Native Installation
+### Option 1: Native Installation (Ubuntu 24.04)
 
 ```bash
 ./setup.sh
 ```
 
-This will initialize git submodules, install uv, set up Rust toolchain, and build all tools.
+This initializes git submodules, installs uv, sets up Rust toolchain, and builds all tools.
 
-### Option 2: Docker (Recommended for Quick Start)
+### Option 2: Docker
 
 ```bash
 # Build the Docker image (takes 30-60 minutes)
 docker-compose build
 
 # Run interactively
-docker-compose run --rm zkhydra
+docker-compose run --rm zkhydra bash
 ```
 
-See [DOCKER.md](DOCKER.md) for detailed Docker instructions.
+## Usage
 
-## Quick Start
+zkHydra has two modes: **analyze** and **evaluate**.
 
-### Example 1: Run a Single Tool (Fast)
+### Analyze Mode
 
-Test circomspect against the example underconstrained circuit:
+Analyze a circuit file with one or more tools. Does not require ground truth.
+
+**Synopsis:**
+```bash
+uv run main.py analyze --input <circuit.circom> --tools <tool1,tool2,...> [options]
+```
+
+**Output:**
+- Summary of findings per tool
+- Total analysis time per tool
+- One-liner list of findings
+- Raw tool outputs
+- JSON summary file
+
+**Examples:**
 
 ```bash
-# Native
-uv run main.py --config configs/test_simple.toml
+# Analyze with a single tool
+uv run main.py analyze --input test_bug/circuits/circuit.circom --tools circomspect
 
-# Docker
-docker-compose run --rm zkhydra uv run main.py --config configs/test_simple.toml
+# Analyze with multiple tools
+uv run main.py analyze \
+  --input test_bug/circuits/circuit.circom \
+  --tools circomspect,circom_civer,picus
+
+# Specify output directory and timeout
+uv run main.py analyze \
+  --input circuit.circom \
+  --tools circomspect \
+  --output results/ \
+  --timeout 3600
 ```
 
-**Check results:**
+**Docker:**
 ```bash
-cat output/test_simple/circom/circomspect/test_bug/raw.txt
+docker-compose run --rm zkhydra uv run main.py analyze \
+  --input test_bug/circuits/circuit.circom \
+  --tools circomspect
 ```
 
-### Example 2: Run All Tools (Complete Analysis)
+### Evaluate Mode
 
-Run all 5 tools against the test circuit:
+Run tools and compare results against ground truth from a configuration file.
+
+**Synopsis:**
+```bash
+uv run main.py evaluate --input <zkbugs_config.json> --tools <tool1,tool2,...> [options]
+```
+
+**Input Format:**
+The JSON config file must follow the zkbugs format:
+```json
+{
+  "bug_name": {
+    "Project": "https://github.com/project/repo",
+    "Commit": "commit_hash",
+    "Vulnerability": "Under-Constrained",
+    "Impact": "Description of impact",
+    "Root Cause": "Description of root cause",
+    "Location": {
+      "Function": "FunctionName",
+      "Line": "10",
+      "File": "circuit.circom"
+    }
+  }
+}
+```
+
+**Output:**
+- Ground truth file
+- Tool comparison results (True Positives, False Negatives, etc.)
+- Summary statistics
+- Evaluation file with TODO items for manual review
+
+**Examples:**
 
 ```bash
-# Native
-uv run main.py --config configs/test_all_tools.toml
+# Evaluate with ground truth
+uv run main.py evaluate \
+  --input test_bug/zkbugs_config.json \
+  --tools circomspect
 
-# Docker
-docker-compose run --rm zkhydra uv run main.py --config configs/test_all_tools.toml
+# Evaluate with multiple tools
+uv run main.py evaluate \
+  --input test_bug/zkbugs_config.json \
+  --tools circomspect,circom_civer,picus
 ```
 
-**Check results:**
+**Docker:**
 ```bash
-# View summary
-cat output/test_all_tools/summary.json
-
-# View individual tool outputs
-ls -la output/test_all_tools/circom/*/test_bug/
+docker-compose run --rm zkhydra uv run main.py evaluate \
+  --input test_bug/zkbugs_config.json \
+  --tools circomspect
 ```
 
-### Example 3: Run Full zkbugs Dataset
+## CLI Options
 
-Use the default config to run tools against all bugs in the zkbugs dataset:
+### Required Arguments
+
+- `mode` - Operation mode: `analyze` or `evaluate`
+- `--input`, `-i` - Input file:
+  - Analyze mode: Circuit file (`.circom`)
+  - Evaluate mode: Config file (`.json`)
+- `--tools`, `-t` - Tools to run:
+  - Use `all` to run all available tools for the DSL
+  - Or specify comma-separated list: `circomspect,circom_civer,picus`
+  - Available tools for Circom: `circomspect`, `circom_civer`, `picus`, `ecneproject`, `zkfuzz`
+
+### Optional Arguments
+
+- `--output`, `-o` - Output directory (default: `output/`)
+- `--dsl` - Domain-specific language (default: `circom`, options: `circom`, `pil`, `cairo`)
+- `--timeout` - Timeout per tool in seconds (default: `1800`)
+- `--log-level` - Logging level (default: `INFO`, options: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`)
+- `--log-file` - Enable file logging
+
+### Help
 
 ```bash
-# Native
-uv run main.py
-
-# Docker
-docker-compose run --rm zkhydra uv run main.py
+uv run main.py --help
+uv run main.py analyze --help
+uv run main.py evaluate --help
 ```
-
-## Configuration
-
-Create a custom TOML config file to specify:
-- Which tools to run
-- Which bugs to analyze
-- Output directory settings
-- Pipeline stages to execute
-
-**Available configs:**
-- `config.toml` - Full zkbugs dataset with all bugs
-- `configs/test_simple.toml` - Single tool (circomspect) on test circuit
-- `configs/test_all_tools.toml` - All 5 tools on test circuit
-
-Example config structure:
-```toml
-[app]
-log_level = "INFO"
-timeout = 1800
-output = "./output"
-file_logging = true
-dynamic_name = false
-static_name = "my_analysis"
-
-# Pipeline stages
-setup_bug_environment = true
-execute_tools = true
-cleanup_bug_environment = true
-generate_ground_truth = true
-parse_raw_tool_output = true
-analyze_tool_results = true
-summarize_tool_results = true
-
-[circom]
-tools = ["circomspect", "circom_civer"]
-bugs = ["test_bug"]
-```
-
-See `config.toml` for the full configuration with all zkbugs.
 
 ## Output Structure
 
+### Analyze Mode Output
+
 ```
-output/
-  {run_name}/
-    circom/{tool}/{bug_name}/
-      raw.txt          # Raw tool output
-      parsed.json      # Structured output
-      results.json     # Comparison against ground truth
-    ground_truth/circom/{bug_name}/ground_truth.json
-    summary.json       # Aggregated results across all tools/bugs
+output/analyze_YYYYMMDD_HHMMSS/
+├── circomspect/
+│   └── raw.txt           # Raw tool output
+├── circom_civer/
+│   └── raw.txt
+├── summary.json          # Complete summary with findings
+```
+
+### Evaluate Mode Output
+
+```
+output/evaluate_YYYYMMDD_HHMMSS/
+├── ground_truth.json              # Extracted ground truth
+├── circomspect/
+│   ├── raw.txt                    # Raw tool output
+│   ├── parsed.json                # Structured output
+│   └── results.json               # Comparison result
+├── circom_civer/
+│   ├── raw.txt
+│   ├── parsed.json
+│   └── results.json
+├── summary.json                   # Evaluation statistics
+└── manual_review_todo.md          # Items needing manual review (if any)
+```
+
+## Examples
+
+### Quick Start: Analyze a Test Circuit
+
+```bash
+# Analyze the example underconstrained circuit
+uv run main.py analyze \
+  --input test_bug/circuits/circuit.circom \
+  --tools circomspect
+
+# Expected output: 1 finding (underconstrained signal)
+```
+
+### Evaluate Against Ground Truth
+
+```bash
+# Evaluate tools against known vulnerability
+uv run main.py evaluate \
+  --input test_bug/zkbugs_config.json \
+  --tools circomspect
+
+# Expected output: True positive detection
+```
+
+### Run All Tools
+
+```bash
+# Analyze with all available tools (using 'all' keyword)
+uv run main.py analyze \
+  --input test_bug/circuits/circuit.circom \
+  --tools all \
+  --timeout 3600
+
+# Or specify tools explicitly
+uv run main.py analyze \
+  --input test_bug/circuits/circuit.circom \
+  --tools circomspect,circom_civer,picus,ecneproject,zkfuzz \
+  --timeout 3600
+```
+
+## Understanding Output
+
+### Analyze Mode Summary
+
+The CLI prints:
+- **Input**: Path to analyzed circuit
+- **Output**: Where results are saved
+- **Total Time**: Combined execution time
+- **Total Findings**: Sum of all findings across tools
+- **Per-tool Results**: Findings count, execution time, and top findings
+
+Example:
+```
+================================================================================
+ANALYZE MODE - SUMMARY
+================================================================================
+Input:        test_bug/circuits/circuit.circom
+Output:       output/analyze_20260126_153045
+Total Time:   2.45s
+Total Findings: 1
+
+--------------------------------------------------------------------------------
+TOOL RESULTS:
+--------------------------------------------------------------------------------
+
+CIRCOMSPECT:
+  Time:     2.45s
+  Findings: 1
+  Output:   output/analyze_20260126_153045/circomspect/raw.txt
+
+  Findings List:
+    1. warning[CS0017]: Signal `c` is not constrained
+```
+
+### Evaluate Mode Summary
+
+The CLI prints:
+- **Bug**: Name from config
+- **Vulnerability**: Type from ground truth
+- **Statistics**: TP, FN, timeouts, errors, manual review needs
+- **Per-tool Results**: Verdict (✓ correct, ✗ false, ⏱ timeout)
+
+Example:
+```
+================================================================================
+EVALUATE MODE - SUMMARY
+================================================================================
+Bug:          test_bug
+Vulnerability: Under-Constrained
+Output:       output/evaluate_20260126_153045
+
+--------------------------------------------------------------------------------
+STATISTICS:
+--------------------------------------------------------------------------------
+Total Tools:         1
+True Positives:      1
+False Negatives:     0
+Timeouts:            0
+Errors:              0
+Need Manual Review:  0
+
+--------------------------------------------------------------------------------
+TOOL RESULTS:
+--------------------------------------------------------------------------------
+
+CIRCOMSPECT: ✓ CORRECT
+  Time: 2.45s
 ```
 
 ## Development
@@ -146,9 +309,13 @@ Format the codebase:
 uv run black . && uv run isort . --profile black
 ```
 
-## Documentation
+## Legacy Config File Mode
 
-- [DOCKER.md](DOCKER.md) - Docker setup and usage guide
-- [QUICKSTART_DOCKER.md](QUICKSTART_DOCKER.md) - Quick start guide for Docker
-- [CLAUDE.md](CLAUDE.md) - Development guide for Claude Code
-- [DOCKER_STATUS.md](DOCKER_STATUS.md) - Docker architecture details
+The tool previously used TOML config files. This mode will be added back in a future update with:
+```bash
+uv run main.py --config config.toml
+```
+
+## License
+
+See [LICENSE](LICENSE) file.
