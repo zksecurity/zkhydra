@@ -1,0 +1,44 @@
+# Git
+.git
+.gitignore
+.gitmodules
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Build artifacts
+target/
+build/
+dist/
+*.o
+*.a
+*.so
+
+# Output directory
+output/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Lock files (keep uv.lock for reproducibility)
+# uv.lock
