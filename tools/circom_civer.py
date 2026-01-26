@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -11,8 +12,6 @@ from .utils import (
     get_tool_result_parsed,
     run_command,
 )
-
-TOOL_DIR = Path(__file__).resolve().parent / "circom_civer"
 
 
 def execute(bug_path: str, timeout: int) -> str:
@@ -25,7 +24,6 @@ def execute(bug_path: str, timeout: int) -> str:
     Returns:
         The raw string output from the tool, or a bracketed error marker string.
     """
-    logging.debug(f"CIRCOM_CIVER_DIR='{TOOL_DIR}'")
     logging.debug(f"bug_path='{bug_path}'")
 
     # Verify the circuit file exists
@@ -33,16 +31,13 @@ def execute(bug_path: str, timeout: int) -> str:
     if not check_files_exist(circuit_file):
         return "[Circuit file not found]"
 
-    # Ensure the binary exists before attempting to run
-    binary_path = TOOL_DIR / "target" / "release" / "civer_circom"
-    if not binary_path.is_file():
-        logging.error(f"circom-civer binary not found at {binary_path}")
-        return "[Binary not found: build circom_civer first]"
-
-    change_directory(TOOL_DIR)
+    # Check if civer_circom is in PATH
+    if shutil.which("civer_circom") is None:
+        logging.error("'civer_circom' CLI not found in PATH")
+        return "[Binary not found: install civer_circom]"
 
     cmd = [
-        str(binary_path),
+        "civer_circom",
         str(circuit_file),
         "--check_safety",
         "--verbose",

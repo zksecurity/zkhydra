@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+import shutil
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -11,8 +12,6 @@ from .utils import (
     get_tool_result_parsed,
     run_command,
 )
-
-TOOL_DIR = Path(__file__).resolve().parent / "zkfuzz"
 
 
 def execute(bug_path: str, timeout: int) -> str:
@@ -25,24 +24,18 @@ def execute(bug_path: str, timeout: int) -> str:
     Returns:
         Raw tool output, or a bracketed error marker string.
     """
-    logging.debug(f"ZKFUZZ_DIR='{TOOL_DIR}'")
     logging.debug(f"bug_path='{bug_path}'")
 
     circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
     if not check_files_exist(circuit_file):
         return "[Circuit file not found]"
 
-    binary_path = TOOL_DIR / "target" / "release" / "zkfuzz"
-    if not binary_path.is_file():
-        logging.error(f"zkfuzz binary not found at {binary_path}")
-        return "[Binary not found: build zkfuzz first]"
-    if not os.access(binary_path, os.X_OK):
-        logging.error(f"zkfuzz binary is not executable: {binary_path}")
-        return "[Binary not executable: fix permissions for zkfuzz]"
+    # Check if zkfuzz is in PATH
+    if shutil.which("zkfuzz") is None:
+        logging.error("'zkfuzz' CLI not found in PATH")
+        return "[Binary not found: install zkfuzz]"
 
-    change_directory(TOOL_DIR)
-
-    cmd = [str(binary_path), str(circuit_file)]
+    cmd = ["zkfuzz", str(circuit_file)]
     result = run_command(cmd, timeout, tool="zkfuzz", bug=bug_path)
 
     return result
