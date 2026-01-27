@@ -1,9 +1,10 @@
 import logging
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .base import AbstractTool, Finding, get_tool_result_parsed
+from .base import AbstractTool, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
 
 # Navigate from zkhydra/tools/picus.py to project root, then to tools/picus/
 TOOL_DIR = Path(__file__).resolve().parent.parent.parent / "tools" / "picus"
@@ -15,36 +16,56 @@ class Picus(AbstractTool):
     def __init__(self):
         super().__init__("picus")
 
-    def execute(self, bug_path: str, timeout: int) -> str:
+    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run Picus on the given circuit.
 
         Args:
-            bug_path: Absolute path to the bug directory containing `circuits/circuit.circom`.
-            timeout: Maximum execution time in seconds.
+            input_paths: Input object containing circuit_dir and circuit_file paths
+            timeout: Maximum execution time in seconds
 
         Returns:
-            Raw tool output, or a bracketed error marker string.
+            ToolOutput object with execution results
         """
         logging.debug(f"PICUS_DIR='{TOOL_DIR}'")
-        logging.debug(f"bug_path='{bug_path}'")
+        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
+        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
 
-        circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
-        if not self.check_files_exist(circuit_file):
-            return "[Circuit file not found]"
+        circuit_file_path = Path(input_paths.circuit_file)
+        if not self.check_files_exist(circuit_file_path):
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout="",
+                stderr="",
+                return_code=-1,
+                msg="[Circuit file not found]",
+            )
 
         run_script = TOOL_DIR / "run-picus"
         if not run_script.is_file():
             logging.error(f"run-picus not found at {run_script}")
-            return "[Binary not found: run-picus missing]"
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout="",
+                stderr="",
+                return_code=-1,
+                msg="[Binary not found: run-picus missing]",
+            )
         if not os.access(run_script, os.X_OK):
             logging.error(f"run-picus is not executable: {run_script}")
-            return "[Binary not executable: fix permissions for run-picus]"
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout="",
+                stderr="",
+                return_code=-1,
+                msg="[Binary not executable: fix permissions for run-picus]",
+            )
 
+        current_dir = Path.cwd()
         self.change_directory(TOOL_DIR)
 
-        cmd = [str(run_script), str(circuit_file)]
-        result = self.run_command(cmd, timeout, bug_path)
-
+        cmd = [str(run_script), str(circuit_file_path)]
+        result = self.run_command(cmd, timeout, input_paths.circuit_dir)
+        self.change_directory(current_dir)
         return result
 
     def parse_findings(self, raw_output: str) -> List[Finding]:
@@ -57,8 +78,109 @@ class Picus(AbstractTool):
             List of Finding objects
         """
         findings = []
-        # TODO: Implement Picus-specific parsing logic
-        # For now, return empty list - parsing will be done by parse_output for evaluate mode
+
+        # Check if circuit is underconstrained
+        if "The circuit is underconstrained" not in raw_output:
+            return findings
+
+        # Helper function to remove ANSI color codes
+        def strip_ansi(text: str) -> str:
+            return re.sub(r'\x1b\[[0-9;]*m', '', text)
+
+        # Parse counterexample details
+        lines = raw_output.split("\n")
+
+        # Extract input signals
+        inputs = {}
+        in_inputs_section = False
+
+        # Extract outputs (both first and second possible)
+        first_outputs = {}
+        second_outputs = {}
+        in_first_outputs = False
+        in_second_outputs = False
+
+        for line in lines:
+            # Remove ANSI color codes from the entire line first
+            line = strip_ansi(line)
+            stripped = line.strip()
+
+            # Detect sections
+            if stripped == "inputs:":
+                in_inputs_section = True
+                in_first_outputs = False
+                in_second_outputs = False
+                continue
+            elif stripped == "first possible outputs:":
+                in_inputs_section = False
+                in_first_outputs = True
+                in_second_outputs = False
+                continue
+            elif stripped == "second possible outputs:":
+                in_inputs_section = False
+                in_first_outputs = False
+                in_second_outputs = True
+                continue
+            elif stripped.startswith("first internal variables:") or stripped.startswith("second internal variables:"):
+                # Stop parsing when we reach internal variables
+                break
+
+            # Parse signal assignments (format: "main.a: 0")
+            if ":" in stripped and not stripped.endswith(":"):
+                parts = stripped.rsplit(":", 1)
+                if len(parts) == 2:
+                    signal_name = parts[0].strip()
+                    signal_value = parts[1].strip()
+
+                    if in_inputs_section:
+                        inputs[signal_name] = signal_value
+                    elif in_first_outputs:
+                        first_outputs[signal_name] = signal_value
+                    elif in_second_outputs:
+                        second_outputs[signal_name] = signal_value
+
+        # Create findings for each output signal that has different values
+        for signal_name in first_outputs:
+            if signal_name in second_outputs:
+                first_val = first_outputs[signal_name]
+                second_val = second_outputs[signal_name]
+
+                if first_val != second_val:
+                    # Extract template/component name if signal has dot notation (e.g., "main.c")
+                    template = None
+                    signal_only = signal_name
+                    if "." in signal_name:
+                        parts = signal_name.rsplit(".", 1)
+                        template = parts[0]
+                        signal_only = parts[1]
+
+                    # Build description with input context
+                    input_desc = ", ".join([f"{k}={v}" for k, v in inputs.items()])
+                    description = f"Under-constrained signal `{signal_name}` can be `{first_val}` or `{second_val}` for inputs ({input_desc})"
+
+                    findings.append(
+                        Finding(
+                            description=description,
+                            bug_type="Under-Constrained",
+                            signal=signal_only,
+                            template=template,
+                            metadata={
+                                "first_value": first_val,
+                                "second_value": second_val,
+                                "inputs": inputs,
+                            }
+                        )
+                    )
+
+        # If we found underconstrained but no specific signals, create a generic finding
+        if not findings and "The circuit is underconstrained" in raw_output:
+            findings.append(
+                Finding(
+                    description="Circuit is underconstrained",
+                    bug_type="Under-Constrained",
+                )
+            )
+
         return findings
 
     def parse_output(

@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .base import AbstractTool, Finding, get_tool_result_parsed
+from .base import AbstractTool, EXIT_CODES, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
 
 # From circomspect: https://github.com/trailofbits/circomspect/blob/ece9efe0a21e6c422a43ab6f2e1c0ce99678013b/program_structure/src/program_library/report_code.rs#L164C13-L182C44
 CS_MAPPING = {
@@ -35,28 +35,35 @@ class Circomspect(AbstractTool):
 
     def __init__(self):
         super().__init__("circomspect")
+        self.exit_codes = EXIT_CODES - {1}
+        print(f"Circomspect exit codes: {self.exit_codes}")
 
-    def execute(self, bug_path: str, timeout: int) -> str:
-        """Run circomspect on a given bug's circuit.
+    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+        """Run circomspect on a given circuit.
 
         Args:
-            bug_path: Path to circuit file
+            input_paths: Input object containing circuit_dir and circuit_file paths
             timeout: Maximum execution time in seconds
 
         Returns:
-            Raw tool output, or bracketed error marker string
+            ToolOutput object with execution results
         """
-        logging.debug(f"bug_path='{bug_path}'")
+        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
+        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
 
-        circuit_file = Path(bug_path)
+        circuit_file_path = Path(input_paths.circuit_file)
 
         if not self.check_binary_exists("circomspect"):
-            return "[Binary not found: install circomspect]"
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout="",
+                stderr="",
+                return_code=-1,
+                msg="[Binary not found: install circomspect]",
+            )
 
-        cmd = ["circomspect", str(circuit_file), "-l", "INFO", "-v"]
-        result = self.run_command(cmd, timeout, bug_path)
-
-        return result
+        cmd = ["circomspect", str(circuit_file_path), "-l", "INFO", "-v"]
+        return self.run_command(cmd, timeout, input_paths.circuit_dir)
 
     def parse_findings(self, raw_output: str) -> List[Finding]:
         """Parse circomspect warnings into findings list.
