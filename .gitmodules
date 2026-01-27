@@ -1,13 +1,6 @@
 ##############################
 # Bugs                       #
 ##############################
-[submodule "bugs/zkbugs"]
-	path = bugs/zkbugs
-	url = https://github.com/zksecurity/zkbugs.git
-
-##############################
-# Tools 					 #
-##############################
 [submodule "circom_civer"]
 	path = tools/circom_civer
 	url = https://github.com/costa-group/circom_civer.git

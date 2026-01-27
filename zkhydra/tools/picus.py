@@ -175,13 +175,12 @@ class Picus(AbstractTool):
         return findings
 
     def _helper_parse_output(
-        self, tool_result_raw: Path, ground_truth: Path
+        self, tool_result_raw: Path
     ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
         """Parse Picus output and classify the result.
 
         Args:
             tool_result_raw: Path to raw tool output file
-            ground_truth: Path to ground truth JSON file
 
         Returns:
             Dictionary with parsed result status
