@@ -1,5 +1,6 @@
 import logging
 import re
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -18,8 +19,12 @@ class CircomCiver(AbstractTool):
 
     def __init__(self):
         super().__init__("circom_civer")
+        # Check if civer_circom is in PATH
+        if not self.check_binary_exists("civer_circom"):
+            logging.error("[Binary not found: install civer_circom]")
+            sys.exit(1)
 
-    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+    def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run circom-civer on a given circuit.
 
         Args:
@@ -29,29 +34,7 @@ class CircomCiver(AbstractTool):
         Returns:
             ToolOutput object with execution results
         """
-        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
-        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
-
-        # Verify the circuit file exists
         circuit_file_path = Path(input_paths.circuit_file)
-        if not self.check_files_exist(circuit_file_path):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Circuit file not found]",
-            )
-
-        # Check if civer_circom is in PATH
-        if not self.check_binary_exists("civer_circom"):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: install civer_circom]",
-            )
 
         cmd = [
             "civer_circom",
@@ -118,6 +101,7 @@ class CircomCiver(AbstractTool):
                         Finding(
                             description=f"Component {component} does not satisfy weak safety",
                             bug_type="Weak-Safety-Violation",
+                            raw_message=raw_output,
                             component=component,
                         )
                     )
@@ -127,6 +111,7 @@ class CircomCiver(AbstractTool):
                     Finding(
                         description=f"{num_failed} component(s) failed weak safety verification",
                         bug_type="Weak-Safety-Violation",
+                        raw_message=raw_output,
                     )
                 )
 
@@ -151,19 +136,20 @@ class CircomCiver(AbstractTool):
                         Finding(
                             description=f"{match.group(1)} component(s) failed weak safety verification",
                             bug_type="underconstrained",
+                            raw_message=raw_output,
                         )
                     )
 
         return findings
 
-    def parse_output(
-        self, tool_result_raw: Path, ground_truth: Path
+    def _helper_parse_output(
+        self,
+        tool_result_raw: Path,
     ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
         """Parse circom-civer raw output into a structured dictionary.
 
         Args:
             tool_result_raw: Path to raw tool output file
-            ground_truth: Path to ground truth JSON file
 
         Returns:
             Dictionary with parsed stats and components
@@ -418,7 +404,3 @@ class CircomCiver(AbstractTool):
                     }
 
         return output
-
-
-# Create a singleton instance for the registry
-_circom_civer_instance = CircomCiver()

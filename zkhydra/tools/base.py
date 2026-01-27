@@ -11,6 +11,7 @@ import os
 import shlex
 import shutil
 import subprocess
+import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
@@ -29,6 +30,15 @@ EXIT_CODES = {
     143,  # Script terminated by SIGTERM (e.g., kill command without -9).
     255,  # Exit status out of range: Typically, this happens when a script or command exits with a number > 255.
 }
+
+
+class ToolError(Exception):
+    """Exception raised when a tool fails and detected when parsing the output
+    in parse_findings()."""
+
+    def __init__(self, message: str):
+        self.message = message
+        super().__init__(self.message)
 
 
 @dataclass
@@ -63,7 +73,9 @@ class ToolOutput:
     stdout: str  # Standard output from the tool
     stderr: str  # Standard error from the tool
     return_code: int  # Process return code
-    msg: str  # Combined stdout + stderr message (legacy format)
+    msg: str  # Combined stdout + stderr message (or other costum message)
+    execution_time: Optional[float] = None  # Execution time in seconds
+    raw_output_file: Optional[str] = None  # Path to raw output file
 
 
 @dataclass
@@ -76,10 +88,11 @@ class Finding:
 
     # Required fields
     description: str  # Human-readable one-line description
-    bug_type: str  # Type of bug (e.g., "underconstrained", "warning", "error")
-
+    bug_type: (
+        str  # Type of bug (e.g., "underconstrained", "weak_safety violation")
+    )
+    raw_message: str  # Complete raw message from the tool
     # Optional fields - tool-specific details
-    raw_message: Optional[str] = None  # Complete raw message from the tool
     circuit: Optional[str] = None  # Circuit file path
     template: Optional[str] = None  # Template/function name where bug was found
     component: Optional[str] = (
@@ -95,7 +108,6 @@ class Finding:
     severity: Optional[str] = (
         None  # Severity level ("error", "warning", "note")
     )
-    location: Optional[str] = None  # Full location string from tool
     metadata: Dict[str, Any] = field(
         default_factory=dict
     )  # Additional tool-specific data
@@ -106,34 +118,57 @@ class Finding:
         Returns:
             Dictionary with all non-None fields
         """
-        result = {
+        # If any field is None set it to empty of its type
+        return {
             "description": self.description,
             "bug_type": self.bug_type,
+            "raw_message": self.raw_message,
+            "circuit": self.circuit if self.circuit else "",
+            "template": self.template if self.template else "",
+            "component": self.component if self.component else "",
+            "signal": self.signal if self.signal else "",
+            "line": self.line if self.line else "",
+            "code": self.code if self.code else "",
+            "severity": self.severity if self.severity else "",
+            "metadata": self.metadata if self.metadata else {},
         }
 
-        # Add optional fields only if they have values
-        if self.raw_message is not None:
-            result["raw_message"] = self.raw_message
-        if self.circuit is not None:
-            result["circuit"] = self.circuit
-        if self.template is not None:
-            result["template"] = self.template
-        if self.component is not None:
-            result["component"] = self.component
-        if self.signal is not None:
-            result["signal"] = self.signal
-        if self.line is not None:
-            result["line"] = self.line
-        if self.code is not None:
-            result["code"] = self.code
-        if self.severity is not None:
-            result["severity"] = self.severity
-        if self.location is not None:
-            result["location"] = self.location
-        if self.metadata:
-            result["metadata"] = self.metadata
 
-        return result
+class ToolStatus(Enum):
+    """Status of tool execution."""
+
+    SUCCESS = "success"
+    FAILED = "failed"
+    TIMEOUT = "timeout"
+
+
+@dataclass
+class ToolResult:
+    """Result of tool execution."""
+
+    status: ToolStatus
+    message: str  # Combined stdout and stderr
+    execution_time: float
+    findings_count: int = 0
+    findings: list[dict] = None
+    error: str | None = None
+    raw_output_file: str | None = None
+
+    def __post_init__(self):
+        if self.findings is None:
+            self.findings = []
+
+    def to_dict(self) -> dict:
+        """Convert ToolResult to dictionary for JSON serialization."""
+        return {
+            "status": self.status.value,
+            "message": self.message,
+            "execution_time": self.execution_time,
+            "findings_count": self.findings_count,
+            "findings": self.findings,
+            "error": self.error,
+            "raw_output_file": self.raw_output_file,
+        }
 
 
 class AbstractTool(ABC):
@@ -152,13 +187,15 @@ class AbstractTool(ABC):
         self.name = name
         self.exit_codes = EXIT_CODES
 
-    @abstractmethod
-    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
-        """Execute the tool on a circuit and return structured output.
+    def execute(
+        self, input_paths: Input, timeout: int, raw_output_file: Path
+    ) -> ToolOutput:
+        """Execute the tool on a circuit and write raw output to a file.
 
         Args:
             input_paths: Input object containing circuit_dir and circuit_file paths
             timeout: Maximum execution time in seconds
+            raw_output_file: Path to file to write raw output to
 
         Returns:
             ToolOutput object with status, stdout, stderr, return_code, and msg
@@ -166,27 +203,102 @@ class AbstractTool(ABC):
         Note:
             Tools can choose to use either input_paths.circuit_dir or
             input_paths.circuit_file based on their requirements.
-            For simple error conditions (binary not found, file not found),
-            tools should return a ToolOutput with FAIL status and appropriate msg.
         """
-        pass
+        # Measure execution time
+        start_time = time.time()
+        tool_output = self._internal_execute(input_paths, timeout)
+        execution_time = time.time() - start_time
+        # Write raw output (msg field contains combined stdout/stderr)
+        with open(raw_output_file, "w", encoding="utf-8") as f:
+            f.write(tool_output.msg)
+        return ToolOutput(
+            status=tool_output.status,
+            stdout=tool_output.stdout,
+            stderr=tool_output.stderr,
+            return_code=tool_output.return_code,
+            msg=tool_output.msg,
+            execution_time=execution_time,
+            raw_output_file=str(raw_output_file),
+        )
 
     @abstractmethod
-    def parse_output(
-        self, tool_result_raw: Path, ground_truth: Path
-    ) -> Dict[str, Any]:
-        """Parse raw tool output into structured format.
+    def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+        """Internal execute method that can be overridden by subclasses.
 
         Args:
-            tool_result_raw: Path to file containing raw tool output
-            ground_truth: Path to ground truth JSON file
+            input_paths: Input object containing circuit_dir and circuit_file paths
+            timeout: Maximum execution time in seconds
 
         Returns:
-            Dictionary containing structured parsing results.
-            The structure is tool-specific but should include relevant
-            findings, warnings, or vulnerability information.
+            ToolOutput object with status, stdout, stderr, return_code, and msg
         """
         pass
+
+    def process_output(self, tool_output: ToolOutput) -> ToolResult:
+        """Process tool output into structured result.
+
+        Args:
+            tool_output: ToolOutput object with status, stdout, stderr, return_code, and msg
+
+        Returns:
+            ToolResult object with status, message, execution_time, findings_count, findings, error, and raw_output_file
+        """
+        try:
+            # Check tool execution status
+            if tool_output.status == OutputStatus.TIMEOUT:
+                return ToolResult(
+                    status=ToolStatus.TIMEOUT,
+                    message=tool_output.msg,
+                    execution_time=tool_output.execution_time,
+                    findings_count=0,
+                    findings=[],
+                    raw_output_file=str(tool_output.raw_output_file),
+                )
+            if tool_output.status == OutputStatus.FAIL:
+                # Tool failed (binary not found, file not found, etc.)
+                return ToolResult(
+                    status=ToolStatus.FAILED,
+                    message=tool_output.msg,
+                    execution_time=tool_output.execution_time,
+                    findings_count=0,
+                    findings=[],
+                    error=tool_output.msg,
+                    raw_output_file=str(tool_output.raw_output_file),
+                )
+                logging.error(f"{self.name}: {tool_output.msg}")
+            # Success - parse findings from output
+            try:
+                findings = self.parse_findings(tool_output.msg)
+            except ToolError as e:
+                return ToolResult(
+                    status=ToolStatus.FAILED,
+                    message=tool_output.msg,
+                    execution_time=tool_output.execution_time,
+                    findings_count=0,
+                    findings=[],
+                    error=str(e),
+                )
+
+            # Convert Finding objects to dictionaries for JSON serialization
+            findings_dicts = [f.to_dict() for f in findings]
+
+            logging.info(
+                f"{self.name}: Found {len(findings)} findings in {tool_output.execution_time:.2f}s"
+            )
+
+            return ToolResult(
+                status=ToolStatus.SUCCESS,
+                message=tool_output.msg,
+                execution_time=round(tool_output.execution_time, 2),
+                findings_count=len(findings),
+                findings=findings_dicts,
+                raw_output_file=str(tool_output.raw_output_file),
+            )
+
+        except Exception as e:
+            # Let it crash here because we want to see the full traceback
+            # and should never be raised an exception here
+            raise Exception(f"Error executing {self.name}: {e}") from e
 
     @abstractmethod
     def parse_findings(self, raw_output: str) -> List[Finding]:

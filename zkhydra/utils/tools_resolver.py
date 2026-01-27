@@ -10,23 +10,22 @@ import logging
 from zkhydra.tools.base import AbstractTool
 
 # Import all tool instances
-from zkhydra.tools.circom_civer import _circom_civer_instance
-from zkhydra.tools.circomspect import _circomspect_instance
-from zkhydra.tools.ecneproject import _ecneproject_instance
-from zkhydra.tools.picus import _picus_instance
-from zkhydra.tools.zkfuzz import _zkfuzz_instance
+from zkhydra.tools.circom_civer import CircomCiver
+from zkhydra.tools.circomspect import Circomspect
+from zkhydra.tools.ecneproject import EcneProject
+from zkhydra.tools.picus import Picus
+from zkhydra.tools.zkfuzz import ZkFuzz
 
 # Type alias for tools dictionary (for clarity in type hints)
 type ToolsDict = dict[str, AbstractTool]
 
 
-# Tool registry: maps tool names to their singleton instances
 TOOL_REGISTRY: ToolsDict = {
-    "circomspect": _circomspect_instance,
-    "circom_civer": _circom_civer_instance,
-    "zkfuzz": _zkfuzz_instance,
-    "picus": _picus_instance,
-    "ecneproject": _ecneproject_instance,
+    "circomspect": Circomspect,
+    "circom_civer": CircomCiver,
+    "zkfuzz": ZkFuzz,
+    "picus": Picus,
+    "ecneproject": EcneProject,
     # Add other tools here as they are refactored
 }
 
@@ -56,10 +55,9 @@ def resolve_tools(tools: list[str]) -> ToolsDict:
             )
             continue
 
-        tool_instance = TOOL_REGISTRY[tool_name]
-        loaded[tool_name] = tool_instance
+        loaded[tool_name] = TOOL_REGISTRY[tool_name]()
         logging.debug(
-            f"Resolved {tool_name} -> {tool_instance.__class__.__name__}"
+            f"Resolved {tool_name} -> {loaded[tool_name].__class__.__name__}"
         )
 
     return loaded

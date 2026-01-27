@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -22,8 +23,15 @@ class Picus(AbstractTool):
 
     def __init__(self):
         super().__init__("picus")
+        run_script = TOOL_DIR / "run-picus"
+        if not run_script.is_file():
+            logging.error(f"run-picus not found at {run_script}")
+            sys.exit(1)
+        if not os.access(run_script, os.X_OK):
+            logging.error(f"run-picus is not executable: {run_script}")
+            sys.exit(1)
 
-    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+    def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run Picus on the given circuit.
 
         Args:
@@ -33,39 +41,9 @@ class Picus(AbstractTool):
         Returns:
             ToolOutput object with execution results
         """
-        logging.debug(f"PICUS_DIR='{TOOL_DIR}'")
-        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
-        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
-
         circuit_file_path = Path(input_paths.circuit_file)
-        if not self.check_files_exist(circuit_file_path):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Circuit file not found]",
-            )
 
         run_script = TOOL_DIR / "run-picus"
-        if not run_script.is_file():
-            logging.error(f"run-picus not found at {run_script}")
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: run-picus missing]",
-            )
-        if not os.access(run_script, os.X_OK):
-            logging.error(f"run-picus is not executable: {run_script}")
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not executable: fix permissions for run-picus]",
-            )
 
         current_dir = Path.cwd()
         self.change_directory(TOOL_DIR)
@@ -173,6 +151,7 @@ class Picus(AbstractTool):
                         Finding(
                             description=description,
                             bug_type="Under-Constrained",
+                            raw_message=raw_output,
                             signal=signal_only,
                             template=template,
                             metadata={
@@ -189,12 +168,13 @@ class Picus(AbstractTool):
                 Finding(
                     description="Circuit is underconstrained",
                     bug_type="Under-Constrained",
+                    raw_message=raw_output,
                 )
             )
 
         return findings
 
-    def parse_output(
+    def _helper_parse_output(
         self, tool_result_raw: Path, ground_truth: Path
     ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
         """Parse Picus output and classify the result.
@@ -308,7 +288,3 @@ class Picus(AbstractTool):
             output = {"result": "false", "reason": reason}
 
         return output
-
-
-# Create a singleton instance for the registry
-_picus_instance = Picus()
