@@ -1,6 +1,5 @@
 import logging
 import sys
-from datetime import datetime
 from pathlib import Path
 
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -41,7 +40,7 @@ def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
 
     if file_logging:
         # Create file logging
-        file_path = output_dir / f"zkhydra.log"
+        file_path = output_dir / "zkhydra.log"
         file_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             file_handler = logging.FileHandler(file_path, encoding="utf-8")

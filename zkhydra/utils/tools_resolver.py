@@ -6,7 +6,6 @@ All tools are registered in a central TOOL_REGISTRY lookup table.
 """
 
 import logging
-from typing import Dict
 
 from zkhydra.tools.base import AbstractTool
 
@@ -18,7 +17,7 @@ from zkhydra.tools.picus import _picus_instance
 from zkhydra.tools.zkfuzz import _zkfuzz_instance
 
 # Tool registry: maps tool names to their singleton instances
-TOOL_REGISTRY: Dict[str, AbstractTool] = {
+TOOL_REGISTRY: dict[str, AbstractTool] = {
     "circomspect": _circomspect_instance,
     "circom_civer": _circom_civer_instance,
     "zkfuzz": _zkfuzz_instance,
@@ -28,7 +27,7 @@ TOOL_REGISTRY: Dict[str, AbstractTool] = {
 }
 
 
-def resolve_tools(dsl: str, tools: list[str]) -> Dict[str, AbstractTool]:
+def resolve_tools(dsl: str, tools: list[str]) -> dict[str, AbstractTool]:
     """Resolve tool names to their singleton instances.
 
     Args:
@@ -42,7 +41,7 @@ def resolve_tools(dsl: str, tools: list[str]) -> Dict[str, AbstractTool]:
         Tools that are not found in the registry will be logged as errors
         and skipped from the returned dictionary.
     """
-    loaded: Dict[str, AbstractTool] = {}
+    loaded: dict[str, AbstractTool] = {}
 
     for tool_name in tools:
         logging.debug(f"Resolving tool: {tool_name}")
@@ -99,8 +98,6 @@ def get_tool(name: str) -> AbstractTool:
         KeyError: If tool is not found in registry
     """
     if name not in TOOL_REGISTRY:
-        raise KeyError(
-            f"Tool '{name}' not found. Available tools: {get_available_tools()}"
-        )
+        raise KeyError(f"Tool '{name}' not found. Available tools: {get_available_tools()}")
 
     return TOOL_REGISTRY[name]
