@@ -432,7 +432,7 @@ def analyze_mode(args: argparse.Namespace) -> None:
     # Write summary JSON
     summary_file = output_dir / "summary.json"
     with open(summary_file, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2)
+        json.dump(summary, f, indent=2, ensure_ascii=False)
 
     # Print CLI summary
     print_analyze_summary(summary)
@@ -501,7 +501,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
         "Location": bug_info.get("Location"),
     }
     with open(ground_truth_file, "w", encoding="utf-8") as f:
-        json.dump(ground_truth, f, indent=2)
+        json.dump(ground_truth, f, indent=2, ensure_ascii=False)
 
     # Determine circuit paths
     circuit_dir, _ = prepare_circuit_paths(circuit_file)
@@ -546,7 +546,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
                     raw_output_file, ground_truth_file
                 )
                 with open(parsed_output_file, "w", encoding="utf-8") as f:
-                    json.dump(parsed, f, indent=2)
+                    json.dump(parsed, f, indent=2, ensure_ascii=False)
             else:
                 parsed = {"raw": "No parser available"}
 
@@ -560,7 +560,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
                     parsed_output_file,
                 )
                 with open(results_file, "w", encoding="utf-8") as f:
-                    json.dump(comparison, f, indent=2)
+                    json.dump(comparison, f, indent=2, ensure_ascii=False)
             else:
                 comparison = {
                     "result": "unknown",
@@ -597,7 +597,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     # Write summary
     summary_file = output_dir / "summary.json"
     with open(summary_file, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2)
+        json.dump(summary, f, indent=2, ensure_ascii=False)
 
     # Print CLI summary
     print_evaluate_summary(summary)
