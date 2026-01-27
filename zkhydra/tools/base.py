@@ -17,7 +17,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-
 EXIT_CODES = {
     1, # General error: A generic error occurred during execution.
     2, # Misuse of shell builtins: Incorrect usage of a shell built-in command.

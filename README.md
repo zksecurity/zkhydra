@@ -304,9 +304,45 @@ CIRCOMSPECT: ✓ CORRECT
 
 ## Development
 
+### Code Quality Tools
+
+The project uses:
+- **black** - Code formatter
+- **isort** - Import sorter
+- **ruff** - Fast Python linter
+
+### Quick Commands (using Make)
+
+Format and lint code (recommended):
+```bash
+make all
+```
+
+Or run individually:
+```bash
+make format    # Format with black and isort
+make lint      # Lint with ruff and auto-fix issues
+make check     # Check without making changes
+```
+
+### Manual Commands
+
 Format the codebase:
 ```bash
-uv run black . && uv run isort . --profile black
+uv run black zkhydra/
+uv run isort zkhydra/ --profile black
+```
+
+Lint the codebase:
+```bash
+uv run ruff check zkhydra/ --fix
+```
+
+Check code quality without making changes:
+```bash
+uv run ruff check zkhydra/
+uv run black zkhydra/ --check
+uv run isort zkhydra/ --check-only --profile black
 ```
 
 ## Project Structure

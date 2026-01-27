@@ -10,24 +10,24 @@ Supports two modes:
 import argparse
 import json
 import logging
+import os
 import sys
 import time
-import os
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
+from zkhydra.tools.base import Input, OutputStatus, ensure_dir
 from zkhydra.utils.logger import setup_logging
 from zkhydra.utils.tools_resolver import resolve_tools
-from zkhydra.tools.base import Input, OutputStatus, ToolOutput, ensure_dir
 
 BASE_DIR = Path.cwd()
 
 
 class ToolStatus(Enum):
     """Status of tool execution."""
+
     SUCCESS = "success"
     FAILED = "failed"
     TIMEOUT = "timeout"
@@ -36,19 +36,20 @@ class ToolStatus(Enum):
 @dataclass
 class ToolResult:
     """Result of tool execution."""
+
     status: ToolStatus
     message: str  # Combined stdout and stderr
     execution_time: float
     findings_count: int = 0
-    findings: List[Dict] = None
-    error: Optional[str] = None
-    raw_output_file: Optional[str] = None
+    findings: list[dict] = None
+    error: str | None = None
+    raw_output_file: str | None = None
 
     def __post_init__(self):
         if self.findings is None:
             self.findings = []
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict:
         """Convert ToolResult to dictionary for JSON serialization."""
         return {
             "status": self.status.value,
@@ -153,7 +154,7 @@ Examples:
     return parser.parse_args()
 
 
-def expand_tools_list(tools_str: str, dsl: str) -> List[str]:
+def expand_tools_list(tools_str: str, dsl: str) -> list[str]:
     """
     Expand tools list, handling the special 'all' keyword.
 
@@ -178,7 +179,7 @@ def expand_tools_list(tools_str: str, dsl: str) -> List[str]:
     return [t.strip().lower() for t in tools_str.split(",") if t.strip()]
 
 
-def setup_output_directory(base_output: Path, mode: str) -> Tuple[Path, str]:
+def setup_output_directory(base_output: Path, mode: str) -> tuple[Path, str]:
     """
     Create timestamped output directory.
 
@@ -195,7 +196,7 @@ def setup_output_directory(base_output: Path, mode: str) -> Tuple[Path, str]:
     return output_dir, timestamp
 
 
-def prepare_circuit_paths(input_path: Path) -> Tuple[Path, Path]:
+def prepare_circuit_paths(input_path: Path) -> tuple[Path, Path]:
     """
     Determine circuit file and directory paths from input.
 
@@ -208,9 +209,7 @@ def prepare_circuit_paths(input_path: Path) -> Tuple[Path, Path]:
     if input_path.is_file():
         # Input is a file - extract parent directory
         circuit_dir = (
-            input_path.parent.parent
-            if input_path.parent.name == "circuits"
-            else input_path.parent
+            input_path.parent.parent if input_path.parent.name == "circuits" else input_path.parent
         )
         circuit_file = input_path
     else:
@@ -241,13 +240,13 @@ def get_tool_input_path(circuit_file: Path, circuit_dir: Path) -> Input:
 
 
 def execute_tools(
-    tools_list: List[str],
-    tool_registry: Dict,
+    tools_list: list[str],
+    tool_registry: dict,
     circuit_file: Path,
     circuit_dir: Path,
     output_dir: Path,
     timeout: int,
-) -> Dict[str, ToolResult]:
+) -> dict[str, ToolResult]:
     """
     Execute all tools and collect results.
 
@@ -359,7 +358,7 @@ def analyze_mode(args: argparse.Namespace) -> None:
 
     Does NOT use ground truth comparison.
     """
-    logging.info(f"Running in ANALYZE mode")
+    logging.info("Running in ANALYZE mode")
     logging.info(f"Input: {args.input}")
     logging.info(f"Tools: {args.tools}")
 
@@ -408,9 +407,7 @@ def analyze_mode(args: argparse.Namespace) -> None:
             "timeout": sum(1 for r in results.values() if r.status == ToolStatus.TIMEOUT),
         },
         "total_findings": sum(
-            r.findings_count
-            for r in results.values()
-            if r.status == ToolStatus.SUCCESS
+            r.findings_count for r in results.values() if r.status == ToolStatus.SUCCESS
         ),
         "total_execution_time": sum(r.execution_time for r in results.values()),
     }
@@ -428,7 +425,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     """
     Evaluate mode: Run tools and compare against ground truth.
     """
-    logging.info(f"Running in EVALUATE mode")
+    logging.info("Running in EVALUATE mode")
     logging.info(f"Input config: {args.input}")
     logging.info(f"Tools: {args.tools}")
 
@@ -438,7 +435,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     # Load ground truth config
-    with open(args.input, "r", encoding="utf-8") as f:
+    with open(args.input, encoding="utf-8") as f:
         config_data = json.load(f)
 
     # Extract bug info (assume first entry)
@@ -571,26 +568,21 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     print_evaluate_summary(summary)
 
 
-
 def generate_evaluation_summary(
     bug_name: str,
-    ground_truth: Dict,
-    evaluation_results: Dict,
+    ground_truth: dict,
+    evaluation_results: dict,
     output_dir: Path,
     timestamp: str,
-) -> Dict:
+) -> dict:
     """Generate evaluation summary with TP/FP/FN analysis."""
 
     # Count results
     correct = sum(1 for r in evaluation_results.values() if r.get("result") == "correct")
-    false_results = sum(
-        1 for r in evaluation_results.values() if r.get("result") == "false"
-    )
+    false_results = sum(1 for r in evaluation_results.values() if r.get("result") == "false")
     timeouts = sum(1 for r in evaluation_results.values() if r.get("result") == "timeout")
     errors = sum(1 for r in evaluation_results.values() if r.get("status") == "error")
-    needs_review = [
-        tool for tool, r in evaluation_results.items() if r.get("needs_manual_review")
-    ]
+    needs_review = [tool for tool, r in evaluation_results.items() if r.get("needs_manual_review")]
 
     summary = {
         "mode": "evaluate",
@@ -620,14 +612,14 @@ def generate_evaluation_summary(
             for tool in needs_review:
                 result = evaluation_results[tool]
                 f.write(f"### {tool}\n")
-                f.write(f"- Status: TODO\n")
+                f.write("- Status: TODO\n")
                 f.write(f"- Reason: {result.get('reason')}\n")
                 f.write(f"- Output: {output_dir / tool / 'raw.txt'}\n\n")
 
     return summary
 
 
-def print_analyze_summary(summary: Dict) -> None:
+def print_analyze_summary(summary: dict) -> None:
     """Print formatted summary for analyze mode."""
     print("\n" + "=" * 80)
     print("ANALYZE MODE - SUMMARY")
@@ -671,7 +663,7 @@ def print_analyze_summary(summary: Dict) -> None:
             print(f"  Findings: {result['findings_count']}")
 
             if result.get("findings"):
-                print(f"\n  Findings List:")
+                print("\n  Findings List:")
                 for idx, finding in enumerate(result["findings"][:10], 1):  # Show first 10
                     desc = finding.get("description", finding.get("type", "Unknown"))
                     print(f"    {idx}. {desc}")
@@ -682,12 +674,12 @@ def print_analyze_summary(summary: Dict) -> None:
             print(f"  Error:    {result.get('error', 'Unknown error')}")
 
         elif status == "timeout":
-            print(f"  Status:   Tool execution timed out")
+            print("  Status:   Tool execution timed out")
 
     print("\n" + "=" * 80)
 
 
-def print_evaluate_summary(summary: Dict) -> None:
+def print_evaluate_summary(summary: dict) -> None:
     """Print formatted summary for evaluate mode."""
     print("\n" + "=" * 80)
     print("EVALUATE MODE - SUMMARY")
@@ -726,7 +718,7 @@ def print_evaluate_summary(summary: Dict) -> None:
             if result.get("reason"):
                 print(f"  Reason: {result['reason']}")
             if result.get("needs_manual_review"):
-                print(f"  ⚠ Needs Manual Review")
+                print("  ⚠ Needs Manual Review")
         else:
             print(f"\n{tool_name.upper()}: ERROR - {result.get('error')}")
 

@@ -4,7 +4,15 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .base import AbstractTool, EXIT_CODES, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
+from .base import (
+    EXIT_CODES,
+    AbstractTool,
+    Finding,
+    Input,
+    OutputStatus,
+    ToolOutput,
+    get_tool_result_parsed,
+)
 
 # From circomspect: https://github.com/trailofbits/circomspect/blob/ece9efe0a21e6c422a43ab6f2e1c0ce99678013b/program_structure/src/program_library/report_code.rs#L164C13-L182C44
 CS_MAPPING = {
