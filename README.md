@@ -409,7 +409,8 @@ zkhydra/
 │   │   └── tools_resolver.py # Tool registry and resolution
 │   ├── bugs/                  # Bug management
 │   │   └── zkbugs.py         # zkbugs dataset handling
-│   └── main.py                # Main entry point
+│   ├── cli.py                 # Command-line argument parsing
+│   └── main.py                # Main entry point and execution logic
 ├── bugs/zkbugs/               # zkbugs dataset (git submodule)
 ├── output/                    # Analysis results
 ├── run.py                     # Convenience entry point wrapper
