@@ -12,7 +12,8 @@ from ..utils import (
     run_command,
 )
 
-TOOL_DIR = Path(__file__).resolve().parent / "pilspector"
+# Navigate from zkhydra/tools/pilspector.py to project root, then to tools/pilspector/
+TOOL_DIR = Path(__file__).resolve().parent.parent.parent / "tools" / "pilspector"
 
 
 def execute(bug_path: str, timeout: int) -> str:

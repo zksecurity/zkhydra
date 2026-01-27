@@ -18,9 +18,9 @@ from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from utils.logger import setup_logging
-from utils.tools_resolver import resolve_tools
-from tools.utils import ensure_dir
+from zkhydra.utils.logger import setup_logging
+from zkhydra.utils.tools_resolver import resolve_tools
+from zkhydra.tools.base import ensure_dir
 
 BASE_DIR = Path.cwd()
 
@@ -326,15 +326,19 @@ def execute_tools(
                 )
                 logging.error(f"{tool_name}: {error_msg}")
             else:
-                # Parse findings (tool-specific)
-                findings = parse_findings_from_output(tool_name, raw_output)
+                # Parse findings using tool's parse_findings method
+                tool_instance = tool_registry[tool_name]
+                findings = tool_instance.parse_findings(raw_output)
+
+                # Convert Finding objects to dictionaries for JSON serialization
+                findings_dicts = [f.to_dict() for f in findings]
 
                 results[tool_name] = ToolResult(
                     status=ToolStatus.SUCCESS,
                     message=raw_output,
                     execution_time=round(execution_time, 2),
                     findings_count=len(findings),
-                    findings=findings,
+                    findings=findings_dicts,
                     raw_output_file=str(raw_output_file),
                 )
 
@@ -575,193 +579,6 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     # Print CLI summary
     print_evaluate_summary(summary)
 
-
-def parse_findings_from_output(tool_name: str, raw_output: str) -> List[Dict]:
-    """
-    Parse findings from raw tool output.
-    Returns list of finding dictionaries with one-liner descriptions.
-    """
-    findings = []
-
-    if tool_name == "circomspect":
-        # Parse circomspect warnings
-        lines = raw_output.split("\n")
-        for i, line in enumerate(lines):
-            if "warning[" in line:
-                # Extract warning code and description
-                try:
-                    code = line.split("[")[1].split("]")[0]
-                    # Next line usually has file:line info
-                    if i + 1 < len(lines):
-                        location = lines[i + 1].strip()
-                    else:
-                        location = "unknown"
-
-                    findings.append(
-                        {
-                            "code": code,
-                            "location": location,
-                            "description": line.strip(),
-                        }
-                    )
-                except:
-                    pass
-
-    elif tool_name == "circom_civer":
-        # Parse circom_civer output
-        # Key indicator: "CIVER could not verify weak safety" means underconstrained bugs found
-        # Also check for "Number of failed components (weak-safety): X" where X > 0
-
-        if "could not verify weak safety" in raw_output:
-            # Extract failed components
-            lines = raw_output.split("\n")
-            failed_components = []
-
-            # Look for components that failed verification
-            in_failed_section = False
-            for line in lines:
-                if "Components that do not satisfy weak safety:" in line:
-                    in_failed_section = True
-                    continue
-
-                if in_failed_section:
-                    # Stop when we hit the statistics or another section
-                    if line.strip().startswith("*") or "----" in line:
-                        break
-
-                    # Extract component name (format: "    - ComponentName(), ")
-                    stripped = line.strip()
-                    if stripped.startswith("-") and "(" in stripped:
-                        component = stripped[1:].strip().rstrip(",").strip()
-                        failed_components.append(component)
-
-            # Extract number of failed components from statistics
-            import re
-            match = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
-            num_failed = int(match.group(1)) if match else len(failed_components)
-
-            if failed_components:
-                for component in failed_components:
-                    findings.append(
-                        {
-                            "type": "underconstrained",
-                            "component": component,
-                            "description": f"Component {component} does not satisfy weak safety (underconstrained)",
-                        }
-                    )
-            else:
-                # Fallback if we couldn't parse component names
-                findings.append(
-                    {
-                        "type": "underconstrained",
-                        "description": f"{num_failed} component(s) failed weak safety verification (underconstrained)",
-                    }
-                )
-
-        elif "verified weak safety" in raw_output or "verified components (weak-safety):" in raw_output:
-            # Check if all components were verified (no bugs)
-            import re
-            match_failed = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
-            if match_failed and int(match_failed.group(1)) == 0:
-                # All components verified = no findings (no bugs)
-                pass
-            else:
-                # Some failed, extract them
-                match = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
-                if match and int(match.group(1)) > 0:
-                    findings.append(
-                        {
-                            "type": "underconstrained",
-                            "description": f"{match.group(1)} component(s) failed weak safety verification",
-                        }
-                    )
-
-    elif tool_name == "zkfuzz":
-        # Parse zkfuzz output
-        # Key indicators in "Verification" line:
-        # "💥 NOT SAFE 💥" = bug found (actual output)
-        # "❌ Counter Example Found" = bug found (from user's examples)
-        # "🆗 No Counter Example Found" = no bug
-        # Extract signal info from "🚨 Counter Example:" section or "💣 Target" line
-
-        import re
-
-        # Check for bugs - must check "No Counter Example" first to avoid false positives
-        if "🆗 No Counter Example Found" in raw_output:
-            # No bug found - no findings to add
-            pass
-        elif "💥 NOT SAFE 💥" in raw_output or "❌ Counter Example Found" in raw_output:
-            # Bug found - try to extract signal/target information
-            lines = raw_output.split("\n")
-            signal_info = None
-            target_info = None
-
-            # First try to extract from "🚨 Counter Example:" section
-            # Format: "║           ➡️ `main.c` is expected to be `0`"
-            in_counter_example = False
-            for line in lines:
-                if "🚨 Counter Example:" in line:
-                    in_counter_example = True
-                    continue
-
-                if in_counter_example:
-                    # Stop at the end of the box
-                    if "╚═" in line:
-                        break
-
-                    # Look for "is expected to be" line to identify the problematic signal
-                    if "is expected to be" in line and "➡️" in line:
-                        # Extract signal name: "`main.c` is expected to be `0`"
-                        match = re.search(r"`([^`]+)`\s+is expected to be", line)
-                        if match:
-                            signal_info = match.group(1)
-                            break
-
-            # Also try to extract from "💣 Target" line (format from user's examples)
-            for line in lines:
-                if ("💣 Target" in line or "Target" in line) and "signal" in line:
-                    if ":" in line:
-                        target_info = line.split(":", 1)[1].strip()
-                        # Parse signal and template from target_info
-                        # Format: "signal `out` in template `Multiplier`"
-                        signal_match = re.search(r"signal `([^`]+)`", target_info)
-                        template_match = re.search(r"template `([^`]+)`", target_info)
-
-                        if signal_match:
-                            signal_name = signal_match.group(1)
-                            template_name = template_match.group(1) if template_match else "unknown"
-
-                            findings.append(
-                                {
-                                    "type": "underconstrained",
-                                    "signal": signal_name,
-                                    "template": template_name,
-                                    "description": f"Counter example found for signal `{signal_name}` in template `{template_name}` (underconstrained)",
-                                }
-                            )
-                        break
-
-            # If we found signal_info but not target_info, use signal_info
-            if signal_info and not target_info:
-                findings.append(
-                    {
-                        "type": "underconstrained",
-                        "signal": signal_info,
-                        "description": f"Counter example found for signal `{signal_info}` (underconstrained)",
-                    }
-                )
-            elif not signal_info and not target_info:
-                # Fallback if we couldn't parse any details
-                findings.append(
-                    {
-                        "type": "underconstrained",
-                        "description": "Circuit is not safe (underconstrained)",
-                    }
-                )
-
-    # Add more tool-specific parsers as needed
-
-    return findings
 
 
 def generate_evaluation_summary(
