@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .base import AbstractTool, Finding, get_tool_result_parsed
+from .base import AbstractTool, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
 
 
 class ZkFuzz(AbstractTool):
@@ -12,30 +12,41 @@ class ZkFuzz(AbstractTool):
     def __init__(self):
         super().__init__("zkfuzz")
 
-    def execute(self, bug_path: str, timeout: int) -> str:
+    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run zkfuzz on the given circuit.
 
         Args:
-            bug_path: Absolute path to the bug directory containing `circuits/circuit.circom`.
-            timeout: Maximum execution time in seconds.
+            input_paths: Input object containing circuit_dir and circuit_file paths
+            timeout: Maximum execution time in seconds
 
         Returns:
-            Raw tool output, or a bracketed error marker string.
+            ToolOutput object with execution results
         """
-        logging.debug(f"bug_path='{bug_path}'")
+        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
+        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
 
-        circuit_file = Path(bug_path) / "circuits" / "circuit.circom"
-        if not self.check_files_exist(circuit_file):
-            return "[Circuit file not found]"
+        circuit_file_path = Path(input_paths.circuit_file)
+        if not self.check_files_exist(circuit_file_path):
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout="",
+                stderr="",
+                return_code=-1,
+                msg="[Circuit file not found]",
+            )
 
         # Check if zkfuzz is in PATH
         if not self.check_binary_exists("zkfuzz"):
-            return "[Binary not found: install zkfuzz]"
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout="",
+                stderr="",
+                return_code=-1,
+                msg="[Binary not found: install zkfuzz]",
+            )
 
-        cmd = ["zkfuzz", str(circuit_file)]
-        result = self.run_command(cmd, timeout, bug_path)
-
-        return result
+        cmd = ["zkfuzz", str(circuit_file_path)]
+        return self.run_command(cmd, timeout, input_paths.circuit_dir)
 
     def parse_findings(self, raw_output: str) -> List[Finding]:
         """Parse findings from zkfuzz raw output.

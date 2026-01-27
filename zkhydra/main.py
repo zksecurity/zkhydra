@@ -12,6 +12,7 @@ import json
 import logging
 import sys
 import time
+import os
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -20,7 +21,7 @@ from typing import Dict, List, Optional, Tuple
 
 from zkhydra.utils.logger import setup_logging
 from zkhydra.utils.tools_resolver import resolve_tools
-from zkhydra.tools.base import ensure_dir
+from zkhydra.tools.base import Input, OutputStatus, ToolOutput, ensure_dir
 
 BASE_DIR = Path.cwd()
 
@@ -220,23 +221,23 @@ def prepare_circuit_paths(input_path: Path) -> Tuple[Path, Path]:
     return circuit_dir, circuit_file
 
 
-def get_tool_input_path(tool_name: str, circuit_file: Path, circuit_dir: Path) -> str:
+def get_tool_input_path(circuit_file: Path, circuit_dir: Path) -> Input:
     """
-    Determine what path to pass to a specific tool.
+    Create Input object with circuit directory and file paths for tool execution.
 
     Args:
-        tool_name: Name of the tool
         circuit_file: Path to circuit file
         circuit_dir: Path to circuit directory
 
     Returns:
-        Path string to pass to tool
+        Input object containing absolute circuit_dir and circuit_file paths as strings
     """
-    # circomspect works with file paths directly, others expect directories
-    if tool_name == "circomspect":
-        return str(circuit_file)
-    else:
-        return str(circuit_dir)
+    full_path_circuit_dir = circuit_dir.resolve()
+    full_path_circuit_file = circuit_file.resolve()
+    return Input(
+        circuit_dir=str(full_path_circuit_dir),
+        circuit_file=str(full_path_circuit_file),
+    )
 
 
 def execute_tools(
@@ -274,68 +275,58 @@ def execute_tools(
         # Create output directory for this tool
         tool_output_dir = output_dir / tool_name
         ensure_dir(tool_output_dir)
-        raw_output_file = tool_output_dir / "raw.txt"
+        raw_output_file = os.path.join(tool_output_dir, "raw.txt")
 
         # Measure execution time
         start_time = time.time()
 
         try:
-            # Determine what path to pass to this tool
-            tool_input = get_tool_input_path(tool_name, circuit_file, circuit_dir)
+            # Create Input object with circuit directory and file paths
+            input_paths = get_tool_input_path(circuit_file, circuit_dir)
 
-            # Execute tool
-            raw_output = tool_module.execute(tool_input, timeout)
+            # Execute tool - returns ToolOutput object
+            tool_output = tool_module.execute(input_paths, timeout)
 
-            # Write raw output (this is the message)
+            # Write raw output (msg field contains combined stdout/stderr)
             with open(raw_output_file, "w", encoding="utf-8") as f:
-                f.write(raw_output)
+                f.write(tool_output.msg)
 
             execution_time = time.time() - start_time
 
-            # Check if tool timed out
-            if "[Timed out]" in raw_output or "Timeout" in raw_output:
+            # Check tool execution status
+            if tool_output.status == OutputStatus.TIMEOUT:
                 results[tool_name] = ToolResult(
                     status=ToolStatus.TIMEOUT,
-                    message=raw_output,
+                    message=tool_output.msg,
                     execution_time=round(execution_time, 2),
                     findings_count=0,
                     findings=[],
                     raw_output_file=str(raw_output_file),
                 )
                 logging.warning(f"{tool_name}: Timed out after {execution_time:.2f}s")
-            # Check if tool returned an error marker
-            elif any(
-                marker in raw_output
-                for marker in [
-                    "[Circuit file not found]",
-                    "[Binary not found",
-                    "[Error:",
-                    "[File not found]",
-                ]
-            ):
-                # Extract error message
-                error_msg = raw_output.strip()
+            elif tool_output.status == OutputStatus.FAIL:
+                # Tool failed (binary not found, file not found, etc.)
                 results[tool_name] = ToolResult(
                     status=ToolStatus.FAILED,
-                    message=raw_output,
+                    message=tool_output.msg,
                     execution_time=round(execution_time, 2),
                     findings_count=0,
                     findings=[],
-                    error=error_msg,
+                    error=tool_output.msg,
                     raw_output_file=str(raw_output_file),
                 )
-                logging.error(f"{tool_name}: {error_msg}")
+                logging.error(f"{tool_name}: {tool_output.msg}")
             else:
-                # Parse findings using tool's parse_findings method
+                # Success - parse findings from output
                 tool_instance = tool_registry[tool_name]
-                findings = tool_instance.parse_findings(raw_output)
+                findings = tool_instance.parse_findings(tool_output.msg)
 
                 # Convert Finding objects to dictionaries for JSON serialization
                 findings_dicts = [f.to_dict() for f in findings]
 
                 results[tool_name] = ToolResult(
                     status=ToolStatus.SUCCESS,
-                    message=raw_output,
+                    message=tool_output.msg,
                     execution_time=round(execution_time, 2),
                     findings_count=len(findings),
                     findings=findings_dicts,

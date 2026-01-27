@@ -13,8 +13,54 @@ import shutil
 import subprocess
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+
+EXIT_CODES = {
+    1, # General error: A generic error occurred during execution.
+    2, # Misuse of shell builtins: Incorrect usage of a shell built-in command.
+    126, # Command invoked cannot execute: Permission denied or command not executable.
+    127, # Command not found: The command is not recognized or available in the environment’s PATH.
+    128, # Invalid exit argument: An invalid argument was provided to the exit command.
+    130, # Script terminated by Ctrl+C (SIGINT).
+    137, # Script terminated by SIGKILL (e.g., kill -9 or out-of-memory killer).
+    139, # Segmentation fault: Indicates a segmentation fault occurred in the program.
+    143, # Script terminated by SIGTERM (e.g., kill command without -9).
+    255, # Exit status out of range: Typically, this happens when a script or command exits with a number > 255.
+}
+
+@dataclass
+class Input:
+    """Input paths for circuit analysis.
+
+    Encapsulates both the circuit directory and circuit file paths,
+    allowing tools to choose which to use based on their requirements.
+    """
+    circuit_dir: str  # Directory containing the circuit and artifacts
+    circuit_file: str  # Path to the circuit file
+
+
+class OutputStatus(Enum):
+    """Status of tool execution output."""
+    SUCCESS = "success"
+    FAIL = "fail"
+    TIMEOUT = "timeout"
+
+
+@dataclass
+class ToolOutput:
+    """Output from tool execution.
+
+    Encapsulates all information from running a tool, including
+    status, stdout/stderr, return code, and combined message.
+    """
+    status: OutputStatus  # Execution status
+    stdout: str  # Standard output from the tool
+    stderr: str  # Standard error from the tool
+    return_code: int  # Process return code
+    msg: str  # Combined stdout + stderr message (legacy format)
 
 
 @dataclass
@@ -91,21 +137,24 @@ class AbstractTool(ABC):
             name: The name of the tool (e.g., "circomspect", "zkfuzz")
         """
         self.name = name
+        self.exit_codes = EXIT_CODES
 
     @abstractmethod
-    def execute(self, bug_path: str, timeout: int) -> str:
-        """Execute the tool on a circuit and return raw output.
+    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+        """Execute the tool on a circuit and return structured output.
 
         Args:
-            bug_path: Path to the circuit file or directory containing the circuit
+            input_paths: Input object containing circuit_dir and circuit_file paths
             timeout: Maximum execution time in seconds
 
         Returns:
-            Raw tool output as string, or an error marker like "[Binary not found]"
+            ToolOutput object with status, stdout, stderr, return_code, and msg
 
         Note:
-            The returned string should contain both stdout and stderr,
-            formatted as: "stdout:\n<stdout>\nstderr:\n<stderr>"
+            Tools can choose to use either input_paths.circuit_dir or
+            input_paths.circuit_file based on their requirements.
+            For simple error conditions (binary not found, file not found),
+            tools should return a ToolOutput with FAIL status and appropriate msg.
         """
         pass
 
@@ -192,8 +241,8 @@ class AbstractTool(ABC):
             return False
         return True
 
-    def run_command(self, cmd: list[str], timeout: int, bug_path: str) -> str:
-        """Run a subprocess command and return combined stdout/stderr.
+    def run_command(self, cmd: list[str], timeout: int, bug_path: str) -> ToolOutput:
+        """Run a subprocess command and return structured output.
 
         Args:
             cmd: Command and arguments as list
@@ -201,7 +250,7 @@ class AbstractTool(ABC):
             bug_path: Path being analyzed (for logging)
 
         Returns:
-            Combined stdout/stderr output, or "[Timed out]" on timeout
+            ToolOutput object with status, stdout, stderr, return_code, and msg
         """
         logging.info(f"Running: '{shlex.join(cmd)}'")
 
@@ -209,27 +258,65 @@ class AbstractTool(ABC):
             result = subprocess.run(
                 cmd, capture_output=True, text=True, check=True, timeout=timeout
             )
-            return (
-                "stdout:\n"
-                + (result.stdout or "")
-                + "\nstderr:\n"
-                + (result.stderr or "")
+            stdout = result.stdout or ""
+            stderr = result.stderr or ""
+            msg = f"stdout:\n{stdout}\nstderr:\n{stderr}"
+
+            return ToolOutput(
+                status=OutputStatus.SUCCESS,
+                stdout=stdout,
+                stderr=stderr,
+                return_code=result.returncode,
+                msg=msg,
             )
 
         except subprocess.TimeoutExpired as e:
+            stdout = getattr(e, 'stdout', '') or ''
+            stderr = getattr(e, 'stderr', '') or ''
             logging.warning(
                 f"Process for '{self.name}' analysing '{bug_path}' exceeded {timeout} seconds and timed out. "
-                f"Partial output: {getattr(e, 'stdout', '')}"
+                f"Partial output: {stdout}"
             )
-            return "[Timed out]"
+            msg = "[Timed out]"
+            if stdout or stderr:
+                msg += f"\nPartial stdout:\n{stdout}\nPartial stderr:\n{stderr}"
+
+            return ToolOutput(
+                status=OutputStatus.TIMEOUT,
+                stdout=stdout,
+                stderr=stderr,
+                return_code=-1,
+                msg=msg,
+            )
 
         except subprocess.CalledProcessError as e:
-            logging.warning(
-                f"Process for '{self.name}' analysing '{bug_path}' failed with exit code {e.returncode}. "
-                f"Partial output: {e.stdout}"
-            )
+            stdout = e.stdout or ""
+            stderr = e.stderr or ""
             # Some tools (e.g., circomspect) return non-zero exit codes by design
-            return "stdout:\n" + e.stdout + "\nstderr:\n" + e.stderr
+            # but still produce valid output. Return SUCCESS status so output can be parsed.
+            # Manually handle all standard linux exit codes
+            if e.returncode in self.exit_codes:
+                logging.warning(
+                    f"Process for '{self.name}' analysing '{bug_path}' failed with exit code {e.returncode}. "
+                    f"Partial output: {stdout}"
+                )
+                return ToolOutput(
+                    status=OutputStatus.FAIL,
+                    stdout=e.stdout or "",
+                    stderr=e.stderr or "",
+                    return_code=e.returncode,
+                    msg=f"stdout:\n{e.stdout}\nstderr:\n{e.stderr}",
+                )
+
+            msg = f"stdout:\n{stdout}\nstderr:\n{stderr}"
+
+            return ToolOutput(
+                status=OutputStatus.SUCCESS,
+                stdout=stdout,
+                stderr=stderr,
+                return_code=e.returncode,
+                msg=msg,
+            )
 
     def check_files_exist(self, *files: Path) -> bool:
         """Check if all provided files exist.
