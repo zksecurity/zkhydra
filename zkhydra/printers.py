@@ -55,6 +55,7 @@ def print_analyze_summary(summary: dict) -> None:
         print(f"  Time:     {result['execution_time']}s")
         print(f"  Raw Output:   {result.get('raw_output_file', 'N/A')}")
         print(f"  Parsed Output:   {result.get('parsed_output_file', 'N/A')}")
+        print(f"  Uniformed Results:   {result.get('results_file', 'N/A')}")
         if status == "success":
             print(f"  Findings: {result['findings_count']}")
 

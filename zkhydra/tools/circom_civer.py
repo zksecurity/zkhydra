@@ -3,17 +3,23 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from .base import (
     AbstractTool,
+    AnalysisStatus,
     Finding,
     Input,
     OutputStatus,
+    StandardizedBugCategory,
     ToolOutput,
-    UniformFinding,
     get_tool_result_parsed,
 )
+
+# Mapping from circom_civer bug names to standardized categories
+CIVER_TO_STANDARD = {
+    "Weak-Safety-Violation": StandardizedBugCategory.UNDER_CONSTRAINED,
+}
 
 
 @dataclass
@@ -93,101 +99,6 @@ class CircomCiver(AbstractTool):
             "--O0",
         ]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
-
-    def parse_findings(self, raw_output: str) -> List[Finding]:
-        """Parse findings from circom_civer raw output.
-
-        Extracts underconstrained bugs by looking for "could not verify weak safety"
-        and extracting component names from the failed components list.
-
-        Args:
-            raw_output: Raw string output from circom_civer
-
-        Returns:
-            List of Finding objects with standardized structure
-        """
-        findings = []
-
-        # Key indicator: "CIVER could not verify weak safety" means underconstrained bugs found
-        # Also check for "Number of failed components (weak-safety): X" where X > 0
-
-        if "could not verify weak safety" in raw_output:
-            # Extract failed components
-            lines = raw_output.split("\n")
-            failed_components = []
-
-            # Look for components that failed verification
-            in_failed_section = False
-            for line in lines:
-                if "Components that do not satisfy weak safety:" in line:
-                    in_failed_section = True
-                    continue
-
-                if in_failed_section:
-                    # Stop when we hit the statistics or another section
-                    if line.strip().startswith("*") or "----" in line:
-                        break
-
-                    # Extract component name (format: "    - ComponentName(), ")
-                    stripped = line.strip()
-                    if stripped.startswith("-") and "(" in stripped:
-                        component = stripped[1:].strip().rstrip(",").strip()
-                        failed_components.append(component)
-
-            # Extract number of failed components from statistics
-            match = re.search(
-                r"Number of failed components.*:\s*(\d+)", raw_output
-            )
-            num_failed = (
-                int(match.group(1)) if match else len(failed_components)
-            )
-
-            if failed_components:
-                for component in failed_components:
-                    findings.append(
-                        Finding(
-                            description=f"Component {component} does not satisfy weak safety",
-                            bug_type="Weak-Safety-Violation",
-                            raw_message=raw_output,
-                            component=component,
-                        )
-                    )
-            else:
-                # Fallback if we couldn't parse component names
-                findings.append(
-                    Finding(
-                        description=f"{num_failed} component(s) failed weak safety verification",
-                        bug_type="Weak-Safety-Violation",
-                        raw_message=raw_output,
-                    )
-                )
-
-        elif (
-            "verified weak safety" in raw_output
-            or "verified components (weak-safety):" in raw_output
-        ):
-            # Check if all components were verified (no bugs)
-            match_failed = re.search(
-                r"Number of failed components.*:\s*(\d+)", raw_output
-            )
-            if match_failed and int(match_failed.group(1)) == 0:
-                # All components verified = no findings (no bugs)
-                pass
-            else:
-                # Some failed, extract them
-                match = re.search(
-                    r"Number of failed components.*:\s*(\d+)", raw_output
-                )
-                if match and int(match.group(1)) > 0:
-                    findings.append(
-                        Finding(
-                            description=f"{match.group(1)} component(s) failed weak safety verification",
-                            bug_type="underconstrained",
-                            raw_message=raw_output,
-                        )
-                    )
-
-        return findings
 
     def _helper_parse_output(
         self,
@@ -289,17 +200,25 @@ class CircomCiver(AbstractTool):
 
     def _helper_generate_uniform_results(
         self, parsed_output: CiverParsed, tool_output: ToolOutput
-    ) -> None:
-        """Generate uniform results.json file.
+    ) -> Tuple[AnalysisStatus, List[Finding]]:
+        """Generate uniform findings from parsed output.
 
         Args:
             parsed_output: Parsed tool output
             tool_output: Tool execution output with timing info
-            output_file: Path to write results.json
-        """
-        import json
 
+        Returns:
+            Tuple of (AnalysisStatus, List[Finding])
+        """
         findings = []
+
+        # Determine analysis status
+        if parsed_output.buggy_components:
+            analysis_status = AnalysisStatus.BUGS_FOUND
+        elif parsed_output.stats.get("timeout", 0):
+            analysis_status = AnalysisStatus.TIMEOUT
+        else:
+            analysis_status = AnalysisStatus.NO_BUGS
 
         for component in parsed_output.buggy_components:
             params_str = (
@@ -308,29 +227,22 @@ class CircomCiver(AbstractTool):
                 else ""
             )
 
-            finding = UniformFinding(
-                bug_type="Weak-Safety-Violation",
-                severity="error",
-                message=f"Component {component.name}{params_str} does not satisfy weak safety",
-                component=component.name,
+            bug_title = "Weak-Safety-Violation"
+            finding = Finding(
+                bug_title=bug_title,
+                unified_bug_title=CIVER_TO_STANDARD[bug_title],
+                description=f"Component {component.name}{params_str} does not satisfy weak safety",
+                position={
+                    "component": component.name,
+                },
+                metadata={
+                    "severity": "error",
+                    "params": component.params,
+                },
             )
-            findings.append(finding.to_dict())
+            findings.append(finding)
 
-        # Determine overall status
-        if parsed_output.buggy_components:
-            status = "bugs_found"
-        elif parsed_output.stats.get("timeout", 0):
-            status = "timeout"
-        else:
-            status = "success"
-
-        results = {
-            "status": status,
-            "execution_time": round(tool_output.execution_time, 2),
-            "findings": findings,
-        }
-
-        return results
+        return analysis_status, findings
 
     def compare_zkbugs_ground_truth(
         self,

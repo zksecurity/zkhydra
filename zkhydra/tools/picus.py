@@ -4,20 +4,26 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from .base import (
     AbstractTool,
+    AnalysisStatus,
     Finding,
     Input,
     OutputStatus,
+    StandardizedBugCategory,
     ToolOutput,
-    UniformFinding,
     get_tool_result_parsed,
 )
 
 # Navigate from zkhydra/tools/picus.py to project root, then to tools/picus/
 TOOL_DIR = Path(__file__).resolve().parent.parent.parent / "tools" / "picus"
+
+# Mapping from picus bug names to standardized categories
+PICUS_TO_STANDARD = {
+    "Under-Constrained Signal": StandardizedBugCategory.UNDER_CONSTRAINED,
+}
 
 
 @dataclass
@@ -108,127 +114,6 @@ class Picus(AbstractTool):
         result = self.run_command(cmd, timeout, input_paths.circuit_dir)
         self.change_directory(current_dir)
         return result
-
-    def parse_findings(self, raw_output: str) -> List[Finding]:
-        """Parse Picus findings from raw output.
-
-        Args:
-            raw_output: Raw Picus output
-
-        Returns:
-            List of Finding objects
-        """
-        findings = []
-
-        # Check if circuit is underconstrained
-        if "The circuit is underconstrained" not in raw_output:
-            return findings
-
-        # Helper function to remove ANSI color codes
-        def strip_ansi(text: str) -> str:
-            return re.sub(r"\x1b\[[0-9;]*m", "", text)
-
-        # Parse counterexample details
-        lines = raw_output.split("\n")
-
-        # Extract input signals
-        inputs = {}
-        in_inputs_section = False
-
-        # Extract outputs (both first and second possible)
-        first_outputs = {}
-        second_outputs = {}
-        in_first_outputs = False
-        in_second_outputs = False
-
-        for line in lines:
-            # Remove ANSI color codes from the entire line first
-            line = strip_ansi(line)
-            stripped = line.strip()
-
-            # Detect sections
-            if stripped == "inputs:":
-                in_inputs_section = True
-                in_first_outputs = False
-                in_second_outputs = False
-                continue
-            elif stripped == "first possible outputs:":
-                in_inputs_section = False
-                in_first_outputs = True
-                in_second_outputs = False
-                continue
-            elif stripped == "second possible outputs:":
-                in_inputs_section = False
-                in_first_outputs = False
-                in_second_outputs = True
-                continue
-            elif stripped.startswith(
-                "first internal variables:"
-            ) or stripped.startswith("second internal variables:"):
-                # Stop parsing when we reach internal variables
-                break
-
-            # Parse signal assignments (format: "main.a: 0")
-            if ":" in stripped and not stripped.endswith(":"):
-                parts = stripped.rsplit(":", 1)
-                if len(parts) == 2:
-                    signal_name = parts[0].strip()
-                    signal_value = parts[1].strip()
-
-                    if in_inputs_section:
-                        inputs[signal_name] = signal_value
-                    elif in_first_outputs:
-                        first_outputs[signal_name] = signal_value
-                    elif in_second_outputs:
-                        second_outputs[signal_name] = signal_value
-
-        # Create findings for each output signal that has different values
-        for signal_name in first_outputs:
-            if signal_name in second_outputs:
-                first_val = first_outputs[signal_name]
-                second_val = second_outputs[signal_name]
-
-                if first_val != second_val:
-                    # Extract template/component name if signal has dot notation (e.g., "main.c")
-                    template = None
-                    signal_only = signal_name
-                    if "." in signal_name:
-                        parts = signal_name.rsplit(".", 1)
-                        template = parts[0]
-                        signal_only = parts[1]
-
-                    # Build description with input context
-                    input_desc = ", ".join(
-                        [f"{k}={v}" for k, v in inputs.items()]
-                    )
-                    description = f"Under-constrained signal `{signal_name}` can be `{first_val}` or `{second_val}` for inputs ({input_desc})"
-
-                    findings.append(
-                        Finding(
-                            description=description,
-                            bug_type="Under-Constrained",
-                            raw_message=raw_output,
-                            signal=signal_only,
-                            template=template,
-                            metadata={
-                                "first_value": first_val,
-                                "second_value": second_val,
-                                "inputs": inputs,
-                            },
-                        )
-                    )
-
-        # If we found underconstrained but no specific signals, create a generic finding
-        if not findings and "The circuit is underconstrained" in raw_output:
-            findings.append(
-                Finding(
-                    description="Circuit is underconstrained",
-                    bug_type="Under-Constrained",
-                    raw_message=raw_output,
-                )
-            )
-
-        return findings
 
     def _helper_parse_output(self, tool_result_raw: Path) -> PicusParsed:
         """Parse Picus output and classify the result.
@@ -349,54 +234,57 @@ class Picus(AbstractTool):
             second_outputs=second_outputs,
         )
 
-    def generate_uniform_results(
+    def _helper_generate_uniform_results(
         self,
         parsed_output: PicusParsed,
         tool_output: ToolOutput,
-        output_file: Path,
-    ) -> None:
-        """Generate uniform results.json file.
+    ) -> Tuple[AnalysisStatus, List[Finding]]:
+        """Generate uniform findings from parsed output.
 
         Args:
             parsed_output: Parsed tool output
             tool_output: Tool execution output with timing info
-            output_file: Path to write results.json
-        """
-        import json
 
+        Returns:
+            Tuple of (AnalysisStatus, List[Finding])
+        """
         findings = []
 
-        for signal in parsed_output.signals_with_multiple_values:
-            # Extract signal name without template prefix
-            signal_only = (
-                signal.name.rsplit(".", 1)[-1]
-                if "." in signal.name
-                else signal.name
-            )
+        # Determine analysis status
+        if parsed_output.result == "Timed out":
+            analysis_status = AnalysisStatus.TIMEOUT
+        elif parsed_output.result == "Underconstrained":
+            analysis_status = AnalysisStatus.BUGS_FOUND
+        elif parsed_output.result == "Properly Constrained":
+            analysis_status = AnalysisStatus.NO_BUGS
+        else:
+            analysis_status = AnalysisStatus.ERROR
 
+        for signal in parsed_output.signals_with_multiple_values:
             # Build input description
             input_desc = ", ".join(
                 [f"{k}={v}" for k, v in parsed_output.inputs.items()]
             )
             message = f"Signal `{signal.name}` can be `{signal.first_value}` or `{signal.second_value}` for inputs ({input_desc})"
 
-            finding = UniformFinding(
-                bug_type="Under-Constrained",
-                severity="error",
-                message=message,
-                signal=signal_only,
-                template=signal.template,
+            bug_title = "Under-Constrained Signal"
+            finding = Finding(
+                bug_title=bug_title,
+                unified_bug_title=PICUS_TO_STANDARD[bug_title],
+                description=message,
+                position={
+                    "signal": signal.name,  # Full signal name like "main.c"
+                },
+                metadata={
+                    "severity": "error",
+                    "inputs": parsed_output.inputs,
+                    "first_value": signal.first_value,
+                    "second_value": signal.second_value,
+                },
             )
-            findings.append(finding.to_dict())
+            findings.append(finding)
 
-        results = {
-            "status": parsed_output.result,
-            "execution_time": round(tool_output.execution_time, 2),
-            "findings": findings,
-        }
-
-        with open(output_file, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+        return analysis_status, findings
 
     def compare_zkbugs_ground_truth(
         self,
