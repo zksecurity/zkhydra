@@ -379,7 +379,7 @@ def analyze_mode(args: argparse.Namespace) -> None:
     logging.info(f"Loading tools: {tools_list}")
 
     # Resolve tool modules
-    tool_registry = resolve_tools(args.dsl, tools_list)
+    tool_registry = resolve_tools(tools_list)
     if not tool_registry:
         logging.error("No tools loaded successfully")
         sys.exit(1)
@@ -483,7 +483,7 @@ def evaluate_mode(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     # Resolve tool modules
-    tool_registry = resolve_tools(args.dsl, tools_list)
+    tool_registry = resolve_tools(tools_list)
     if not tool_registry:
         logging.error("No tools loaded successfully")
         sys.exit(1)

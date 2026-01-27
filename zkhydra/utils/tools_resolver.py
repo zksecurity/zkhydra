@@ -27,11 +27,10 @@ TOOL_REGISTRY: dict[str, AbstractTool] = {
 }
 
 
-def resolve_tools(dsl: str, tools: list[str]) -> dict[str, AbstractTool]:
+def resolve_tools(tools: list[str]) -> dict[str, AbstractTool]:
     """Resolve tool names to their singleton instances.
 
     Args:
-        dsl: Domain-specific language (e.g., "circom", "cairo", "pil")
         tools: List of tool names to resolve
 
     Returns:
@@ -62,22 +61,6 @@ def resolve_tools(dsl: str, tools: list[str]) -> dict[str, AbstractTool]:
     return loaded
 
 
-def register_tool(name: str, tool_instance: AbstractTool) -> None:
-    """Register a tool instance in the global registry.
-
-    This is useful for dynamically adding tools or for testing.
-
-    Args:
-        name: Tool name (must match the tool's internal name)
-        tool_instance: Instance of AbstractTool to register
-    """
-    if name in TOOL_REGISTRY:
-        logging.warning(f"Overwriting existing tool registration for '{name}'")
-
-    TOOL_REGISTRY[name] = tool_instance
-    logging.info(f"Registered tool: {name}")
-
-
 def get_available_tools() -> list[str]:
     """Get list of all available tool names.
 
@@ -85,23 +68,3 @@ def get_available_tools() -> list[str]:
         Sorted list of tool names registered in the system
     """
     return sorted(TOOL_REGISTRY.keys())
-
-
-def get_tool(name: str) -> AbstractTool:
-    """Get a tool instance by name.
-
-    Args:
-        name: Tool name
-
-    Returns:
-        Tool instance
-
-    Raises:
-        KeyError: If tool is not found in registry
-    """
-    if name not in TOOL_REGISTRY:
-        raise KeyError(
-            f"Tool '{name}' not found. Available tools: {get_available_tools()}"
-        )
-
-    return TOOL_REGISTRY[name]
