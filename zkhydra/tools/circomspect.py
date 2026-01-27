@@ -4,16 +4,17 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from .base import (
     EXIT_CODES,
     AbstractTool,
+    AnalysisStatus,
     Finding,
     Input,
     OutputStatus,
+    StandardizedBugCategory,
     ToolOutput,
-    UniformFinding,
     get_tool_result_parsed,
 )
 
@@ -32,12 +33,35 @@ CS_MAPPING = {
     "CS0011": "CyclomaticComplexity",
     "CS0012": "TooManyArguments",
     "CS0013": "UnnecessarySignalAssignment",
-    "CS0014": "Under-Constrained",  # "UnconstrainedLessThan"
-    "CS0015": "Under-Constrained",  # "UnconstrainedDivision"
+    "CS0014": "UnconstrainedLessThan",
+    "CS0015": "UnconstrainedDivision",
     "CS0016": "Bn254SpecificCircuit",
-    "CS0017": "Under-Constrained",  # "UnderConstrainedSignal"
+    "CS0017": "UnderConstrainedSignal",
     "CS0018": "UnusedOutputSignal",
-    "CA01": "Under-Constrained",  # Unconstrained signal
+    "CA01": "UnconstrainedSignal",
+}
+
+# Mapping from circomspect bug names to standardized categories
+CIRCOMSPECT_TO_STANDARD = {
+    "ShadowingVariable": StandardizedBugCategory.WARNING,
+    "ParameterNameCollision": StandardizedBugCategory.WARNING,
+    "FieldElementComparison": StandardizedBugCategory.WARNING,
+    "FieldElementArithmetic": StandardizedBugCategory.WARNING,
+    "SignalAssignmentStatement": StandardizedBugCategory.WARNING,
+    "UnusedVariableValue": StandardizedBugCategory.WARNING,
+    "UnusedParameterValue": StandardizedBugCategory.WARNING,
+    "VariableWithoutSideEffect": StandardizedBugCategory.WARNING,
+    "ConstantBranchCondition": StandardizedBugCategory.WARNING,
+    "NonStrictBinaryConversion": StandardizedBugCategory.WARNING,
+    "CyclomaticComplexity": StandardizedBugCategory.WARNING,
+    "TooManyArguments": StandardizedBugCategory.WARNING,
+    "UnnecessarySignalAssignment": StandardizedBugCategory.WARNING,
+    "UnconstrainedLessThan": StandardizedBugCategory.UNDER_CONSTRAINED,
+    "UnconstrainedDivision": StandardizedBugCategory.UNDER_CONSTRAINED,
+    "Bn254SpecificCircuit": StandardizedBugCategory.WARNING,
+    "UnderConstrainedSignal": StandardizedBugCategory.UNDER_CONSTRAINED,
+    "UnusedOutputSignal": StandardizedBugCategory.UNDER_CONSTRAINED,
+    "UnconstrainedSignal": StandardizedBugCategory.UNDER_CONSTRAINED,
 }
 
 
@@ -124,59 +148,6 @@ class Circomspect(AbstractTool):
         circuit_file_path = Path(input_paths.circuit_file)
         cmd = ["circomspect", str(circuit_file_path), "-l", "INFO", "-v"]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
-
-    def parse_findings(self, raw_output: str) -> List[Finding]:
-        """Parse circomspect warnings into findings list.
-
-        Args:
-            raw_output: Raw circomspect output
-
-        Returns:
-            List of Finding objects
-        """
-        findings = []
-        lines = raw_output.split("\n")
-
-        for i, line in enumerate(lines):
-            if "warning[" in line:
-                # Extract warning code and description
-                try:
-                    code = line.split("[")[1].split("]")[0]
-                    description = line.strip()
-
-                    # Next line usually has file:line info
-                    location_line = None
-                    line_number = None
-                    if i + 1 < len(lines):
-                        location_line = lines[i + 1].strip()
-                        # Try to extract line number from location (format: "file:line:col")
-                        match = re.search(r":(\d+):", location_line)
-                        if match:
-                            line_number = match.group(1)
-
-                    # Determine severity from code prefix
-                    if code.startswith("CS"):
-                        severity = "warning"
-                    else:
-                        severity = "note"
-
-                    # Get actual bug type from CS_MAPPING, default to code itself
-                    bug_type = CS_MAPPING.get(code, code)
-
-                    findings.append(
-                        Finding(
-                            description=description,
-                            bug_type=bug_type,
-                            code=code,
-                            severity=severity,
-                            line=line_number,
-                            raw_message=line,
-                        )
-                    )
-                except:
-                    pass
-
-        return findings
 
     def _helper_parse_output(self, tool_result_raw: Path) -> CircomspectParsed:
         """Parse circomspect output and extract all issues.
@@ -286,42 +257,54 @@ class Circomspect(AbstractTool):
             errors_count=errors_count,
         )
 
-    def generate_uniform_results(
+    def _helper_generate_uniform_results(
         self,
         parsed_output: CircomspectParsed,
         tool_output: ToolOutput,
-        output_file: Path,
-    ) -> None:
-        """Generate uniform results.json file.
+    ) -> Tuple[AnalysisStatus, List[Finding]]:
+        """Generate uniform findings from parsed output.
 
         Args:
             parsed_output: Parsed tool output
             tool_output: Tool execution output with timing info
-            output_file: Path to write results.json
+
+        Returns:
+            Tuple of (AnalysisStatus, List[Finding])
         """
         findings = []
 
+        # Determine analysis status
+        if parsed_output.status == "timeout":
+            analysis_status = AnalysisStatus.TIMEOUT
+        elif parsed_output.issues:
+            analysis_status = AnalysisStatus.BUGS_FOUND
+        else:
+            analysis_status = AnalysisStatus.NO_BUGS
+
         for issue in parsed_output.issues:
-            finding = UniformFinding(
-                bug_type=issue.name,
-                severity=issue.severity,
-                message=issue.message,
-                file=issue.file,
-                line=issue.line,
-                column=issue.column,
-                code=issue.code,
-                template=issue.template,
+            # Map to standardized bug category
+            unified_title = CIRCOMSPECT_TO_STANDARD.get(
+                issue.name, StandardizedBugCategory.COMPUTATIONAL_ISSUE
             )
-            findings.append(finding.to_dict())
 
-        results = {
-            "status": parsed_output.status,
-            "execution_time": round(tool_output.execution_time, 2),
-            "findings": findings,
-        }
+            finding = Finding(
+                bug_title=issue.name,  # Tool-specific name
+                unified_bug_title=unified_title,  # Standardized category
+                description=issue.message,
+                file=issue.file,
+                position={
+                    "line": issue.line,
+                    "column": issue.column,
+                    "template": issue.template,
+                },
+                metadata={
+                    "severity": issue.severity,
+                    "code": issue.code,
+                },
+            )
+            findings.append(finding)
 
-        with open(output_file, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+        return analysis_status, findings
 
     def compare_zkbugs_ground_truth(
         self,

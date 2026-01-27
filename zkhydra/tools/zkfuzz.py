@@ -3,17 +3,24 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 from .base import (
     AbstractTool,
+    AnalysisStatus,
     Finding,
     Input,
     OutputStatus,
+    StandardizedBugCategory,
     ToolOutput,
-    UniformFinding,
     get_tool_result_parsed,
 )
+
+# Mapping from zkfuzz bug names to standardized categories
+ZKFUZZ_TO_STANDARD = {
+    "Under-Constrained": StandardizedBugCategory.UNDER_CONSTRAINED,
+    "Over-Constrained": StandardizedBugCategory.OVER_CONSTRAINED,
+}
 
 
 @dataclass
@@ -26,13 +33,25 @@ class ZkFuzzParsed:
     # Tool-specific fields
     result: str  # "found_bug", "found_no_bug", "Timed out", etc.
     vulnerability: str  # Vulnerability type or status message
+    signal: str = ""  # Underconstrained signal (e.g., "main.c")
+    expected_value: str = ""  # Expected value for the signal
+    assignments: Dict[str, str] = field(
+        default_factory=dict
+    )  # Signal assignments
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
-        return {
+        data = {
             "result": self.result,
             "vulnerability": self.vulnerability,
         }
+        if self.signal:
+            data["signal"] = self.signal
+        if self.expected_value:
+            data["expected_value"] = self.expected_value
+        if self.assignments:
+            data["assignments"] = self.assignments
+        return data
 
 
 class ZkFuzz(AbstractTool):
@@ -59,119 +78,6 @@ class ZkFuzz(AbstractTool):
         cmd = ["zkfuzz", str(circuit_file_path)]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
 
-    def parse_findings(self, raw_output: str) -> List[Finding]:
-        """Parse findings from zkfuzz raw output.
-
-        Extracts underconstrained bugs by looking for "NOT SAFE" or "Counter Example Found"
-        indicators and extracting signal/component information.
-
-        Args:
-            raw_output: Raw string output from zkfuzz
-
-        Returns:
-            List of Finding objects with standardized structure
-        """
-        findings = []
-
-        # Key indicators in "Verification" line:
-        # "💥 NOT SAFE 💥" = bug found (actual output)
-        # "❌ Counter Example Found" = bug found (from user's examples)
-        # "🆗 No Counter Example Found" = no bug
-        # Extract signal info from "🚨 Counter Example:" section or "💣 Target" line
-
-        # Check for bugs - must check "No Counter Example" first to avoid false positives
-        if "🆗 No Counter Example Found" in raw_output:
-            # No bug found - no findings to add
-            pass
-        elif (
-            "💥 NOT SAFE 💥" in raw_output
-            or "❌ Counter Example Found" in raw_output
-        ):
-            # Bug found - try to extract signal/target information
-            lines = raw_output.split("\n")
-            signal_info = None
-            target_info = None
-
-            # First try to extract from "🚨 Counter Example:" section
-            # Format: "║           ➡️ `main.c` is expected to be `0`"
-            in_counter_example = False
-            for line in lines:
-                if "🚨 Counter Example:" in line:
-                    in_counter_example = True
-                    continue
-
-                if in_counter_example:
-                    # Stop at the end of the box
-                    if "╚═" in line:
-                        break
-
-                    # Look for "is expected to be" line to identify the problematic signal
-                    if "is expected to be" in line and "➡️" in line:
-                        # Extract signal name: "`main.c` is expected to be `0`"
-                        match = re.search(
-                            r"`([^`]+)`\s+is expected to be", line
-                        )
-                        if match:
-                            signal_info = match.group(1)
-                            break
-
-            # Also try to extract from "💣 Target" line (format from user's examples)
-            for line in lines:
-                if (
-                    "💣 Target" in line or "Target" in line
-                ) and "signal" in line:
-                    if ":" in line:
-                        target_info = line.split(":", 1)[1].strip()
-                        # Parse signal and template from target_info
-                        # Format: "signal `out` in template `Multiplier`"
-                        signal_match = re.search(
-                            r"signal `([^`]+)`", target_info
-                        )
-                        template_match = re.search(
-                            r"template `([^`]+)`", target_info
-                        )
-
-                        if signal_match:
-                            signal_name = signal_match.group(1)
-                            template_name = (
-                                template_match.group(1)
-                                if template_match
-                                else "unknown"
-                            )
-
-                            findings.append(
-                                Finding(
-                                    description=f"Counter example found for signal `{signal_name}` in template `{template_name}`",
-                                    bug_type="Under-Constrained",
-                                    raw_message=raw_output,
-                                    signal=signal_name,
-                                    template=template_name,
-                                )
-                            )
-                        break
-
-            # If we found signal_info but not target_info, use signal_info
-            if signal_info and not target_info:
-                findings.append(
-                    Finding(
-                        description=f"Counter example found for signal `{signal_info}`",
-                        bug_type="Under-Constrained",
-                        raw_message=raw_output,
-                        signal=signal_info,
-                    )
-                )
-            elif not signal_info and not target_info:
-                # Fallback if we couldn't parse any details
-                findings.append(
-                    Finding(
-                        description="Circuit is not safe",
-                        bug_type="Under-Constrained",
-                        raw_message=raw_output,
-                    )
-                )
-
-        return findings
-
     def _helper_parse_output(self, tool_result_raw: Path) -> ZkFuzzParsed:
         """Parse zkfuzz output and extract status and vulnerability string.
 
@@ -186,6 +92,9 @@ class ZkFuzz(AbstractTool):
 
         status = ""
         vulnerability = ""
+        signal = ""
+        expected_value = ""
+        assignments = {}
 
         if not bug_info:
             status = "tool error"
@@ -210,68 +119,120 @@ class ZkFuzz(AbstractTool):
                     vulnerability = bug_info[i + 1]
                     vulnerability = re.sub(r"^[^A-Za-z()]*", "", vulnerability)
                     vulnerability = re.sub(r"[^A-Za-z()]*$", "", vulnerability)
+
+                    # Extract signal and expected value from "is expected to be" line
+                    # Format: ➡️ `main.c` is expected to be `21888...`
+                    for j in range(i, min(i + 10, len(bug_info))):
+                        if "is expected to be" in bug_info[j]:
+                            match = re.search(
+                                r"`([^`]+)`\s+is expected to be\s+`([^`]+)`",
+                                bug_info[j],
+                            )
+                            if match:
+                                signal = match.group(1)
+                                expected_value = match.group(2)
+                            break
+
+                    # Extract assignments from "Assignment Details" section
+                    # Format: ➡️ main.a = 21888...
+                    in_assignments = False
+                    for j in range(i, min(i + 20, len(bug_info))):
+                        if "Assignment Details" in bug_info[j]:
+                            in_assignments = True
+                            continue
+                        if in_assignments:
+                            # Stop at box border or new section
+                            if bug_info[j].startswith("╚") or bug_info[
+                                j
+                            ].startswith("╔"):
+                                break
+                            # Parse assignment line: ➡️ main.a = 21888...
+                            assign_match = re.search(
+                                r"➡️\s*([^\s=]+)\s*=\s*(\S+)", bug_info[j]
+                            )
+                            if assign_match:
+                                var_name = assign_match.group(1)
+                                var_value = assign_match.group(2)
+                                assignments[var_name] = var_value
+
                     break
 
         return ZkFuzzParsed(
             result=status,
             vulnerability=vulnerability,
+            signal=signal,
+            expected_value=expected_value,
+            assignments=assignments,
         )
 
-    def generate_uniform_results(
+    def _helper_generate_uniform_results(
         self,
         parsed_output: ZkFuzzParsed,
         tool_output: ToolOutput,
-        output_file: Path,
-    ) -> None:
-        """Generate uniform results.json file.
+    ) -> Tuple[AnalysisStatus, List[Finding]]:
+        """Generate uniform findings from parsed output.
 
         Args:
             parsed_output: Parsed tool output
             tool_output: Tool execution output with timing info
-            output_file: Path to write results.json
-        """
-        import json
 
+        Returns:
+            Tuple of (AnalysisStatus, List[Finding])
+        """
         findings = []
+
+        # Determine analysis status
+        if parsed_output.result == "Timed out":
+            analysis_status = AnalysisStatus.TIMEOUT
+        elif parsed_output.result == "found_bug":
+            analysis_status = AnalysisStatus.BUGS_FOUND
+        elif parsed_output.result == "found_no_bug":
+            analysis_status = AnalysisStatus.NO_BUGS
+        else:
+            analysis_status = AnalysisStatus.ERROR
 
         # Only add finding if bug found
         if parsed_output.result == "found_bug":
             # Determine bug type from vulnerability string
-            bug_type = (
-                "Under-Constrained"
-                if "under" in parsed_output.vulnerability.lower()
-                else (
-                    "Over-Constrained"
-                    if "over" in parsed_output.vulnerability.lower()
-                    else parsed_output.vulnerability
-                )
+            if "under" in parsed_output.vulnerability.lower():
+                bug_title = "Under-Constrained"
+            elif "over" in parsed_output.vulnerability.lower():
+                bug_title = "Over-Constrained"
+            else:
+                # Default to under-constrained for unknown types
+                bug_title = "Under-Constrained"
+
+            # Build description
+            description = (
+                f"Counter example found: {parsed_output.vulnerability}"
             )
+            if parsed_output.signal and parsed_output.expected_value:
+                description = f"Signal `{parsed_output.signal}` is expected to be `{parsed_output.expected_value}`"
 
-            finding = UniformFinding(
-                bug_type=bug_type,
-                severity="error",
-                message=f"Counter example found: {parsed_output.vulnerability}",
+            # Build metadata
+            metadata = {"severity": "error"}
+            if parsed_output.expected_value:
+                metadata["expected_value"] = parsed_output.expected_value
+            if parsed_output.assignments:
+                metadata["assignments"] = parsed_output.assignments
+
+            # Build position
+            position = {}
+            if parsed_output.signal:
+                position["signal"] = parsed_output.signal
+
+            finding = Finding(
+                bug_title=bug_title,
+                unified_bug_title=ZKFUZZ_TO_STANDARD.get(
+                    bug_title, StandardizedBugCategory.UNDER_CONSTRAINED
+                ),
+                description=description,
+                position=position,
+                metadata=metadata,
             )
-            findings.append(finding.to_dict())
+            findings.append(finding)
 
-        # Determine status
-        if parsed_output.result == "Timed out":
-            status = "timeout"
-        elif parsed_output.result == "found_bug":
-            status = "bugs_found"
-        elif parsed_output.result == "found_no_bug":
-            status = "success"
-        else:
-            status = "error"
-
-        results = {
-            "status": status,
-            "execution_time": round(tool_output.execution_time, 2),
-            "findings": findings,
-        }
-
-        with open(output_file, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+        return analysis_status, findings
 
     def compare_zkbugs_ground_truth(
         self,

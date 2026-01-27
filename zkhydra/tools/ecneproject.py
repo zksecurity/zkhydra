@@ -2,15 +2,16 @@ import logging
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from .base import (
     AbstractTool,
+    AnalysisStatus,
     Finding,
     Input,
     OutputStatus,
+    StandardizedBugCategory,
     ToolOutput,
-    UniformFinding,
     get_tool_result_parsed,
 )
 
@@ -18,6 +19,11 @@ from .base import (
 TOOL_DIR = (
     Path(__file__).resolve().parent.parent.parent / "tools" / "ecneproject"
 )
+
+# Mapping from ecneproject bug names to standardized categories
+ECNEPROJECT_TO_STANDARD = {
+    "Unsound-Constraint": StandardizedBugCategory.UNDER_CONSTRAINED,
+}
 
 
 @dataclass
@@ -131,146 +137,6 @@ class EcneProject(AbstractTool):
 
         return result
 
-    def parse_findings(self, raw_output: str) -> List[Finding]:
-        """Parse EcneProject findings from raw output.
-
-        Args:
-            raw_output: Raw EcneProject output
-
-        Returns:
-            List of Finding objects
-        """
-        findings = []
-
-        # Check for tool errors - these are not findings, just return empty
-        if "Error while running" in raw_output:
-            return findings
-
-        # Check if circuit has potentially unsound constraints
-        if (
-            "R1CS function circuit has potentially unsound constraints"
-            not in raw_output
-        ):
-            return findings
-
-        # Parse the "Bad Constraints" section to extract details
-        lines = raw_output.split("\n")
-        in_bad_constraints = False
-        current_constraint_num = None
-        current_constraint_expr = None
-        undetermined_variables = []
-
-        for i, line in enumerate(lines):
-            stripped = line.strip()
-
-            # Detect sections
-            if stripped == "------ Bad Constraints ------":
-                in_bad_constraints = True
-                continue
-            elif stripped == "------ All Variables ------":
-                in_bad_constraints = False
-                break
-
-            if in_bad_constraints:
-                # Detect constraint number (e.g., "constraint #1")
-                if stripped.startswith("constraint #"):
-                    current_constraint_num = stripped
-                    # Next line is the constraint expression
-                    if i + 1 < len(lines):
-                        current_constraint_expr = lines[i + 1].strip()
-                    continue
-
-                # Look for "Uniquely Determined: false" to identify problematic variables
-                if stripped.startswith("Uniquely Determined: false"):
-                    # Previous line should be the variable name
-                    if i > 0:
-                        var_name = lines[i - 1].strip()
-                        if (
-                            var_name
-                            and not var_name.startswith("Uniquely")
-                            and not var_name.startswith("Bounds")
-                        ):
-                            undetermined_variables.append(
-                                {
-                                    "variable": var_name,
-                                    "constraint": current_constraint_num,
-                                    "constraint_expr": current_constraint_expr,
-                                }
-                            )
-
-        # Group variables by template/component and create ONE finding per component
-        if undetermined_variables:
-            # Remove duplicates and group by template
-            seen_vars = {}
-            for var_info in undetermined_variables:
-                var_name = var_info["variable"]
-                if var_name not in seen_vars:
-                    seen_vars[var_name] = var_info
-
-            # Group by template name
-            templates = {}
-            for var_name, var_info in seen_vars.items():
-                template_name = "unknown"
-                if "." in var_name:
-                    template_name = var_name.split(".", 1)[0]
-
-                if template_name not in templates:
-                    templates[template_name] = []
-                templates[template_name].append(var_info)
-
-            # Create one finding per template/component
-            for template_name, vars_list in templates.items():
-                var_names = [v["variable"] for v in vars_list]
-                var_count = len(var_names)
-
-                # Create description
-                if var_count == 1:
-                    description = f"Component `{template_name}` has under-constrained variable: {var_names[0]}"
-                else:
-                    var_list_str = ", ".join(var_names[:3])
-                    if var_count > 3:
-                        var_list_str += f", ... ({var_count} total)"
-                    description = f"Component `{template_name}` has {var_count} under-constrained variables: {var_list_str}"
-
-                findings.append(
-                    Finding(
-                        description=description,
-                        bug_type="Under-Constrained",
-                        raw_message=raw_output,
-                        template=template_name,
-                        severity="warning",
-                        metadata={
-                            "undetermined_variables": var_names,
-                            "variable_count": var_count,
-                            "constraints": [
-                                {
-                                    "variable": v["variable"],
-                                    "constraint": v["constraint"],
-                                    "constraint_expr": v["constraint_expr"],
-                                }
-                                for v in vars_list
-                            ],
-                        },
-                    )
-                )
-
-        # If we found the unsound message but no specific variables, create a generic finding
-        if (
-            not findings
-            and "R1CS function circuit has potentially unsound constraints"
-            in raw_output
-        ):
-            findings.append(
-                Finding(
-                    description="Circuit has potentially unsound constraints",
-                    bug_type="Under-Constrained",
-                    raw_message=raw_output,
-                    severity="warning",
-                )
-            )
-
-        return findings
-
     def _helper_parse_output(self, tool_result_raw: Path) -> EcneProjectParsed:
         """Parse EcneProject output into a structured format.
 
@@ -328,50 +194,44 @@ class EcneProject(AbstractTool):
             constraint_status=constraint_status,
         )
 
-    def generate_uniform_results(
+    def _helper_generate_uniform_results(
         self,
         parsed_output: EcneProjectParsed,
         tool_output: ToolOutput,
-        output_file: Path,
-    ) -> None:
-        """Generate uniform results.json file.
+    ) -> Tuple[AnalysisStatus, List[Finding]]:
+        """Generate uniform findings from parsed output.
 
         Args:
             parsed_output: Parsed tool output
             tool_output: Tool execution output with timing info
-            output_file: Path to write results.json
-        """
-        import json
 
+        Returns:
+            Tuple of (AnalysisStatus, List[Finding])
+        """
         findings = []
+
+        # Determine analysis status
+        if parsed_output.result == "Timed out":
+            analysis_status = AnalysisStatus.TIMEOUT
+        elif parsed_output.constraint_status == "unsound":
+            analysis_status = AnalysisStatus.BUGS_FOUND
+        elif parsed_output.constraint_status == "sound":
+            analysis_status = AnalysisStatus.NO_BUGS
+        else:
+            analysis_status = AnalysisStatus.ERROR
 
         # Only add finding if unsound constraints detected
         if parsed_output.constraint_status == "unsound":
-            finding = UniformFinding(
-                bug_type="Unsound-Constraint",
-                severity="error",
-                message="R1CS function circuit has potentially unsound constraints",
+            bug_title = "Unsound-Constraint"
+            finding = Finding(
+                bug_title=bug_title,
+                unified_bug_title=ECNEPROJECT_TO_STANDARD[bug_title],
+                description="R1CS function circuit has potentially unsound constraints",
+                metadata={"severity": "error"},
             )
-            findings.append(finding.to_dict())
+            findings.append(finding)
 
-        # Determine status
-        if parsed_output.result == "Timed out":
-            status = "timeout"
-        elif parsed_output.constraint_status == "unsound":
-            status = "bugs_found"
-        elif parsed_output.constraint_status == "sound":
-            status = "success"
-        else:
-            status = "error"
-
-        results = {
-            "status": status,
-            "execution_time": round(tool_output.execution_time, 2),
-            "findings": findings,
-        }
-
-        with open(output_file, "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+        return analysis_status, findings
 
     def compare_zkbugs_ground_truth(
         self,

@@ -14,9 +14,9 @@ import subprocess
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, StrEnum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 EXIT_CODES = {
     1,  # General error: A generic error occurred during execution.
@@ -41,6 +41,18 @@ class ToolError(Exception):
         super().__init__(self.message)
 
 
+class StandardizedBugCategory(StrEnum):
+    """Standardized bug categories.
+
+    Uses StrEnum for automatic JSON serialization to string values.
+    """
+
+    UNDER_CONSTRAINED = "Under-Constrained"
+    OVER_CONSTRAINED = "Over-Constrained"
+    COMPUTATIONAL_ISSUE = "Computational-Issue"
+    WARNING = "Warning (Other -- probably not a bug)"
+
+
 @dataclass
 class Input:
     """Input paths for circuit analysis.
@@ -59,6 +71,15 @@ class OutputStatus(Enum):
     SUCCESS = "success"
     FAIL = "fail"
     TIMEOUT = "timeout"
+
+
+class AnalysisStatus(Enum):
+    """Status of analysis results."""
+
+    BUGS_FOUND = "bugs_found"
+    NO_BUGS = "no_bugs"
+    TIMEOUT = "timeout"
+    ERROR = "error"
 
 
 @dataclass
@@ -82,107 +103,52 @@ class ToolOutput:
 
 @dataclass
 class Finding:
-    """Standardized finding/vulnerability from a security analysis tool.
+    """Unified finding/vulnerability from a security analysis tool.
 
-    This class represents a single security finding discovered by an analysis tool.
-    All tools should return findings in this standardized format.
+    Combines tool-specific and standardized information about a security finding.
     """
 
     # Required fields
-    description: str  # Human-readable one-line description
-    bug_type: (
-        str  # Type of bug (e.g., "underconstrained", "weak_safety violation")
+    bug_title: (
+        str  # Tool-specific bug name (e.g., "UnnecessarySignalAssignment")
     )
-    raw_message: str  # Complete raw message from the tool
-    # Optional fields - tool-specific details
-    circuit: Optional[str] = None  # Circuit file path
-    template: Optional[str] = None  # Template/function name where bug was found
-    component: Optional[str] = (
-        None  # Component name (for tools like circom_civer)
-    )
-    signal: Optional[str] = None  # Signal name (for tools like zkfuzz)
-    line: Optional[str] = (
-        None  # Line number(s) as string (can be "10" or "10-15")
-    )
-    code: Optional[str] = (
-        None  # Tool-specific code (e.g., "CS0013" for circomspect)
-    )
-    severity: Optional[str] = (
-        None  # Severity level ("error", "warning", "note")
-    )
+    unified_bug_title: str  # Standardized bug name (e.g., "Under-Constrained")
+    description: str  # Human-readable description
+
+    # Location information
+    file: Optional[str] = None  # File path
+
+    # Position information (flexible structure)
+    position: Dict[str, Any] = field(
+        default_factory=dict
+    )  # Can include: line, column, template, component, signal
+
+    # Metadata (additional tool-specific information)
     metadata: Dict[str, Any] = field(
         default_factory=dict
-    )  # Additional tool-specific data
+    )  # severity, code, raw_message, etc.
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert Finding to dictionary for JSON serialization.
 
         Returns:
-            Dictionary with all non-None fields
+            Dictionary with all fields
         """
-        # If any field is None set it to empty of its type
-        return {
-            "description": self.description,
-            "bug_type": self.bug_type,
-            "raw_message": self.raw_message,
-            "circuit": self.circuit if self.circuit else "",
-            "template": self.template if self.template else "",
-            "component": self.component if self.component else "",
-            "signal": self.signal if self.signal else "",
-            "line": self.line if self.line else "",
-            "code": self.code if self.code else "",
-            "severity": self.severity if self.severity else "",
-            "metadata": self.metadata if self.metadata else {},
-        }
-
-
-@dataclass
-class UniformFinding:
-    """Uniform finding structure used across all tools in parsed output.
-
-    This provides a consistent format for all tool findings in parsed.json,
-    while each tool can have additional tool-specific fields.
-    """
-
-    bug_type: str  # Type of bug (e.g., "Under-Constrained", "Unused-Variable")
-    severity: str  # Severity level ("error", "warning", "note", "info")
-    message: str  # Human-readable description
-    # Optional location information
-    file: Optional[str] = None  # File path
-    line: Optional[int] = None  # Line number
-    column: Optional[int] = None  # Column number
-    # Optional categorization
-    code: Optional[str] = None  # Tool-specific code (e.g., "CS0013")
-    category: Optional[str] = None  # High-level category
-    # Optional context
-    template: Optional[str] = None  # Template/function name
-    signal: Optional[str] = None  # Signal name (for signal-related bugs)
-    component: Optional[str] = None  # Component name
-
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary for JSON serialization."""
         result = {
-            "bug_type": self.bug_type,
-            "severity": self.severity,
-            "message": self.message,
+            "bug_title": self.bug_title,
+            "unified_bug_title": self.unified_bug_title,
+            "description": self.description,
         }
-        # Add optional fields if present
-        if self.file is not None:
+
+        if self.file:
             result["file"] = self.file
-        if self.line is not None:
-            result["line"] = self.line
-        if self.column is not None:
-            result["column"] = self.column
-        if self.code is not None:
-            result["code"] = self.code
-        if self.category is not None:
-            result["category"] = self.category
-        if self.template is not None:
-            result["template"] = self.template
-        if self.signal is not None:
-            result["signal"] = self.signal
-        if self.component is not None:
-            result["component"] = self.component
+
+        if self.position:
+            result["position"] = self.position
+
+        if self.metadata:
+            result["metadata"] = self.metadata
+
         return result
 
 
@@ -206,6 +172,7 @@ class ToolResult:
     error: str | None = None
     raw_output_file: str | None = None
     parsed_output_file: str | None = None
+    results_file: str | None = None
 
     def __post_init__(self):
         if self.findings is None:
@@ -222,6 +189,7 @@ class ToolResult:
             "error": self.error,
             "raw_output_file": self.raw_output_file,
             "parsed_output_file": self.parsed_output_file,
+            "results_file": self.results_file,
         }
 
 
@@ -305,15 +273,15 @@ class AbstractTool(ABC):
     @abstractmethod
     def _helper_generate_uniform_results(
         self, parsed_output: Any, tool_output: ToolOutput
-    ) -> Dict[str, Any]:
-        """Generate uniform results.json file.
+    ) -> Tuple[AnalysisStatus, List[Finding]]:
+        """Generate uniform findings from parsed output.
 
         Args:
             parsed_output: Parsed tool output
             tool_output: Tool execution output with timing info
 
         Returns:
-            Dictionary with uniform results
+            Tuple of (AnalysisStatus, List[Finding])
         """
 
     def process_output(self, tool_output: ToolOutput) -> ToolResult:
@@ -372,30 +340,46 @@ class AbstractTool(ABC):
                     with open(parsed_output_file, "w", encoding="utf-8") as f:
                         json.dump(output_data, f, indent=4)
 
+                    # Generate uniform findings
+                    analysis_status, findings = (
+                        self._helper_generate_uniform_results(
+                            parsed_output, tool_output
+                        )
+                    )
+
                     # Generate results.json with uniform findings
                     results_file = raw_output_path.parent / "results.json"
-                    uniform_results = self._helper_generate_uniform_results(
-                        parsed_output, tool_output
-                    )
+                    results_data = {
+                        "status": analysis_status.value,
+                        "execution_time": round(tool_output.execution_time, 2),
+                        "findings": [f.to_dict() for f in findings],
+                    }
                     with open(results_file, "w", encoding="utf-8") as f:
-                        json.dump(uniform_results, f, indent=4)
-
-                    findings = self.parse_findings(tool_output.msg)
+                        json.dump(results_data, f, indent=2, ensure_ascii=False)
 
                     # Convert Finding objects to dictionaries for JSON serialization
                     findings_dicts = [f.to_dict() for f in findings]
+
+                    # Map AnalysisStatus to ToolStatus
+                    if analysis_status == AnalysisStatus.TIMEOUT:
+                        tool_status = ToolStatus.TIMEOUT
+                    elif analysis_status == AnalysisStatus.ERROR:
+                        tool_status = ToolStatus.FAILED
+                    else:
+                        tool_status = ToolStatus.SUCCESS
 
                     logging.info(
                         f"{self.name}: Found {len(findings)} findings in {tool_output.execution_time:.2f}s"
                     )
                     result = ToolResult(
-                        status=ToolStatus.SUCCESS,
+                        status=tool_status,
                         message=tool_output.msg,
                         execution_time=round(tool_output.execution_time, 2),
                         findings_count=len(findings),
                         findings=findings_dicts,
                         raw_output_file=str(tool_output.raw_output_file),
                         parsed_output_file=str(parsed_output_file),
+                        results_file=str(results_file),
                     )
                 except ToolError as e:
                     result = ToolResult(
@@ -412,28 +396,6 @@ class AbstractTool(ABC):
             raise Exception(f"Error executing {self.name}: {e}") from e
 
         return result
-
-    @abstractmethod
-    def parse_findings(self, raw_output: str) -> List[Finding]:
-        """Parse raw tool output into structured findings.
-
-        This method extracts vulnerability findings from the tool's raw output
-        and returns them as Finding objects in a standardized format.
-
-        Args:
-            raw_output: Raw output string from tool execution
-
-        Returns:
-            List of Finding objects with standardized structure.
-            Each Finding must have at minimum description and bug_type set.
-            Additional fields (template, signal, line, etc.) should be populated
-            when available from the tool output.
-
-        Note:
-            This is different from parse_output() which is used for ground truth
-            comparison in evaluate mode. This method is for quick analysis display.
-        """
-        pass
 
     @abstractmethod
     def compare_zkbugs_ground_truth(
