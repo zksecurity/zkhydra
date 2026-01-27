@@ -30,13 +30,9 @@ def run_command(cmd: list[str], timeout: int, tool: str, bug: str) -> str:
         return "[Timed out]"
 
     except subprocess.CalledProcessError as e:
+        logging.warning(f"Process for '{tool}' analysing '{bug}' failed with exit code {e.returncode}. Partial output: {e.stdout}")
         # Some tools (e.g., circomspect) return non-zero exit codes by design
-        stdout = e.stdout or ""
-        stderr = e.stderr or ""
-        if stdout:
-            return stdout
-        # Fallback to combined output if stdout is empty
-        return "stdout:\n" + stdout + "\nstderr:\n" + stderr
+        return "stdout:\n" + e.stdout + "\nstderr:\n" + e.stderr
 
 
 def change_directory(target_dir: Path) -> None:
