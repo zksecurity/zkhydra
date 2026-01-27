@@ -18,8 +18,11 @@ class ZkFuzz(AbstractTool):
 
     def __init__(self):
         super().__init__("zkfuzz")
+        if not self.check_binary_exists("zkfuzz"):
+            logging.error("[Binary not found: install zkfuzz]")
+            sys.exit(1)
 
-    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+    def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run zkfuzz on the given circuit.
 
         Args:
@@ -29,28 +32,7 @@ class ZkFuzz(AbstractTool):
         Returns:
             ToolOutput object with execution results
         """
-        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
-        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
-
         circuit_file_path = Path(input_paths.circuit_file)
-        if not self.check_files_exist(circuit_file_path):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Circuit file not found]",
-            )
-
-        # Check if zkfuzz is in PATH
-        if not self.check_binary_exists("zkfuzz"):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: install zkfuzz]",
-            )
 
         cmd = ["zkfuzz", str(circuit_file_path)]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
@@ -139,6 +121,7 @@ class ZkFuzz(AbstractTool):
                                 Finding(
                                     description=f"Counter example found for signal `{signal_name}` in template `{template_name}`",
                                     bug_type="Under-Constrained",
+                                    raw_message=raw_output,
                                     signal=signal_name,
                                     template=template_name,
                                 )
@@ -151,6 +134,7 @@ class ZkFuzz(AbstractTool):
                     Finding(
                         description=f"Counter example found for signal `{signal_info}`",
                         bug_type="Under-Constrained",
+                        raw_message=raw_output,
                         signal=signal_info,
                     )
                 )
@@ -160,12 +144,13 @@ class ZkFuzz(AbstractTool):
                     Finding(
                         description="Circuit is not safe",
                         bug_type="Under-Constrained",
+                        raw_message=raw_output,
                     )
                 )
 
         return findings
 
-    def parse_output(
+    def _helper_parse_output(
         self, tool_result_raw: Path, ground_truth: Path
     ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
         """Parse zkfuzz output and extract status and vulnerability string.
@@ -292,7 +277,3 @@ class ZkFuzz(AbstractTool):
             output = {"result": "false", "reason": reason}
 
         return output
-
-
-# Create a singleton instance for the registry
-_zkfuzz_instance = ZkFuzz()

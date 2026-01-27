@@ -10,54 +10,15 @@ import argparse
 import json
 import logging
 import sys
-import time
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 from pathlib import Path
 
 from zkhydra.printers import print_analyze_summary
-from zkhydra.tools.base import Input, OutputStatus, ensure_dir
+from zkhydra.tools.base import Input, ToolResult, ToolStatus, ensure_dir
 from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
 
 BASE_DIR = Path.cwd()
-
-
-class ToolStatus(Enum):
-    """Status of tool execution."""
-
-    SUCCESS = "success"
-    FAILED = "failed"
-    TIMEOUT = "timeout"
-
-
-@dataclass
-class ToolResult:
-    """Result of tool execution."""
-
-    status: ToolStatus
-    message: str  # Combined stdout and stderr
-    execution_time: float
-    findings_count: int = 0
-    findings: list[dict] = None
-    error: str | None = None
-    raw_output_file: str | None = None
-
-    def __post_init__(self):
-        if self.findings is None:
-            self.findings = []
-
-    def to_dict(self) -> dict:
-        """Convert ToolResult to dictionary for JSON serialization."""
-        return {
-            "status": self.status.value,
-            "message": self.message,
-            "execution_time": self.execution_time,
-            "findings_count": self.findings_count,
-            "findings": self.findings,
-            "error": self.error,
-            "raw_output_file": self.raw_output_file,
-        }
 
 
 @dataclass
@@ -181,68 +142,12 @@ def execute_tools(
         ensure_dir(tool_output_dir)
         raw_output_file = Path(tool_output_dir) / "raw.txt"
 
-        # Measure execution time
-        start_time = time.time()
+        # Execute tool - returns ToolOutput object
+        tool_output = tool_instance.execute(
+            input_paths, timeout, raw_output_file
+        )
 
-        try:
-            # Execute tool - returns ToolOutput object
-            tool_output = tool_instance.execute(input_paths, timeout)
-
-            # Write raw output (msg field contains combined stdout/stderr)
-            with open(raw_output_file, "w", encoding="utf-8") as f:
-                f.write(tool_output.msg)
-
-            execution_time = time.time() - start_time
-
-            # Check tool execution status
-            if tool_output.status == OutputStatus.TIMEOUT:
-                results[tool_name] = ToolResult(
-                    status=ToolStatus.TIMEOUT,
-                    message=tool_output.msg,
-                    execution_time=round(execution_time, 2),
-                    findings_count=0,
-                    findings=[],
-                    raw_output_file=str(raw_output_file),
-                )
-                logging.warning(
-                    f"{tool_name}: Timed out after {execution_time:.2f}s"
-                )
-            elif tool_output.status == OutputStatus.FAIL:
-                # Tool failed (binary not found, file not found, etc.)
-                results[tool_name] = ToolResult(
-                    status=ToolStatus.FAILED,
-                    message=tool_output.msg,
-                    execution_time=round(execution_time, 2),
-                    findings_count=0,
-                    findings=[],
-                    error=tool_output.msg,
-                    raw_output_file=str(raw_output_file),
-                )
-                logging.error(f"{tool_name}: {tool_output.msg}")
-            else:
-                # Success - parse findings from output
-                findings = tool_instance.parse_findings(tool_output.msg)
-
-                # Convert Finding objects to dictionaries for JSON serialization
-                findings_dicts = [f.to_dict() for f in findings]
-
-                results[tool_name] = ToolResult(
-                    status=ToolStatus.SUCCESS,
-                    message=tool_output.msg,
-                    execution_time=round(execution_time, 2),
-                    findings_count=len(findings),
-                    findings=findings_dicts,
-                    raw_output_file=str(raw_output_file),
-                )
-
-                logging.info(
-                    f"{tool_name}: Found {len(findings)} findings in {execution_time:.2f}s"
-                )
-
-        except Exception as e:
-            # Let it crash here because we want to see the full traceback
-            # and should never be raised an exception here
-            raise Exception(f"Error executing {tool_name}: {e}") from e
+        results[tool_name] = tool_instance.process_output(tool_output)
 
     return results
 

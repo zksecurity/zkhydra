@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -44,8 +45,11 @@ class Circomspect(AbstractTool):
     def __init__(self):
         super().__init__("circomspect")
         self.exit_codes = EXIT_CODES - {1}
+        if not self.check_binary_exists("circomspect"):
+            logging.error("[Binary not found: install circomspect]")
+            sys.exit(1)
 
-    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+    def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run circomspect on a given circuit.
 
         Args:
@@ -55,20 +59,7 @@ class Circomspect(AbstractTool):
         Returns:
             ToolOutput object with execution results
         """
-        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
-        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
-
         circuit_file_path = Path(input_paths.circuit_file)
-
-        if not self.check_binary_exists("circomspect"):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: install circomspect]",
-            )
-
         cmd = ["circomspect", str(circuit_file_path), "-l", "INFO", "-v"]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
 
@@ -126,7 +117,7 @@ class Circomspect(AbstractTool):
 
         return findings
 
-    def parse_output(
+    def _helper_parse_output(
         self, tool_result_raw: Path, ground_truth: Path
     ) -> Dict[str, Any]:
         """Parse circomspect output and extract warnings for the vulnerable function.
@@ -320,7 +311,3 @@ class Circomspect(AbstractTool):
                 output = {"result": "false", "reason": reason}
 
         return output
-
-
-# Create a singleton instance for the registry
-_circomspect_instance = Circomspect()

@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -22,8 +23,18 @@ class EcneProject(AbstractTool):
 
     def __init__(self):
         super().__init__("ecneproject")
+        if not self.check_binary_exists("circom"):
+            logging.error("[Circom not found: install Circom]")
+            sys.exit(1)
+        if not self.check_binary_exists("julia"):
+            logging.error("[Julia not found: install Julia]")
+            sys.exit(1)
+        ecne_entry = TOOL_DIR / "src" / "Ecne.jl"
+        if not ecne_entry.is_file():
+            logging.error(f"Ecne.jl not found at {ecne_entry}")
+            sys.exit(1)
 
-    def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
+    def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run EcneProject (Julia) against the circuit's R1CS and sym files.
 
         Args:
@@ -33,21 +44,8 @@ class EcneProject(AbstractTool):
         Returns:
             ToolOutput object with execution results
         """
-        logging.debug(f"ECNEPROJECT_DIR='{TOOL_DIR}'")
-        logging.debug(f"circuit_dir='{input_paths.circuit_dir}'")
-        logging.debug(f"circuit_file='{input_paths.circuit_file}'")
-
         # EcneProject needs R1CS and sym files from the circuit directory
         circuit_file_path = Path(input_paths.circuit_file)
-        # We first need to compile with circom to get the R1CS and sym files
-        if not self.check_binary_exists("circom"):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: install Circom]",
-            )
         cmd = [
             "circom",
             str(circuit_file_path),
@@ -58,7 +56,13 @@ class EcneProject(AbstractTool):
         ]
         circom_output = self.run_command(cmd, timeout, input_paths.circuit_dir)
         if circom_output.status != OutputStatus.SUCCESS:
-            return circom_output
+            return ToolOutput(
+                status=OutputStatus.FAIL,
+                stdout=circom_output.stdout,
+                stderr=circom_output.stderr,
+                return_code=circom_output.return_code,
+                msg=f"[Circom failed: {circom_output.msg}]",
+            )
 
         # Now we need to find the R1CS and sym files
         # The r1cs should end with .r1cs and the sym should end with .sym
@@ -77,26 +81,8 @@ class EcneProject(AbstractTool):
                 msg=f"[R1CS or sym file not found: {circom_output.msg}]",
             )
 
-        if not self.check_binary_exists("julia"):
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: install Julia]",
-            )
-
         # Ensure project and entrypoint exist
         ecne_entry = TOOL_DIR / "src" / "Ecne.jl"
-        if not ecne_entry.is_file():
-            logging.error(f"Ecne.jl not found at {ecne_entry}")
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="",
-                return_code=-1,
-                msg="[Binary not found: Ecne.jl entrypoint missing]",
-            )
 
         current_dir = Path.cwd()
         self.change_directory(TOOL_DIR)
@@ -226,6 +212,7 @@ class EcneProject(AbstractTool):
                     Finding(
                         description=description,
                         bug_type="Under-Constrained",
+                        raw_message=raw_output,
                         template=template_name,
                         severity="warning",
                         metadata={
@@ -253,13 +240,14 @@ class EcneProject(AbstractTool):
                 Finding(
                     description="Circuit has potentially unsound constraints",
                     bug_type="Under-Constrained",
+                    raw_message=raw_output,
                     severity="warning",
                 )
             )
 
         return findings
 
-    def parse_output(
+    def _helper_parse_output(
         self, tool_result_raw: Path, ground_truth: Path
     ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
         """Parse EcneProject output into a small structured summary.
@@ -378,7 +366,3 @@ class EcneProject(AbstractTool):
             }
 
         return output
-
-
-# Create a singleton instance for the registry
-_ecneproject_instance = EcneProject()
