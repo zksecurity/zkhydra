@@ -55,7 +55,9 @@ def resolve_tools(dsl: str, tools: list[str]) -> dict[str, AbstractTool]:
 
         tool_instance = TOOL_REGISTRY[tool_name]
         loaded[tool_name] = tool_instance
-        logging.debug(f"Resolved {tool_name} -> {tool_instance.__class__.__name__}")
+        logging.debug(
+            f"Resolved {tool_name} -> {tool_instance.__class__.__name__}"
+        )
 
     return loaded
 
@@ -98,6 +100,8 @@ def get_tool(name: str) -> AbstractTool:
         KeyError: If tool is not found in registry
     """
     if name not in TOOL_REGISTRY:
-        raise KeyError(f"Tool '{name}' not found. Available tools: {get_available_tools()}")
+        raise KeyError(
+            f"Tool '{name}' not found. Available tools: {get_available_tools()}"
+        )
 
     return TOOL_REGISTRY[name]

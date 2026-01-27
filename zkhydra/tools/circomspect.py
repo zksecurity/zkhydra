@@ -99,6 +99,7 @@ class Circomspect(AbstractTool):
                         location_line = lines[i + 1].strip()
                         # Try to extract line number from location (format: "file:line:col")
                         import re
+
                         match = re.search(r":(\d+):", location_line)
                         if match:
                             line_number = match.group(1)
@@ -142,7 +143,9 @@ class Circomspect(AbstractTool):
         """
         # Get ground truth to reverse search
         gt_data = self.load_json_file(ground_truth)
-        vuln_function: Optional[str] = gt_data.get("Location", {}).get("Function")
+        vuln_function: Optional[str] = gt_data.get("Location", {}).get(
+            "Function"
+        )
 
         # Get tool output
         with open(tool_result_raw, "r", encoding="utf-8") as f:
@@ -154,8 +157,12 @@ class Circomspect(AbstractTool):
             return {"warnings": "No Warnings Found"}
 
         # Get block that is analyzing the vulnerable function or template
-        start_marker_function = f"circomspect: analyzing function '{vuln_function}'"
-        start_marker_template = f"circomspect: analyzing template '{vuln_function}'"
+        start_marker_function = (
+            f"circomspect: analyzing function '{vuln_function}'"
+        )
+        start_marker_template = (
+            f"circomspect: analyzing template '{vuln_function}'"
+        )
 
         block: List[str] = []
         inside_block = False
@@ -167,14 +174,17 @@ class Circomspect(AbstractTool):
             if line == "[Timed out]":
                 warnings = ["Reached zkhydra threshold."]
                 break
-            if line.startswith("circomspect: analyzing function") or line.startswith(
-                "circomspect: analyzing template"
-            ):
+            if line.startswith(
+                "circomspect: analyzing function"
+            ) or line.startswith("circomspect: analyzing template"):
                 # If we were inside the desired block, stop when a new function begins
                 if inside_block:
                     break
                 # If this is the function we want, start recording
-                if line.strip() in (start_marker_function, start_marker_template):
+                if line.strip() in (
+                    start_marker_function,
+                    start_marker_template,
+                ):
                     inside_block = True
                     block.append(line)
             elif inside_block:
@@ -300,7 +310,9 @@ class Circomspect(AbstractTool):
             output = {"result": "correct"}
         else:
             if reason == []:
-                reason = ["circomspect found no warnings for vulnerable function."]
+                reason = [
+                    "circomspect found no warnings for vulnerable function."
+                ]
             if manual_evaluation:
                 output = {
                     "result": "false",

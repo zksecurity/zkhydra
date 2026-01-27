@@ -36,7 +36,7 @@ main() {
 
   # Ensure we’re running from the script’s directory
   cd "$(dirname "$0")"
-  
+
   # Initialize and update git submodules
   info "Initializing and updating Git submodules..."
   git submodule update --init --recursive

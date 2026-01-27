@@ -58,7 +58,9 @@ def setup_circom(bug_dir: str):
             )
             logging.error(stderr)
         else:
-            logging.debug(f"Command '${shlex.join(cmd)}' completed successfully.")
+            logging.debug(
+                f"Command '${shlex.join(cmd)}' completed successfully."
+            )
             logging.debug(stdout)
 
     # Change back to the base directory
@@ -76,7 +78,9 @@ def setup_pil_cairo(bug_dir: str):
 
 def get_repo_url_and_commit_hash(bug_path: Path) -> tuple[str, str]:
     """Get the repository URL and commit hash from a bug path."""
-    logging.info(f"Getting repository URL and commit hash for bug '{bug_path}'.")
+    logging.info(
+        f"Getting repository URL and commit hash for bug '{bug_path}'."
+    )
 
     bug_config = bug_path / "zkbugs_config.json"
 
@@ -187,7 +191,9 @@ def cleanup_pil_cairo(bug_dir: str):
 def generate_ground_truth(
     bug_name: str, bug_path: str, dsl: str, output_file: Path
 ) -> None:
-    logging.info(f"Generating ground truth for bug '{bug_name}' into '{output_file}'.")
+    logging.info(
+        f"Generating ground truth for bug '{bug_name}' into '{output_file}'."
+    )
 
     bug_config = bug_path / "zkbugs_config.json"
 

@@ -3,7 +3,14 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .base import AbstractTool, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
+from .base import (
+    AbstractTool,
+    Finding,
+    Input,
+    OutputStatus,
+    ToolOutput,
+    get_tool_result_parsed,
+)
 
 
 class CircomCiver(AbstractTool):
@@ -98,8 +105,12 @@ class CircomCiver(AbstractTool):
                         failed_components.append(component)
 
             # Extract number of failed components from statistics
-            match = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
-            num_failed = int(match.group(1)) if match else len(failed_components)
+            match = re.search(
+                r"Number of failed components.*:\s*(\d+)", raw_output
+            )
+            num_failed = (
+                int(match.group(1)) if match else len(failed_components)
+            )
 
             if failed_components:
                 for component in failed_components:
@@ -132,7 +143,9 @@ class CircomCiver(AbstractTool):
                 pass
             else:
                 # Some failed, extract them
-                match = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
+                match = re.search(
+                    r"Number of failed components.*:\s*(\d+)", raw_output
+                )
                 if match and int(match.group(1)) > 0:
                     findings.append(
                         Finding(
@@ -181,7 +194,9 @@ class CircomCiver(AbstractTool):
             if line.startswith("Components that do not satisfy weak safety"):
                 context = "buggy"
                 continue
-            elif line.startswith("Components timeout when checking weak-safety"):
+            elif line.startswith(
+                "Components timeout when checking weak-safety"
+            ):
                 context = "timeout"
                 continue
             elif line.startswith("Components that failed verification"):
@@ -193,18 +208,28 @@ class CircomCiver(AbstractTool):
 
             # --- Match component lines ---
             if context == "buggy" and line.startswith("-"):
-                comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line)
+                comp_match = re.match(
+                    r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line
+                )
                 if comp_match:
                     comp_name, numbers = comp_match.groups()
-                    nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
+                    nums = [
+                        int(n.strip()) for n in numbers.split(",") if n.strip()
+                    ]
                     buggy_components.append({"name": comp_name, "params": nums})
 
             if context == "timeout" and line.startswith("-"):
-                comp_match = re.match(r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line)
+                comp_match = re.match(
+                    r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line
+                )
                 if comp_match:
                     comp_name, numbers = comp_match.groups()
-                    nums = [int(n.strip()) for n in numbers.split(",") if n.strip()]
-                    timed_out_components.append({"name": comp_name, "params": nums})
+                    nums = [
+                        int(n.strip()) for n in numbers.split(",") if n.strip()
+                    ]
+                    timed_out_components.append(
+                        {"name": comp_name, "params": nums}
+                    )
 
             # --- Stats parsing ---
             def _safe_int_from_line(pattern: str, text: str) -> Optional[int]:
@@ -285,7 +310,9 @@ class CircomCiver(AbstractTool):
 
         tool_output_data = get_tool_result_parsed(tool_result_parsed)
 
-        buggy_components: List[Any] = tool_output_data.get("buggy_components", [])
+        buggy_components: List[Any] = tool_output_data.get(
+            "buggy_components", []
+        )
         timed_out_components: List[Any] = tool_output_data.get(
             "timed_out_components", []
         )
@@ -306,7 +333,9 @@ class CircomCiver(AbstractTool):
             # logging.debug(
             #     f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
             # )
-            logging.debug(f"Found buggy component in '{bug_name}': '{comp_name}'")
+            logging.debug(
+                f"Found buggy component in '{bug_name}': '{comp_name}'"
+            )
 
             # params = comp_params
             # if not params:
@@ -326,7 +355,9 @@ class CircomCiver(AbstractTool):
 
             # Compare with ground truth
             if comp_name == buggy_function:
-                logging.debug(f"Component name matches buggy function: {comp_name}")
+                logging.debug(
+                    f"Component name matches buggy function: {comp_name}"
+                )
                 is_correct = True
 
                 # # Check lines
@@ -349,10 +380,15 @@ class CircomCiver(AbstractTool):
             output = {"result": "correct"}
         else:
             if timed_out:
-                output = {"result": "timeout", "reason": "Reached zkhydra threshold."}
+                output = {
+                    "result": "timeout",
+                    "reason": "Reached zkhydra threshold.",
+                }
             else:
                 if not buggy_components:
-                    reason = "Tool found no module that do not satisfy weak safety."
+                    reason = (
+                        "Tool found no module that do not satisfy weak safety."
+                    )
                     output = {
                         "result": "false",
                         "reason": reason,
@@ -361,9 +397,7 @@ class CircomCiver(AbstractTool):
                         "need_manual_evaluation": True,
                     }
                 elif last_comp_name != buggy_function:
-                    reason = (
-                        f"Tool found wrong module; buggy module: '{buggy_function}'."
-                    )
+                    reason = f"Tool found wrong module; buggy module: '{buggy_function}'."
                     # reason = f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
                     output = {
                         "result": "false",

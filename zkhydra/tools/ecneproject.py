@@ -2,10 +2,19 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .base import AbstractTool, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
+from .base import (
+    AbstractTool,
+    Finding,
+    Input,
+    OutputStatus,
+    ToolOutput,
+    get_tool_result_parsed,
+)
 
 # Navigate from zkhydra/tools/ecneproject.py to project root, then to tools/ecneproject/
-TOOL_DIR = Path(__file__).resolve().parent.parent.parent / "tools" / "ecneproject"
+TOOL_DIR = (
+    Path(__file__).resolve().parent.parent.parent / "tools" / "ecneproject"
+)
 
 
 class EcneProject(AbstractTool):
@@ -39,15 +48,26 @@ class EcneProject(AbstractTool):
                 return_code=-1,
                 msg="[Binary not found: install Circom]",
             )
-        cmd = ["circom", str(circuit_file_path), "--r1cs", "--sym", "--output", input_paths.circuit_dir]
+        cmd = [
+            "circom",
+            str(circuit_file_path),
+            "--r1cs",
+            "--sym",
+            "--output",
+            input_paths.circuit_dir,
+        ]
         circom_output = self.run_command(cmd, timeout, input_paths.circuit_dir)
         if circom_output.status != OutputStatus.SUCCESS:
             return circom_output
 
         # Now we need to find the R1CS and sym files
-        # The r1cs should end with .r1cs and the sym should end with .sym   
-        r1cs_file = next((f for f in Path(input_paths.circuit_dir).glob("*.r1cs")), None)
-        sym_file = next((f for f in Path(input_paths.circuit_dir).glob("*.sym")), None)
+        # The r1cs should end with .r1cs and the sym should end with .sym
+        r1cs_file = next(
+            (f for f in Path(input_paths.circuit_dir).glob("*.r1cs")), None
+        )
+        sym_file = next(
+            (f for f in Path(input_paths.circuit_dir).glob("*.sym")), None
+        )
         if not r1cs_file or not sym_file:
             return ToolOutput(
                 status=OutputStatus.FAIL,
@@ -117,7 +137,10 @@ class EcneProject(AbstractTool):
             return findings
 
         # Check if circuit has potentially unsound constraints
-        if "R1CS function circuit has potentially unsound constraints" not in raw_output:
+        if (
+            "R1CS function circuit has potentially unsound constraints"
+            not in raw_output
+        ):
             return findings
 
         # Parse the "Bad Constraints" section to extract details
@@ -152,12 +175,18 @@ class EcneProject(AbstractTool):
                     # Previous line should be the variable name
                     if i > 0:
                         var_name = lines[i - 1].strip()
-                        if var_name and not var_name.startswith("Uniquely") and not var_name.startswith("Bounds"):
-                            undetermined_variables.append({
-                                "variable": var_name,
-                                "constraint": current_constraint_num,
-                                "constraint_expr": current_constraint_expr,
-                            })
+                        if (
+                            var_name
+                            and not var_name.startswith("Uniquely")
+                            and not var_name.startswith("Bounds")
+                        ):
+                            undetermined_variables.append(
+                                {
+                                    "variable": var_name,
+                                    "constraint": current_constraint_num,
+                                    "constraint_expr": current_constraint_expr,
+                                }
+                            )
 
         # Group variables by template/component and create ONE finding per component
         if undetermined_variables:
@@ -202,16 +231,24 @@ class EcneProject(AbstractTool):
                         metadata={
                             "undetermined_variables": var_names,
                             "variable_count": var_count,
-                            "constraints": [{"variable": v["variable"],
-                                           "constraint": v["constraint"],
-                                           "constraint_expr": v["constraint_expr"]}
-                                          for v in vars_list]
-                        }
+                            "constraints": [
+                                {
+                                    "variable": v["variable"],
+                                    "constraint": v["constraint"],
+                                    "constraint_expr": v["constraint_expr"],
+                                }
+                                for v in vars_list
+                            ],
+                        },
                     )
                 )
 
         # If we found the unsound message but no specific variables, create a generic finding
-        if not findings and "R1CS function circuit has potentially unsound constraints" in raw_output:
+        if (
+            not findings
+            and "R1CS function circuit has potentially unsound constraints"
+            in raw_output
+        ):
             findings.append(
                 Finding(
                     description="Circuit has potentially unsound constraints",
@@ -311,7 +348,10 @@ class EcneProject(AbstractTool):
             "result", "No result"
         )
 
-        if tool_result == "R1CS function circuit has potentially unsound constraints":
+        if (
+            tool_result
+            == "R1CS function circuit has potentially unsound constraints"
+        ):
             output = {"result": "correct"}
         elif (
             tool_result
@@ -322,7 +362,10 @@ class EcneProject(AbstractTool):
                 "reason": "Tool found sound constraints but the circuit is unsound.",
             }
         elif tool_result == "Timed out":
-            output = {"result": "timeout", "reason": "Reached zkhydra threshold."}
+            output = {
+                "result": "timeout",
+                "reason": "Reached zkhydra threshold.",
+            }
         elif tool_result == "Circuit file not found":
             output = {
                 "result": "error",

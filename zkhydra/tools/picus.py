@@ -4,7 +4,14 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .base import AbstractTool, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
+from .base import (
+    AbstractTool,
+    Finding,
+    Input,
+    OutputStatus,
+    ToolOutput,
+    get_tool_result_parsed,
+)
 
 # Navigate from zkhydra/tools/picus.py to project root, then to tools/picus/
 TOOL_DIR = Path(__file__).resolve().parent.parent.parent / "tools" / "picus"
@@ -85,7 +92,7 @@ class Picus(AbstractTool):
 
         # Helper function to remove ANSI color codes
         def strip_ansi(text: str) -> str:
-            return re.sub(r'\x1b\[[0-9;]*m', '', text)
+            return re.sub(r"\x1b\[[0-9;]*m", "", text)
 
         # Parse counterexample details
         lines = raw_output.split("\n")
@@ -121,7 +128,9 @@ class Picus(AbstractTool):
                 in_first_outputs = False
                 in_second_outputs = True
                 continue
-            elif stripped.startswith("first internal variables:") or stripped.startswith("second internal variables:"):
+            elif stripped.startswith(
+                "first internal variables:"
+            ) or stripped.startswith("second internal variables:"):
                 # Stop parsing when we reach internal variables
                 break
 
@@ -155,7 +164,9 @@ class Picus(AbstractTool):
                         signal_only = parts[1]
 
                     # Build description with input context
-                    input_desc = ", ".join([f"{k}={v}" for k, v in inputs.items()])
+                    input_desc = ", ".join(
+                        [f"{k}={v}" for k, v in inputs.items()]
+                    )
                     description = f"Under-constrained signal `{signal_name}` can be `{first_val}` or `{second_val}` for inputs ({input_desc})"
 
                     findings.append(
@@ -168,7 +179,7 @@ class Picus(AbstractTool):
                                 "first_value": first_val,
                                 "second_value": second_val,
                                 "inputs": inputs,
-                            }
+                            },
                         )
                     )
 
@@ -205,12 +216,17 @@ class Picus(AbstractTool):
             status = "Timed out"
         elif any(line == "[Circuit file not found]" for line in bug_info):
             status = "Circuit file not found"
-        elif any(line == "The circuit is underconstrained" for line in bug_info):
+        elif any(
+            line == "The circuit is underconstrained" for line in bug_info
+        ):
             status = "Underconstrained"
-        elif any(line == "The circuit is properly constrained" for line in bug_info):
+        elif any(
+            line == "The circuit is properly constrained" for line in bug_info
+        ):
             status = "Properly Constrained"
         elif any(
-            line == "Cannot determine whether the circuit is properly constrained"
+            line
+            == "Cannot determine whether the circuit is properly constrained"
             for line in bug_info
         ):
             status = "Tool cannot determine whether the circuit is properly constrained"
