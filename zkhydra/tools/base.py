@@ -403,31 +403,3 @@ def get_tool_result_parsed(tool_result_parsed: Path) -> dict:
         )
         return {}
     return data
-
-
-def remove_bug_entry(output: dict, dsl: str, tool: str, bug_name: str) -> dict:
-    """Remove a bug from all result buckets for a tool.
-
-    Args:
-        output: Output dictionary containing results
-        dsl: Domain-specific language
-        tool: Tool name
-        bug_name: Bug name to remove
-
-    Returns:
-        Modified output dictionary
-    """
-    for bucket_name in ["false", "error", "timeout", "correct"]:
-        bucket = output[dsl][tool][bucket_name]
-        if isinstance(bucket, list):
-            new_bucket = []
-            for item in bucket:
-                if isinstance(item, dict):
-                    if item.get("bug_name") == bug_name:
-                        continue
-                elif item == bug_name:
-                    continue
-                new_bucket.append(item)
-            bucket[:] = new_bucket
-
-    return output

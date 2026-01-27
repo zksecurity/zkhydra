@@ -44,7 +44,6 @@ class Circomspect(AbstractTool):
     def __init__(self):
         super().__init__("circomspect")
         self.exit_codes = EXIT_CODES - {1}
-        print(f"Circomspect exit codes: {self.exit_codes}")
 
     def execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run circomspect on a given circuit.
@@ -98,8 +97,6 @@ class Circomspect(AbstractTool):
                     if i + 1 < len(lines):
                         location_line = lines[i + 1].strip()
                         # Try to extract line number from location (format: "file:line:col")
-                        import re
-
                         match = re.search(r":(\d+):", location_line)
                         if match:
                             line_number = match.group(1)
