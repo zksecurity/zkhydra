@@ -273,21 +273,16 @@ RUN curl -fsSL https://install.julialang.org | sh -s -- -y
 # ============================================================================
 
 # Copy only necessary files first (excluding .git)
-COPY bugs bugs/
 COPY pyproject.toml uv.lock* ./
 COPY helpers helpers/
 COPY setup setup/
 COPY tools tools/
-COPY utils utils/
-COPY main.py ./
 
 # ============================================================================
 # Clone only repositories needed at runtime
 # ============================================================================
 
 RUN echo "Cloning runtime dependencies..." && \
-    # zkbugs - Bug dataset (REQUIRED)
-    git clone https://github.com/zksecurity/zkbugs.git bugs/zkbugs || true && \
     # Picus - NEEDED as Racket package
     git clone https://github.com/Veridise/Picus.git tools/picus || true && \
     # EcneProject - NEEDED as Julia package
@@ -336,7 +331,8 @@ RUN if [ -d "tools/ecneproject" ] && [ -f "tools/ecneproject/Project.toml" ]; th
 # Install Python dependencies
 # ============================================================================
 
-RUN uv run main.py --help
+COPY zkhydra zkhydra/
+RUN uv run python -m zkhydra.main --help
 
 # ============================================================================
 # Verify all tool binaries are accessible

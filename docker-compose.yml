@@ -8,8 +8,6 @@ services:
     volumes:
       # Mount the output directory to persist results
       - ./output:/zkhydra/output
-      # Mount main.py (new CLI)
-      - ./main.py:/zkhydra/main.py
       # Mount config files
       - ./config.toml:/zkhydra/config.toml
       - ./configs:/zkhydra/configs
@@ -19,9 +17,8 @@ services:
       - ./test_bug:/zkhydra/test_bug
       - ./test_bug_2:/zkhydra/test_bug_2
       - ./test_bug_3:/zkhydra/test_bug_3
-      # Mount utils and tools for development
-      - ./utils:/zkhydra/utils
-      - ./tools:/zkhydra/tools
+      # DEBUG: Mount zkhydra Python package
+      - ./zkhydra:/zkhydra/zkhydra
     working_dir: /zkhydra
     # Default command - can be overridden
     command: /bin/bash

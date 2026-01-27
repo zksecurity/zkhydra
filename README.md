@@ -43,7 +43,7 @@ Analyze a circuit file with one or more tools. Does not require ground truth.
 
 **Synopsis:**
 ```bash
-uv run main.py analyze --input <circuit.circom> --tools <tool1,tool2,...> [options]
+uv run python -m zkhydra.main analyze --input <circuit.circom> --tools <tool1,tool2,...> [options]
 ```
 
 **Output:**
@@ -57,15 +57,15 @@ uv run main.py analyze --input <circuit.circom> --tools <tool1,tool2,...> [optio
 
 ```bash
 # Analyze with a single tool
-uv run main.py analyze --input test_bug/circuits/circuit.circom --tools circomspect
+uv run python -m zkhydra.main analyze --input test_bug/circuits/circuit.circom --tools circomspect
 
 # Analyze with multiple tools
-uv run main.py analyze \
+uv run python -m zkhydra.main analyze \
   --input test_bug/circuits/circuit.circom \
   --tools circomspect,circom_civer,picus
 
 # Specify output directory and timeout
-uv run main.py analyze \
+uv run python -m zkhydra.main analyze \
   --input circuit.circom \
   --tools circomspect \
   --output results/ \
@@ -74,7 +74,7 @@ uv run main.py analyze \
 
 **Docker:**
 ```bash
-docker-compose run --rm zkhydra uv run main.py analyze \
+docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
   --input test_bug/circuits/circuit.circom \
   --tools circomspect
 ```
@@ -85,7 +85,7 @@ Run tools and compare results against ground truth from a configuration file.
 
 **Synopsis:**
 ```bash
-uv run main.py evaluate --input <zkbugs_config.json> --tools <tool1,tool2,...> [options]
+uv run python -m zkhydra.main evaluate --input <zkbugs_config.json> --tools <tool1,tool2,...> [options]
 ```
 
 **Input Format:**
@@ -117,19 +117,19 @@ The JSON config file must follow the zkbugs format:
 
 ```bash
 # Evaluate with ground truth
-uv run main.py evaluate \
+uv run python -m zkhydra.main evaluate \
   --input test_bug/zkbugs_config.json \
   --tools circomspect
 
 # Evaluate with multiple tools
-uv run main.py evaluate \
+uv run python -m zkhydra.main evaluate \
   --input test_bug/zkbugs_config.json \
   --tools circomspect,circom_civer,picus
 ```
 
 **Docker:**
 ```bash
-docker-compose run --rm zkhydra uv run main.py evaluate \
+docker-compose run --rm zkhydra uv run python -m zkhydra.main evaluate \
   --input test_bug/zkbugs_config.json \
   --tools circomspect
 ```
@@ -158,9 +158,9 @@ docker-compose run --rm zkhydra uv run main.py evaluate \
 ### Help
 
 ```bash
-uv run main.py --help
-uv run main.py analyze --help
-uv run main.py evaluate --help
+uv run python -m zkhydra.main --help
+uv run python -m zkhydra.main analyze --help
+uv run python -m zkhydra.main evaluate --help
 ```
 
 ## Output Structure
@@ -199,7 +199,7 @@ output/evaluate_YYYYMMDD_HHMMSS/
 
 ```bash
 # Analyze the example underconstrained circuit
-uv run main.py analyze \
+uv run python -m zkhydra.main analyze \
   --input test_bug/circuits/circuit.circom \
   --tools circomspect
 
@@ -210,7 +210,7 @@ uv run main.py analyze \
 
 ```bash
 # Evaluate tools against known vulnerability
-uv run main.py evaluate \
+uv run python -m zkhydra.main evaluate \
   --input test_bug/zkbugs_config.json \
   --tools circomspect
 
@@ -221,13 +221,13 @@ uv run main.py evaluate \
 
 ```bash
 # Analyze with all available tools (using 'all' keyword)
-uv run main.py analyze \
+uv run python -m zkhydra.main analyze \
   --input test_bug/circuits/circuit.circom \
   --tools all \
   --timeout 3600
 
 # Or specify tools explicitly
-uv run main.py analyze \
+uv run python -m zkhydra.main analyze \
   --input test_bug/circuits/circuit.circom \
   --tools circomspect,circom_civer,picus,ecneproject,zkfuzz \
   --timeout 3600
@@ -309,11 +309,41 @@ Format the codebase:
 uv run black . && uv run isort . --profile black
 ```
 
+## Project Structure
+
+```
+zkhydra/
+├── tools/                      # Tool source code repositories (git submodules)
+│   ├── circomspect/           # circomspect source
+│   ├── circom_civer/          # circom_civer source
+│   ├── picus/                 # picus source
+│   ├── ecneproject/           # ecneproject source
+│   └── zkfuzz/                # zkfuzz source
+├── zkhydra/                    # Python package
+│   ├── tools/                 # Tool Python wrappers
+│   │   ├── base.py           # AbstractTool base class, Finding dataclass
+│   │   ├── circomspect.py    # Circomspect wrapper
+│   │   ├── circom_civer.py   # CiVer wrapper
+│   │   ├── zkfuzz.py         # zkFuzz wrapper
+│   │   ├── picus.py          # Picus wrapper
+│   │   └── ecneproject.py    # EcneProject wrapper
+│   ├── utils/                 # Utility modules
+│   │   ├── logger.py         # Logging setup
+│   │   └── tools_resolver.py # Tool registry and resolution
+│   ├── bugs/                  # Bug management
+│   │   └── zkbugs.py         # zkbugs dataset handling
+│   └── main.py                # Main entry point
+├── bugs/zkbugs/               # zkbugs dataset (git submodule)
+├── output/                    # Analysis results
+├── run.py                     # Convenience entry point wrapper
+└── pyproject.toml            # Python dependencies
+```
+
 ## Legacy Config File Mode
 
 The tool previously used TOML config files. This mode will be added back in a future update with:
 ```bash
-uv run main.py --config config.toml
+uv run python -m zkhydra.main --config config.toml
 ```
 
 ## License
