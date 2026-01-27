@@ -1,6 +1,7 @@
 import logging
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -10,8 +11,54 @@ from .base import (
     Input,
     OutputStatus,
     ToolOutput,
+    UniformFinding,
     get_tool_result_parsed,
 )
+
+
+@dataclass
+class CiverComponent:
+    """Represents a circuit component analyzed by circom_civer."""
+
+    name: str
+    params: List[int] = field(default_factory=list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "name": self.name,
+            "params": self.params,
+        }
+
+
+@dataclass
+class CiverParsed:
+    """Structured parsed output from circom-civer tool.
+
+    Contains detailed execution stats and component lists.
+    """
+
+    # Execution stats
+    stats: Dict[str, Optional[int]] = field(default_factory=dict)
+    # Component lists with details
+    buggy_components: List[CiverComponent] = field(default_factory=list)
+    timed_out_components: List[CiverComponent] = field(default_factory=list)
+    verified_components: List[CiverComponent] = field(default_factory=list)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "stats": self.stats,
+            "buggy_components": [
+                comp.to_dict() for comp in self.buggy_components
+            ],
+            "timed_out_components": [
+                comp.to_dict() for comp in self.timed_out_components
+            ],
+            "verified_components": [
+                comp.to_dict() for comp in self.verified_components
+            ],
+        }
 
 
 class CircomCiver(AbstractTool):
@@ -145,14 +192,14 @@ class CircomCiver(AbstractTool):
     def _helper_parse_output(
         self,
         tool_result_raw: Path,
-    ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
-        """Parse circom-civer raw output into a structured dictionary.
+    ) -> CiverParsed:
+        """Parse circom-civer raw output into a structured format.
 
         Args:
             tool_result_raw: Path to raw tool output file
 
         Returns:
-            Dictionary with parsed stats and components
+            CiverParsed object with structured data and uniform findings
         """
         with open(tool_result_raw, "r", encoding="utf-8") as f:
             bug_info: list[str] = [line.strip() for line in f if line.strip()]
@@ -164,18 +211,29 @@ class CircomCiver(AbstractTool):
             "failed": None,
             "timeout": None,
         }
-        buggy_components: List[Any] = []
-        timed_out_components: List[Any] = []
+        buggy_components: List[CiverComponent] = []
+        timed_out_components: List[CiverComponent] = []
+        verified_components: List[CiverComponent] = []
 
         context: Optional[str] = None
+
+        # Helper function for stats parsing
+        def _safe_int_from_line(pattern: str, text: str) -> Optional[int]:
+            m = re.search(pattern, text)
+            if m:
+                try:
+                    return int(m.group(1))
+                except (ValueError, TypeError):
+                    return None
+            return None
 
         for raw_line in bug_info:
             line = (raw_line or "").strip()
             if line == "[Timed out]":
                 context = "timeout"
-                buggy_components = ["Reached zkhydra threshold."]
-                timed_out_components = ["Reached zkhydra threshold."]
+                # Keep empty lists for components
                 continue
+
             # --- Track context (which section we are in) ---
             if line.startswith("Components that do not satisfy weak safety"):
                 context = "buggy"
@@ -185,6 +243,9 @@ class CircomCiver(AbstractTool):
             ):
                 context = "timeout"
                 continue
+            elif line.startswith("Components that satisfy weak safety"):
+                context = "verified"
+                continue
             elif line.startswith("Components that failed verification"):
                 context = "failed"
                 continue
@@ -193,7 +254,7 @@ class CircomCiver(AbstractTool):
                 continue
 
             # --- Match component lines ---
-            if context == "buggy" and line.startswith("-"):
+            if line.startswith("-"):
                 comp_match = re.match(
                     r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line
                 )
@@ -202,31 +263,16 @@ class CircomCiver(AbstractTool):
                     nums = [
                         int(n.strip()) for n in numbers.split(",") if n.strip()
                     ]
-                    buggy_components.append({"name": comp_name, "params": nums})
+                    component = CiverComponent(name=comp_name, params=nums)
 
-            if context == "timeout" and line.startswith("-"):
-                comp_match = re.match(
-                    r"-\s*([A-Za-z0-9_]+)\(([\d,\s]*)\)", line
-                )
-                if comp_match:
-                    comp_name, numbers = comp_match.groups()
-                    nums = [
-                        int(n.strip()) for n in numbers.split(",") if n.strip()
-                    ]
-                    timed_out_components.append(
-                        {"name": comp_name, "params": nums}
-                    )
+                    if context == "buggy":
+                        buggy_components.append(component)
+                    elif context == "timeout":
+                        timed_out_components.append(component)
+                    elif context == "verified":
+                        verified_components.append(component)
 
             # --- Stats parsing ---
-            def _safe_int_from_line(pattern: str, text: str) -> Optional[int]:
-                m = re.search(pattern, text)
-                if m:
-                    try:
-                        return int(m.group(1))
-                    except (ValueError, TypeError):
-                        return None
-                return None
-
             if "Number of verified components" in line:
                 stats["verified"] = _safe_int_from_line(r"(\d+)$", line)
             elif "Number of failed components" in line:
@@ -234,13 +280,57 @@ class CircomCiver(AbstractTool):
             elif "Number of timeout components" in line:
                 stats["timeout"] = _safe_int_from_line(r"(\d+)$", line)
 
-        structured_info = {
-            "stats": stats,
-            "buggy_components": buggy_components,
-            "timed_out_components": timed_out_components,
+        return CiverParsed(
+            stats=stats,
+            buggy_components=buggy_components,
+            timed_out_components=timed_out_components,
+            verified_components=verified_components,
+        )
+
+    def _helper_generate_uniform_results(
+        self, parsed_output: CiverParsed, tool_output: ToolOutput
+    ) -> None:
+        """Generate uniform results.json file.
+
+        Args:
+            parsed_output: Parsed tool output
+            tool_output: Tool execution output with timing info
+            output_file: Path to write results.json
+        """
+        import json
+
+        findings = []
+
+        for component in parsed_output.buggy_components:
+            params_str = (
+                f"({', '.join(map(str, component.params))})"
+                if component.params
+                else ""
+            )
+
+            finding = UniformFinding(
+                bug_type="Weak-Safety-Violation",
+                severity="error",
+                message=f"Component {component.name}{params_str} does not satisfy weak safety",
+                component=component.name,
+            )
+            findings.append(finding.to_dict())
+
+        # Determine overall status
+        if parsed_output.buggy_components:
+            status = "bugs_found"
+        elif parsed_output.stats.get("timeout", 0):
+            status = "timeout"
+        else:
+            status = "success"
+
+        results = {
+            "status": status,
+            "execution_time": round(tool_output.execution_time, 2),
+            "findings": findings,
         }
 
-        return structured_info
+        return results
 
     def compare_zkbugs_ground_truth(
         self,

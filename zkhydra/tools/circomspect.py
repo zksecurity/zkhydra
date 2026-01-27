@@ -2,6 +2,7 @@ import json
 import logging
 import re
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -12,6 +13,7 @@ from .base import (
     Input,
     OutputStatus,
     ToolOutput,
+    UniformFinding,
     get_tool_result_parsed,
 )
 
@@ -37,6 +39,66 @@ CS_MAPPING = {
     "CS0018": "UnusedOutputSignal",
     "CA01": "Under-Constrained",  # Unconstrained signal
 }
+
+
+@dataclass
+class CircomspectIssue:
+    """Represents a single issue found by circomspect."""
+
+    severity: str  # "warning", "note", "error"
+    code: str  # e.g., "CS0013", "CA01"
+    name: str  # e.g., "UnnecessarySignalAssignment"
+    message: str  # Short description
+    file: str  # File path
+    line: int  # Line number
+    column: int  # Column number
+    template: Optional[str] = None  # Template being analyzed
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        result = {
+            "severity": self.severity,
+            "code": self.code,
+            "name": self.name,
+            "message": self.message,
+            "file": self.file,
+            "line": self.line,
+            "column": self.column,
+        }
+        if self.template:
+            result["template"] = self.template
+        return result
+
+
+@dataclass
+class CircomspectParsed:
+    """Structured parsed output from circomspect tool.
+
+    Contains detailed tool-specific information.
+    """
+
+    # Execution status
+    status: str = "success"  # "success", "timeout", "error"
+    # All issues found with full details
+    issues: List[CircomspectIssue] = field(default_factory=list)
+    # Statistics
+    total_issues: int = 0
+    warnings_count: int = 0
+    notes_count: int = 0
+    errors_count: int = 0
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "status": self.status,
+            "issues": [issue.to_dict() for issue in self.issues],
+            "statistics": {
+                "total_issues": self.total_issues,
+                "warnings": self.warnings_count,
+                "notes": self.notes_count,
+                "errors": self.errors_count,
+            },
+        }
 
 
 class Circomspect(AbstractTool):
@@ -116,52 +178,150 @@ class Circomspect(AbstractTool):
 
         return findings
 
-    def _helper_parse_output(self, tool_result_raw: Path) -> Dict[str, Any]:
-        """Parse circomspect output and extract all warnings.
+    def _helper_parse_output(self, tool_result_raw: Path) -> CircomspectParsed:
+        """Parse circomspect output and extract all issues.
 
         Args:
             tool_result_raw: Path to raw tool output file
 
         Returns:
-            Dictionary with parsed warnings
+            CircomspectParsed object with detailed structured data
         """
         # Get tool output
         with open(tool_result_raw, "r", encoding="utf-8") as f:
             bug_info: List[str] = [line.strip() for line in f if line.strip()]
 
-        warnings: List[Any] = []
-
         # Check for timeout
         for raw_line in bug_info:
             line = (raw_line or "").rstrip("\n")
             if line == "[Timed out]":
-                return {"warnings": "Reached zkhydra threshold."}
+                return CircomspectParsed(status="timeout")
 
-        # Extract all warnings from the output
+        issues: List[CircomspectIssue] = []
+        current_template: Optional[str] = None
+
+        # Extract all warnings/notes/errors from the output
         current_code: Optional[str] = None
+        current_message: Optional[str] = None
+        current_file: Optional[str] = None
+        current_line: Optional[int] = None
+        current_column: Optional[int] = None
+        current_severity: Optional[str] = None
+
         for i, line in enumerate(bug_info):
-            # Detect a warning line and extract the code (e.g. CS0005 or CA01)
-            match_warn = re.match(r"\s*warning\[([A-Z0-9]+)\]:", line)
-            if match_warn:
-                current_code = match_warn.group(1)
+            # Track current template
+            if "template:" in line.lower():
+                match = re.search(r"template:\s*(\w+)", line, re.IGNORECASE)
+                if match:
+                    current_template = match.group(1)
 
-            # Try to get line number from next line
-            try:
-                match_line = re.search(r":(\d+):", bug_info[i + 1])
-            except Exception:
-                match_line = None
+            # Detect a warning/note/error line and extract the code
+            match_issue = re.match(
+                r"\s*(warning|note|error)\[([A-Z0-9]+)\]:\s*(.+)", line
+            )
+            if match_issue:
+                current_severity = match_issue.group(1)
+                current_code = match_issue.group(2)
+                current_message = match_issue.group(3)
 
-            if current_code and match_line:
+            # Try to get file location from next line (format: "file:line:col")
+            if current_code and i + 1 < len(bug_info):
                 try:
-                    line_number = int(match_line.group(1))
-                    warnings.append((current_code, line_number))
-                except ValueError:
-                    logging.error(f"Failed to parse line number from '{line}'")
-                finally:
-                    current_code = None  # reset after recording
+                    location_line = bug_info[i + 1]
+                    match_location = re.search(
+                        r"(.+):(\d+):(\d+)", location_line
+                    )
+                    if match_location:
+                        # Remove box-drawing characters from file path
+                        current_file = re.sub(
+                            r"[\u2500-\u257F\u250C-\u254B]",
+                            "",
+                            match_location.group(1),
+                        ).strip()
+                        current_line = int(match_location.group(2))
+                        current_column = int(match_location.group(3))
 
-        result_value: Any = warnings if warnings else []
-        return {"warnings": result_value}
+                        # Get bug name from mapping
+                        bug_name = CS_MAPPING.get(current_code, current_code)
+
+                        # Create issue
+                        issue = CircomspectIssue(
+                            severity=current_severity or "warning",
+                            code=current_code,
+                            name=bug_name,
+                            message=current_message or "",
+                            file=current_file,
+                            line=current_line,
+                            column=current_column,
+                            template=current_template,
+                        )
+                        issues.append(issue)
+
+                        # Reset
+                        current_code = None
+                        current_message = None
+                        current_file = None
+                        current_line = None
+                        current_column = None
+                        current_severity = None
+                except (ValueError, IndexError) as e:
+                    logging.debug(
+                        f"Failed to parse location from '{bug_info[i+1]}': {e}"
+                    )
+                    current_code = None
+
+        # Calculate statistics
+        warnings_count = sum(
+            1 for issue in issues if issue.severity == "warning"
+        )
+        notes_count = sum(1 for issue in issues if issue.severity == "note")
+        errors_count = sum(1 for issue in issues if issue.severity == "error")
+
+        return CircomspectParsed(
+            status="success",
+            issues=issues,
+            total_issues=len(issues),
+            warnings_count=warnings_count,
+            notes_count=notes_count,
+            errors_count=errors_count,
+        )
+
+    def generate_uniform_results(
+        self,
+        parsed_output: CircomspectParsed,
+        tool_output: ToolOutput,
+        output_file: Path,
+    ) -> None:
+        """Generate uniform results.json file.
+
+        Args:
+            parsed_output: Parsed tool output
+            tool_output: Tool execution output with timing info
+            output_file: Path to write results.json
+        """
+        findings = []
+
+        for issue in parsed_output.issues:
+            finding = UniformFinding(
+                bug_type=issue.name,
+                severity=issue.severity,
+                message=issue.message,
+                file=issue.file,
+                line=issue.line,
+                column=issue.column,
+                code=issue.code,
+                template=issue.template,
+            )
+            findings.append(finding.to_dict())
+
+        results = {
+            "status": parsed_output.status,
+            "execution_time": round(tool_output.execution_time, 2),
+            "findings": findings,
+        }
+
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
     def compare_zkbugs_ground_truth(
         self,

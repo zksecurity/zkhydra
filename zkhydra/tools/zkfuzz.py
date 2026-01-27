@@ -1,5 +1,7 @@
 import logging
 import re
+import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -9,8 +11,28 @@ from .base import (
     Input,
     OutputStatus,
     ToolOutput,
+    UniformFinding,
     get_tool_result_parsed,
 )
+
+
+@dataclass
+class ZkFuzzParsed:
+    """Structured parsed output from zkFuzz tool.
+
+    Contains detailed execution result and vulnerability type.
+    """
+
+    # Tool-specific fields
+    result: str  # "found_bug", "found_no_bug", "Timed out", etc.
+    vulnerability: str  # Vulnerability type or status message
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "result": self.result,
+            "vulnerability": self.vulnerability,
+        }
 
 
 class ZkFuzz(AbstractTool):
@@ -150,16 +172,14 @@ class ZkFuzz(AbstractTool):
 
         return findings
 
-    def _helper_parse_output(
-        self, tool_result_raw: Path
-    ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
+    def _helper_parse_output(self, tool_result_raw: Path) -> ZkFuzzParsed:
         """Parse zkfuzz output and extract status and vulnerability string.
 
         Args:
             tool_result_raw: Path to raw tool output file
 
         Returns:
-            Dictionary with parsed result and vulnerability
+            ZkFuzzParsed object with detailed structured data
         """
         with open(tool_result_raw, "r", encoding="utf-8") as f:
             bug_info: list[str] = [line.strip() for line in f if line.strip()]
@@ -192,14 +212,66 @@ class ZkFuzz(AbstractTool):
                     vulnerability = re.sub(r"[^A-Za-z()]*$", "", vulnerability)
                     break
 
-        structured_info: Dict[str, Any] = {}
+        return ZkFuzzParsed(
+            result=status,
+            vulnerability=vulnerability,
+        )
 
-        structured_info = {
-            "result": status,
-            "vulnerability": vulnerability,
+    def generate_uniform_results(
+        self,
+        parsed_output: ZkFuzzParsed,
+        tool_output: ToolOutput,
+        output_file: Path,
+    ) -> None:
+        """Generate uniform results.json file.
+
+        Args:
+            parsed_output: Parsed tool output
+            tool_output: Tool execution output with timing info
+            output_file: Path to write results.json
+        """
+        import json
+
+        findings = []
+
+        # Only add finding if bug found
+        if parsed_output.result == "found_bug":
+            # Determine bug type from vulnerability string
+            bug_type = (
+                "Under-Constrained"
+                if "under" in parsed_output.vulnerability.lower()
+                else (
+                    "Over-Constrained"
+                    if "over" in parsed_output.vulnerability.lower()
+                    else parsed_output.vulnerability
+                )
+            )
+
+            finding = UniformFinding(
+                bug_type=bug_type,
+                severity="error",
+                message=f"Counter example found: {parsed_output.vulnerability}",
+            )
+            findings.append(finding.to_dict())
+
+        # Determine status
+        if parsed_output.result == "Timed out":
+            status = "timeout"
+        elif parsed_output.result == "found_bug":
+            status = "bugs_found"
+        elif parsed_output.result == "found_no_bug":
+            status = "success"
+        else:
+            status = "error"
+
+        results = {
+            "status": status,
+            "execution_time": round(tool_output.execution_time, 2),
+            "findings": findings,
         }
 
-        return structured_info
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
     def compare_zkbugs_ground_truth(
         self,

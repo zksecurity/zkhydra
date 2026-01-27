@@ -77,6 +77,7 @@ class ToolOutput:
     execution_time: Optional[float] = None  # Execution time in seconds
     raw_output_file: Optional[str] = None  # Path to raw output file
     parsed_output_file: Optional[str] = None  # Path to parsed output file
+    results_file: Optional[str] = None  # Path to results file
 
 
 @dataclass
@@ -133,6 +134,56 @@ class Finding:
             "severity": self.severity if self.severity else "",
             "metadata": self.metadata if self.metadata else {},
         }
+
+
+@dataclass
+class UniformFinding:
+    """Uniform finding structure used across all tools in parsed output.
+
+    This provides a consistent format for all tool findings in parsed.json,
+    while each tool can have additional tool-specific fields.
+    """
+
+    bug_type: str  # Type of bug (e.g., "Under-Constrained", "Unused-Variable")
+    severity: str  # Severity level ("error", "warning", "note", "info")
+    message: str  # Human-readable description
+    # Optional location information
+    file: Optional[str] = None  # File path
+    line: Optional[int] = None  # Line number
+    column: Optional[int] = None  # Column number
+    # Optional categorization
+    code: Optional[str] = None  # Tool-specific code (e.g., "CS0013")
+    category: Optional[str] = None  # High-level category
+    # Optional context
+    template: Optional[str] = None  # Template/function name
+    signal: Optional[str] = None  # Signal name (for signal-related bugs)
+    component: Optional[str] = None  # Component name
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        result = {
+            "bug_type": self.bug_type,
+            "severity": self.severity,
+            "message": self.message,
+        }
+        # Add optional fields if present
+        if self.file is not None:
+            result["file"] = self.file
+        if self.line is not None:
+            result["line"] = self.line
+        if self.column is not None:
+            result["column"] = self.column
+        if self.code is not None:
+            result["code"] = self.code
+        if self.category is not None:
+            result["category"] = self.category
+        if self.template is not None:
+            result["template"] = self.template
+        if self.signal is not None:
+            result["signal"] = self.signal
+        if self.component is not None:
+            result["component"] = self.component
+        return result
 
 
 class ToolStatus(Enum):
@@ -251,6 +302,20 @@ class AbstractTool(ABC):
             Dictionary with parsed output
         """
 
+    @abstractmethod
+    def _helper_generate_uniform_results(
+        self, parsed_output: Any, tool_output: ToolOutput
+    ) -> Dict[str, Any]:
+        """Generate uniform results.json file.
+
+        Args:
+            parsed_output: Parsed tool output
+            tool_output: Tool execution output with timing info
+
+        Returns:
+            Dictionary with uniform results
+        """
+
     def process_output(self, tool_output: ToolOutput) -> ToolResult:
         """Process tool output into structured result.
 
@@ -296,8 +361,24 @@ class AbstractTool(ABC):
                     raw_output_path = Path(tool_output.raw_output_file)
                     parsed_output = self._helper_parse_output(raw_output_path)
                     parsed_output_file = raw_output_path.parent / "parsed.json"
+
+                    # Serialize dataclass if it has to_dict method, otherwise use as-is
+                    output_data = (
+                        parsed_output.to_dict()
+                        if hasattr(parsed_output, "to_dict")
+                        else parsed_output
+                    )
+
                     with open(parsed_output_file, "w", encoding="utf-8") as f:
-                        json.dump(parsed_output, f, indent=4)
+                        json.dump(output_data, f, indent=4)
+
+                    # Generate results.json with uniform findings
+                    results_file = raw_output_path.parent / "results.json"
+                    uniform_results = self._helper_generate_uniform_results(
+                        parsed_output, tool_output
+                    )
+                    with open(results_file, "w", encoding="utf-8") as f:
+                        json.dump(uniform_results, f, indent=4)
 
                     findings = self.parse_findings(tool_output.msg)
 
