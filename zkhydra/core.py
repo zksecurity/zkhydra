@@ -9,7 +9,6 @@ including tool execution, result collection, and summary generation.
 import argparse
 import json
 import logging
-import os
 import sys
 import time
 from dataclasses import dataclass
@@ -19,7 +18,7 @@ from pathlib import Path
 
 from zkhydra.printers import print_analyze_summary
 from zkhydra.tools.base import Input, OutputStatus, ensure_dir
-from zkhydra.utils.tools_resolver import resolve_tools
+from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
 
 BASE_DIR = Path.cwd()
 
@@ -117,31 +116,6 @@ AVAILABLE_TOOLS = {
 }
 
 
-def expand_tools_list(tools_str: str, dsl: str) -> list[str]:
-    """
-    Expand tools list, handling the special 'all' keyword.
-
-    Args:
-        tools_str: Comma-separated tools or 'all'
-        dsl: Domain-specific language
-
-    Returns:
-        List of tool names
-    """
-    tools_str = tools_str.strip().lower()
-
-    if tools_str == "all":
-        available = AVAILABLE_TOOLS.get(dsl, [])
-        if not available:
-            logging.warning(f"No tools available for DSL '{dsl}'")
-            return []
-        logging.info(f"Expanding 'all' to: {', '.join(available)}")
-        return available
-
-    # Parse comma-separated list
-    return [t.strip().lower() for t in tools_str.split(",") if t.strip()]
-
-
 def setup_output_directory(base_output: Path, mode: str) -> tuple[Path, str]:
     """
     Create timestamped output directory.
@@ -154,48 +128,23 @@ def setup_output_directory(base_output: Path, mode: str) -> tuple[Path, str]:
         Tuple of (output_directory_path, timestamp)
     """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_dir = base_output / f"{mode}_{timestamp}"
+    output_dir = Path(base_output) / f"{mode}_{timestamp}"
     ensure_dir(output_dir)
     return output_dir, timestamp
 
 
-def prepare_circuit_paths(input_path: Path) -> tuple[Path, Path]:
-    """
-    Determine circuit file and directory paths from input.
-
-    Args:
-        input_path: Input path (file or directory)
-
-    Returns:
-        Tuple of (circuit_directory, circuit_file)
-    """
-    if input_path.is_file():
-        # Input is a file - extract parent directory
-        circuit_dir = (
-            input_path.parent.parent
-            if input_path.parent.name == "circuits"
-            else input_path.parent
-        )
-        circuit_file = input_path
-    else:
-        # Input is a directory
-        circuit_dir = input_path
-        circuit_file = input_path / "circuits" / "circuit.circom"
-
-    return circuit_dir, circuit_file
-
-
-def get_tool_input_path(circuit_file: Path, circuit_dir: Path) -> Input:
+def prepare_circuit_paths(input_path: Path) -> Input:
     """
     Create Input object with circuit directory and file paths for tool execution.
 
     Args:
-        circuit_file: Path to circuit file
-        circuit_dir: Path to circuit directory
+        input_path: Input path (file)
 
     Returns:
         Input object containing absolute circuit_dir and circuit_file paths as strings
     """
+    circuit_dir = input_path.parent
+    circuit_file = input_path
     full_path_circuit_dir = circuit_dir.resolve()
     full_path_circuit_file = circuit_file.resolve()
     return Input(
@@ -205,10 +154,8 @@ def get_tool_input_path(circuit_file: Path, circuit_dir: Path) -> Input:
 
 
 def execute_tools(
-    tools_list: list[str],
-    tool_registry: dict,
-    circuit_file: Path,
-    circuit_dir: Path,
+    tool_registry: ToolsDict,
+    input_paths: Input,
     output_dir: Path,
     timeout: int,
 ) -> dict[str, ToolResult]:
@@ -216,10 +163,8 @@ def execute_tools(
     Execute all tools and collect results.
 
     Args:
-        tools_list: List of tool names to run
         tool_registry: Loaded tool modules
-        circuit_file: Path to circuit file
-        circuit_dir: Path to circuit directory
+        input_paths: Input object containing circuit_dir and circuit_file paths
         output_dir: Output directory for results
         timeout: Timeout per tool in seconds
 
@@ -228,28 +173,20 @@ def execute_tools(
     """
     results = {}
 
-    for tool_name in tools_list:
-        if tool_name not in tool_registry:
-            logging.warning(f"Tool '{tool_name}' failed to load, skipping")
-            continue
-
+    for tool_name, tool_instance in tool_registry.items():
         logging.info(f"Running {tool_name}...")
-        tool_module = tool_registry[tool_name]
 
         # Create output directory for this tool
         tool_output_dir = output_dir / tool_name
         ensure_dir(tool_output_dir)
-        raw_output_file = os.path.join(tool_output_dir, "raw.txt")
+        raw_output_file = Path(tool_output_dir) / "raw.txt"
 
         # Measure execution time
         start_time = time.time()
 
         try:
-            # Create Input object with circuit directory and file paths
-            input_paths = get_tool_input_path(circuit_file, circuit_dir)
-
             # Execute tool - returns ToolOutput object
-            tool_output = tool_module.execute(input_paths, timeout)
+            tool_output = tool_instance.execute(input_paths, timeout)
 
             # Write raw output (msg field contains combined stdout/stderr)
             with open(raw_output_file, "w", encoding="utf-8") as f:
@@ -284,7 +221,6 @@ def execute_tools(
                 logging.error(f"{tool_name}: {tool_output.msg}")
             else:
                 # Success - parse findings from output
-                tool_instance = tool_registry[tool_name]
                 findings = tool_instance.parse_findings(tool_output.msg)
 
                 # Convert Finding objects to dictionaries for JSON serialization
@@ -304,64 +240,45 @@ def execute_tools(
                 )
 
         except Exception as e:
-            execution_time = time.time() - start_time
-            logging.error(f"{tool_name} failed: {e}")
-            results[tool_name] = ToolResult(
-                status=ToolStatus.FAILED,
-                message=str(e),
-                execution_time=round(execution_time, 2),
-                error=str(e),
-                findings_count=0,
-                findings=[],
-                raw_output_file=str(raw_output_file),
-            )
+            # Let it crash here because we want to see the full traceback
+            # and should never be raised an exception here
+            raise Exception(f"Error executing {tool_name}: {e}") from e
 
     return results
 
 
-def analyze_mode(args: argparse.Namespace) -> None:
+def analyze_mode(
+    circuit: Path, tools: list[str], dsl: str, timeout: int, output: Path
+) -> None:
     """
     Analyze mode: Run tools on a circuit and report findings.
-
-    Does NOT use ground truth comparison.
     """
     logging.info("Running in ANALYZE mode")
-    logging.info(f"Input: {args.input}")
-    logging.info(f"Tools: {args.tools}")
-
-    # Validate input file exists
-    if not args.input.exists():
-        logging.error(f"Input file not found: {args.input}")
-        sys.exit(1)
-
-    # Parse tools list (expand 'all' if needed)
-    tools_list = expand_tools_list(args.tools, args.dsl)
-    if not tools_list:
-        logging.error("No tools specified")
-        sys.exit(1)
-    logging.info(f"Loading tools: {tools_list}")
+    logging.info(f"Circuit: {circuit}")
+    logging.info(f"Tools: {tools}")
+    logging.info(f"Loading tools: {tools}")
 
     # Resolve tool modules
-    tool_registry = resolve_tools(tools_list)
+    tool_registry = resolve_tools(tools)
     if not tool_registry:
         logging.error("No tools loaded successfully")
         sys.exit(1)
 
     # Setup output directory
-    output_dir, timestamp = setup_output_directory(args.output, "analyze")
+    output_dir, timestamp = setup_output_directory(output, "analyze")
     logging.info(f"Output directory: {output_dir}")
 
     # Determine circuit paths
-    circuit_dir, circuit_file = prepare_circuit_paths(args.input)
+    input_paths = prepare_circuit_paths(circuit)
+    logging.info(f"Circuit directory: {input_paths.circuit_dir}")
+    logging.info(f"Circuit file: {input_paths.circuit_file}")
 
     # Execute all tools
     results = execute_tools(
-        tools_list,
         tool_registry,
-        circuit_file,
-        circuit_dir,
+        input_paths,
         output_dir,
-        args.timeout,
+        timeout,
     )
 
     # Generate statistics
@@ -381,8 +298,8 @@ def analyze_mode(args: argparse.Namespace) -> None:
     # Generate summary
     summary = Summary(
         mode="analyze",
-        input=str(args.input),
-        dsl=args.dsl,
+        input=str(circuit),
+        dsl=dsl,
         timestamp=timestamp,
         output_directory=str(output_dir),
         tools={name: result.to_dict() for name, result in results.items()},
@@ -396,7 +313,7 @@ def analyze_mode(args: argparse.Namespace) -> None:
     )
 
     # Write summary JSON
-    summary_file = output_dir / "summary.json"
+    summary_file = Path(output_dir) / "summary.json"
     with open(summary_file, "w", encoding="utf-8") as f:
         json.dump(summary.to_dict(), f, indent=2, ensure_ascii=False)
 
