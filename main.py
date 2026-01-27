@@ -12,7 +12,9 @@ import json
 import logging
 import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -21,6 +23,42 @@ from utils.tools_resolver import resolve_tools
 from tools.utils import ensure_dir
 
 BASE_DIR = Path.cwd()
+
+
+class ToolStatus(Enum):
+    """Status of tool execution."""
+    SUCCESS = "success"
+    FAILED = "failed"
+    TIMEOUT = "timeout"
+
+
+@dataclass
+class ToolResult:
+    """Result of tool execution."""
+    status: ToolStatus
+    message: str  # Combined stdout and stderr
+    execution_time: float
+    findings_count: int = 0
+    findings: List[Dict] = None
+    error: Optional[str] = None
+    raw_output_file: Optional[str] = None
+
+    def __post_init__(self):
+        if self.findings is None:
+            self.findings = []
+
+    def to_dict(self) -> Dict:
+        """Convert ToolResult to dictionary for JSON serialization."""
+        return {
+            "status": self.status.value,
+            "message": self.message,
+            "execution_time": self.execution_time,
+            "findings_count": self.findings_count,
+            "findings": self.findings,
+            "error": self.error,
+            "raw_output_file": self.raw_output_file,
+        }
+
 
 # Available tools per DSL
 AVAILABLE_TOOLS = {
@@ -208,7 +246,7 @@ def execute_tools(
     circuit_dir: Path,
     output_dir: Path,
     timeout: int,
-) -> Dict:
+) -> Dict[str, ToolResult]:
     """
     Execute all tools and collect results.
 
@@ -221,7 +259,7 @@ def execute_tools(
         timeout: Timeout per tool in seconds
 
     Returns:
-        Dictionary of results per tool
+        Dictionary mapping tool names to ToolResult objects
     """
     results = {}
 
@@ -248,7 +286,7 @@ def execute_tools(
             # Execute tool
             raw_output = tool_module.execute(tool_input, timeout)
 
-            # Write raw output
+            # Write raw output (this is the message)
             with open(raw_output_file, "w", encoding="utf-8") as f:
                 f.write(raw_output)
 
@@ -256,13 +294,14 @@ def execute_tools(
 
             # Check if tool timed out
             if "[Timed out]" in raw_output or "Timeout" in raw_output:
-                results[tool_name] = {
-                    "status": "timeout",
-                    "execution_time": round(execution_time, 2),
-                    "findings_count": 0,
-                    "findings": [],
-                    "raw_output_file": str(raw_output_file),
-                }
+                results[tool_name] = ToolResult(
+                    status=ToolStatus.TIMEOUT,
+                    message=raw_output,
+                    execution_time=round(execution_time, 2),
+                    findings_count=0,
+                    findings=[],
+                    raw_output_file=str(raw_output_file),
+                )
                 logging.warning(f"{tool_name}: Timed out after {execution_time:.2f}s")
             # Check if tool returned an error marker
             elif any(
@@ -276,26 +315,28 @@ def execute_tools(
             ):
                 # Extract error message
                 error_msg = raw_output.strip()
-                results[tool_name] = {
-                    "status": "failed",
-                    "execution_time": round(execution_time, 2),
-                    "findings_count": 0,
-                    "findings": [],
-                    "error": error_msg,
-                    "raw_output_file": str(raw_output_file),
-                }
+                results[tool_name] = ToolResult(
+                    status=ToolStatus.FAILED,
+                    message=raw_output,
+                    execution_time=round(execution_time, 2),
+                    findings_count=0,
+                    findings=[],
+                    error=error_msg,
+                    raw_output_file=str(raw_output_file),
+                )
                 logging.error(f"{tool_name}: {error_msg}")
             else:
                 # Parse findings (tool-specific)
                 findings = parse_findings_from_output(tool_name, raw_output)
 
-                results[tool_name] = {
-                    "status": "success",
-                    "execution_time": round(execution_time, 2),
-                    "findings_count": len(findings),
-                    "findings": findings,
-                    "raw_output_file": str(raw_output_file),
-                }
+                results[tool_name] = ToolResult(
+                    status=ToolStatus.SUCCESS,
+                    message=raw_output,
+                    execution_time=round(execution_time, 2),
+                    findings_count=len(findings),
+                    findings=findings,
+                    raw_output_file=str(raw_output_file),
+                )
 
                 logging.info(
                     f"{tool_name}: Found {len(findings)} findings in {execution_time:.2f}s"
@@ -304,14 +345,15 @@ def execute_tools(
         except Exception as e:
             execution_time = time.time() - start_time
             logging.error(f"{tool_name} failed: {e}")
-            results[tool_name] = {
-                "status": "failed",
-                "execution_time": round(execution_time, 2),
-                "error": str(e),
-                "findings_count": 0,
-                "findings": [],
-                "raw_output_file": str(raw_output_file),
-            }
+            results[tool_name] = ToolResult(
+                status=ToolStatus.FAILED,
+                message=str(e),
+                execution_time=round(execution_time, 2),
+                error=str(e),
+                findings_count=0,
+                findings=[],
+                raw_output_file=str(raw_output_file),
+            )
 
     return results
 
@@ -363,19 +405,19 @@ def analyze_mode(args: argparse.Namespace) -> None:
         "dsl": args.dsl,
         "timestamp": timestamp,
         "output_directory": str(output_dir),
-        "tools": results,
+        "tools": {name: result.to_dict() for name, result in results.items()},
         "statistics": {
             "total_tools": len(results),
-            "success": sum(1 for r in results.values() if r.get("status") == "success"),
-            "failed": sum(1 for r in results.values() if r.get("status") == "failed"),
-            "timeout": sum(1 for r in results.values() if r.get("status") == "timeout"),
+            "success": sum(1 for r in results.values() if r.status == ToolStatus.SUCCESS),
+            "failed": sum(1 for r in results.values() if r.status == ToolStatus.FAILED),
+            "timeout": sum(1 for r in results.values() if r.status == ToolStatus.TIMEOUT),
         },
         "total_findings": sum(
-            r.get("findings_count", 0)
+            r.findings_count
             for r in results.values()
-            if r.get("status") == "success"
+            if r.status == ToolStatus.SUCCESS
         ),
-        "total_execution_time": sum(r.get("execution_time", 0) for r in results.values()),
+        "total_execution_time": sum(r.execution_time for r in results.values()),
     }
 
     # Write summary JSON
@@ -466,12 +508,12 @@ def evaluate_mode(args: argparse.Namespace) -> None:
 
         tool_result = tool_results[tool_name]
 
-        if tool_result["status"] != "success":
+        if tool_result.status != ToolStatus.SUCCESS:
             # Copy status from execution
             evaluation_results[tool_name] = {
-                "status": tool_result["status"],
-                "execution_time": tool_result["execution_time"],
-                "error": tool_result.get("error"),
+                "status": tool_result.status.value,
+                "execution_time": tool_result.execution_time,
+                "error": tool_result.error,
             }
             continue
 
@@ -502,21 +544,21 @@ def evaluate_mode(args: argparse.Namespace) -> None:
 
             evaluation_results[tool_name] = {
                 "status": "success",
-                "execution_time": tool_result["execution_time"],
+                "execution_time": tool_result.execution_time,
                 "result": comparison.get("result"),
                 "reason": comparison.get("reason", []),
                 "needs_manual_review": comparison.get("need_manual_evaluation", False),
             }
 
             logging.info(
-                f"{tool_name}: {comparison.get('result')} in {tool_result['execution_time']:.2f}s"
+                f"{tool_name}: {comparison.get('result')} in {tool_result.execution_time:.2f}s"
             )
 
         except Exception as e:
             logging.error(f"{tool_name} evaluation failed: {e}")
             evaluation_results[tool_name] = {
                 "status": "error",
-                "execution_time": tool_result["execution_time"],
+                "execution_time": tool_result.execution_time,
                 "error": str(e),
             }
 
@@ -567,20 +609,155 @@ def parse_findings_from_output(tool_name: str, raw_output: str) -> List[Dict]:
 
     elif tool_name == "circom_civer":
         # Parse circom_civer output
-        if "FAIL" in raw_output or "ERROR" in raw_output:
-            findings.append(
-                {
-                    "type": "verification_failure",
-                    "description": "Circuit verification failed",
-                }
-            )
-        elif "UNSAT" in raw_output:
-            findings.append(
-                {
-                    "type": "satisfiability",
-                    "description": "Unsatisfiable constraints detected",
-                }
-            )
+        # Key indicator: "CIVER could not verify weak safety" means underconstrained bugs found
+        # Also check for "Number of failed components (weak-safety): X" where X > 0
+
+        if "could not verify weak safety" in raw_output:
+            # Extract failed components
+            lines = raw_output.split("\n")
+            failed_components = []
+
+            # Look for components that failed verification
+            in_failed_section = False
+            for line in lines:
+                if "Components that do not satisfy weak safety:" in line:
+                    in_failed_section = True
+                    continue
+
+                if in_failed_section:
+                    # Stop when we hit the statistics or another section
+                    if line.strip().startswith("*") or "----" in line:
+                        break
+
+                    # Extract component name (format: "    - ComponentName(), ")
+                    stripped = line.strip()
+                    if stripped.startswith("-") and "(" in stripped:
+                        component = stripped[1:].strip().rstrip(",").strip()
+                        failed_components.append(component)
+
+            # Extract number of failed components from statistics
+            import re
+            match = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
+            num_failed = int(match.group(1)) if match else len(failed_components)
+
+            if failed_components:
+                for component in failed_components:
+                    findings.append(
+                        {
+                            "type": "underconstrained",
+                            "component": component,
+                            "description": f"Component {component} does not satisfy weak safety (underconstrained)",
+                        }
+                    )
+            else:
+                # Fallback if we couldn't parse component names
+                findings.append(
+                    {
+                        "type": "underconstrained",
+                        "description": f"{num_failed} component(s) failed weak safety verification (underconstrained)",
+                    }
+                )
+
+        elif "verified weak safety" in raw_output or "verified components (weak-safety):" in raw_output:
+            # Check if all components were verified (no bugs)
+            import re
+            match_failed = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
+            if match_failed and int(match_failed.group(1)) == 0:
+                # All components verified = no findings (no bugs)
+                pass
+            else:
+                # Some failed, extract them
+                match = re.search(r"Number of failed components.*:\s*(\d+)", raw_output)
+                if match and int(match.group(1)) > 0:
+                    findings.append(
+                        {
+                            "type": "underconstrained",
+                            "description": f"{match.group(1)} component(s) failed weak safety verification",
+                        }
+                    )
+
+    elif tool_name == "zkfuzz":
+        # Parse zkfuzz output
+        # Key indicators in "Verification" line:
+        # "💥 NOT SAFE 💥" = bug found (actual output)
+        # "❌ Counter Example Found" = bug found (from user's examples)
+        # "🆗 No Counter Example Found" = no bug
+        # Extract signal info from "🚨 Counter Example:" section or "💣 Target" line
+
+        import re
+
+        # Check for bugs - must check "No Counter Example" first to avoid false positives
+        if "🆗 No Counter Example Found" in raw_output:
+            # No bug found - no findings to add
+            pass
+        elif "💥 NOT SAFE 💥" in raw_output or "❌ Counter Example Found" in raw_output:
+            # Bug found - try to extract signal/target information
+            lines = raw_output.split("\n")
+            signal_info = None
+            target_info = None
+
+            # First try to extract from "🚨 Counter Example:" section
+            # Format: "║           ➡️ `main.c` is expected to be `0`"
+            in_counter_example = False
+            for line in lines:
+                if "🚨 Counter Example:" in line:
+                    in_counter_example = True
+                    continue
+
+                if in_counter_example:
+                    # Stop at the end of the box
+                    if "╚═" in line:
+                        break
+
+                    # Look for "is expected to be" line to identify the problematic signal
+                    if "is expected to be" in line and "➡️" in line:
+                        # Extract signal name: "`main.c` is expected to be `0`"
+                        match = re.search(r"`([^`]+)`\s+is expected to be", line)
+                        if match:
+                            signal_info = match.group(1)
+                            break
+
+            # Also try to extract from "💣 Target" line (format from user's examples)
+            for line in lines:
+                if ("💣 Target" in line or "Target" in line) and "signal" in line:
+                    if ":" in line:
+                        target_info = line.split(":", 1)[1].strip()
+                        # Parse signal and template from target_info
+                        # Format: "signal `out` in template `Multiplier`"
+                        signal_match = re.search(r"signal `([^`]+)`", target_info)
+                        template_match = re.search(r"template `([^`]+)`", target_info)
+
+                        if signal_match:
+                            signal_name = signal_match.group(1)
+                            template_name = template_match.group(1) if template_match else "unknown"
+
+                            findings.append(
+                                {
+                                    "type": "underconstrained",
+                                    "signal": signal_name,
+                                    "template": template_name,
+                                    "description": f"Counter example found for signal `{signal_name}` in template `{template_name}` (underconstrained)",
+                                }
+                            )
+                        break
+
+            # If we found signal_info but not target_info, use signal_info
+            if signal_info and not target_info:
+                findings.append(
+                    {
+                        "type": "underconstrained",
+                        "signal": signal_info,
+                        "description": f"Counter example found for signal `{signal_info}` (underconstrained)",
+                    }
+                )
+            elif not signal_info and not target_info:
+                # Fallback if we couldn't parse any details
+                findings.append(
+                    {
+                        "type": "underconstrained",
+                        "description": "Circuit is not safe (underconstrained)",
+                    }
+                )
 
     # Add more tool-specific parsers as needed
 
