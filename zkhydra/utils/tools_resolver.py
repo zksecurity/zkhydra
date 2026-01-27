@@ -16,8 +16,12 @@ from zkhydra.tools.ecneproject import _ecneproject_instance
 from zkhydra.tools.picus import _picus_instance
 from zkhydra.tools.zkfuzz import _zkfuzz_instance
 
+# Type alias for tools dictionary (for clarity in type hints)
+type ToolsDict = dict[str, AbstractTool]
+
+
 # Tool registry: maps tool names to their singleton instances
-TOOL_REGISTRY: dict[str, AbstractTool] = {
+TOOL_REGISTRY: ToolsDict = {
     "circomspect": _circomspect_instance,
     "circom_civer": _circom_civer_instance,
     "zkfuzz": _zkfuzz_instance,
@@ -27,7 +31,7 @@ TOOL_REGISTRY: dict[str, AbstractTool] = {
 }
 
 
-def resolve_tools(tools: list[str]) -> dict[str, AbstractTool]:
+def resolve_tools(tools: list[str]) -> ToolsDict:
     """Resolve tool names to their singleton instances.
 
     Args:
