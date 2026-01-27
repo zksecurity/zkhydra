@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(tools|bugs|output)/
+      - id: end-of-file-fixer
+        exclude: ^(tools|bugs|output)/
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        language_version: python3.12
+        files: ^zkhydra/
+        exclude: ^(tools|bugs|output)/
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        files: ^zkhydra/
+        exclude: ^(tools|bugs|output)/
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^zkhydra/
+        exclude: ^(tools|bugs|output)/
+      - id: ruff-format
+        files: ^zkhydra/
+        exclude: ^(tools|bugs|output)/

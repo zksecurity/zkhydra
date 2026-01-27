@@ -1,4 +1,4 @@
-.PHONY: format lint check test clean help
+.PHONY: format lint check test clean install-hooks help
 
 help:  ## Show this help message
 	@echo 'Usage: make [target]'
@@ -29,6 +29,12 @@ check:  ## Check code without making changes
 
 all: format lint  ## Format and lint code (recommended)
 	@echo "✅ Code is formatted and linted!"
+
+install-hooks:  ## Install pre-commit git hooks
+	@echo "Installing pre-commit hooks..."
+	@uv pip install pre-commit
+	@pre-commit install
+	@echo "✅ Pre-commit hooks installed! Checks will run automatically on git commit."
 
 clean:  ## Remove generated files and caches
 	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

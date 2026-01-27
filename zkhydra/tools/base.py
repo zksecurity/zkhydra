@@ -18,17 +18,18 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 EXIT_CODES = {
-    1, # General error: A generic error occurred during execution.
-    2, # Misuse of shell builtins: Incorrect usage of a shell built-in command.
-    126, # Command invoked cannot execute: Permission denied or command not executable.
-    127, # Command not found: The command is not recognized or available in the environment’s PATH.
-    128, # Invalid exit argument: An invalid argument was provided to the exit command.
-    130, # Script terminated by Ctrl+C (SIGINT).
-    137, # Script terminated by SIGKILL (e.g., kill -9 or out-of-memory killer).
-    139, # Segmentation fault: Indicates a segmentation fault occurred in the program.
-    143, # Script terminated by SIGTERM (e.g., kill command without -9).
-    255, # Exit status out of range: Typically, this happens when a script or command exits with a number > 255.
+    1,  # General error: A generic error occurred during execution.
+    2,  # Misuse of shell builtins: Incorrect usage of a shell built-in command.
+    126,  # Command invoked cannot execute: Permission denied or command not executable.
+    127,  # Command not found: The command is not recognized or available in the environment’s PATH.
+    128,  # Invalid exit argument: An invalid argument was provided to the exit command.
+    130,  # Script terminated by Ctrl+C (SIGINT).
+    137,  # Script terminated by SIGKILL (e.g., kill -9 or out-of-memory killer).
+    139,  # Segmentation fault: Indicates a segmentation fault occurred in the program.
+    143,  # Script terminated by SIGTERM (e.g., kill command without -9).
+    255,  # Exit status out of range: Typically, this happens when a script or command exits with a number > 255.
 }
+
 
 @dataclass
 class Input:
@@ -37,12 +38,14 @@ class Input:
     Encapsulates both the circuit directory and circuit file paths,
     allowing tools to choose which to use based on their requirements.
     """
+
     circuit_dir: str  # Directory containing the circuit and artifacts
     circuit_file: str  # Path to the circuit file
 
 
 class OutputStatus(Enum):
     """Status of tool execution output."""
+
     SUCCESS = "success"
     FAIL = "fail"
     TIMEOUT = "timeout"
@@ -55,6 +58,7 @@ class ToolOutput:
     Encapsulates all information from running a tool, including
     status, stdout/stderr, return code, and combined message.
     """
+
     status: OutputStatus  # Execution status
     stdout: str  # Standard output from the tool
     stderr: str  # Standard error from the tool
@@ -78,13 +82,23 @@ class Finding:
     raw_message: Optional[str] = None  # Complete raw message from the tool
     circuit: Optional[str] = None  # Circuit file path
     template: Optional[str] = None  # Template/function name where bug was found
-    component: Optional[str] = None  # Component name (for tools like circom_civer)
+    component: Optional[str] = (
+        None  # Component name (for tools like circom_civer)
+    )
     signal: Optional[str] = None  # Signal name (for tools like zkfuzz)
-    line: Optional[str] = None  # Line number(s) as string (can be "10" or "10-15")
-    code: Optional[str] = None  # Tool-specific code (e.g., "CS0013" for circomspect)
-    severity: Optional[str] = None  # Severity level ("error", "warning", "note")
+    line: Optional[str] = (
+        None  # Line number(s) as string (can be "10" or "10-15")
+    )
+    code: Optional[str] = (
+        None  # Tool-specific code (e.g., "CS0013" for circomspect)
+    )
+    severity: Optional[str] = (
+        None  # Severity level ("error", "warning", "note")
+    )
     location: Optional[str] = None  # Full location string from tool
-    metadata: Dict[str, Any] = field(default_factory=dict)  # Additional tool-specific data
+    metadata: Dict[str, Any] = field(
+        default_factory=dict
+    )  # Additional tool-specific data
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert Finding to dictionary for JSON serialization.
@@ -240,7 +254,9 @@ class AbstractTool(ABC):
             return False
         return True
 
-    def run_command(self, cmd: list[str], timeout: int, bug_path: str) -> ToolOutput:
+    def run_command(
+        self, cmd: list[str], timeout: int, bug_path: str
+    ) -> ToolOutput:
         """Run a subprocess command and return structured output.
 
         Args:
@@ -270,8 +286,8 @@ class AbstractTool(ABC):
             )
 
         except subprocess.TimeoutExpired as e:
-            stdout = getattr(e, 'stdout', '') or ''
-            stderr = getattr(e, 'stderr', '') or ''
+            stdout = getattr(e, "stdout", "") or ""
+            stderr = getattr(e, "stderr", "") or ""
             logging.warning(
                 f"Process for '{self.name}' analysing '{bug_path}' exceeded {timeout} seconds and timed out. "
                 f"Partial output: {stdout}"
@@ -382,7 +398,9 @@ def get_tool_result_parsed(tool_result_parsed: Path) -> dict:
         with open(tool_result_parsed, "r", encoding="utf-8") as f:
             data = json.load(f)
     except Exception as e:
-        logging.error(f"Failed to read parsed tool result '{tool_result_parsed}': {e}")
+        logging.error(
+            f"Failed to read parsed tool result '{tool_result_parsed}': {e}"
+        )
         return {}
     return data
 

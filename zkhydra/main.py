@@ -209,7 +209,9 @@ def prepare_circuit_paths(input_path: Path) -> tuple[Path, Path]:
     if input_path.is_file():
         # Input is a file - extract parent directory
         circuit_dir = (
-            input_path.parent.parent if input_path.parent.name == "circuits" else input_path.parent
+            input_path.parent.parent
+            if input_path.parent.name == "circuits"
+            else input_path.parent
         )
         circuit_file = input_path
     else:
@@ -302,7 +304,9 @@ def execute_tools(
                     findings=[],
                     raw_output_file=str(raw_output_file),
                 )
-                logging.warning(f"{tool_name}: Timed out after {execution_time:.2f}s")
+                logging.warning(
+                    f"{tool_name}: Timed out after {execution_time:.2f}s"
+                )
             elif tool_output.status == OutputStatus.FAIL:
                 # Tool failed (binary not found, file not found, etc.)
                 results[tool_name] = ToolResult(
@@ -389,7 +393,12 @@ def analyze_mode(args: argparse.Namespace) -> None:
 
     # Execute all tools
     results = execute_tools(
-        tools_list, tool_registry, circuit_file, circuit_dir, output_dir, args.timeout
+        tools_list,
+        tool_registry,
+        circuit_file,
+        circuit_dir,
+        output_dir,
+        args.timeout,
     )
 
     # Generate summary
@@ -402,12 +411,20 @@ def analyze_mode(args: argparse.Namespace) -> None:
         "tools": {name: result.to_dict() for name, result in results.items()},
         "statistics": {
             "total_tools": len(results),
-            "success": sum(1 for r in results.values() if r.status == ToolStatus.SUCCESS),
-            "failed": sum(1 for r in results.values() if r.status == ToolStatus.FAILED),
-            "timeout": sum(1 for r in results.values() if r.status == ToolStatus.TIMEOUT),
+            "success": sum(
+                1 for r in results.values() if r.status == ToolStatus.SUCCESS
+            ),
+            "failed": sum(
+                1 for r in results.values() if r.status == ToolStatus.FAILED
+            ),
+            "timeout": sum(
+                1 for r in results.values() if r.status == ToolStatus.TIMEOUT
+            ),
         },
         "total_findings": sum(
-            r.findings_count for r in results.values() if r.status == ToolStatus.SUCCESS
+            r.findings_count
+            for r in results.values()
+            if r.status == ToolStatus.SUCCESS
         ),
         "total_execution_time": sum(r.execution_time for r in results.values()),
     }
@@ -449,7 +466,9 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     circuit_file = args.input.parent / bug_info["Location"]["File"]
     if not circuit_file.exists():
         # Try alternative path
-        circuit_file = args.input.parent / "circuits" / bug_info["Location"]["File"]
+        circuit_file = (
+            args.input.parent / "circuits" / bug_info["Location"]["File"]
+        )
 
     if not circuit_file.exists():
         logging.error(f"Circuit file not found: {circuit_file}")
@@ -489,7 +508,12 @@ def evaluate_mode(args: argparse.Namespace) -> None:
 
     # Execute all tools (same as analyze mode)
     tool_results = execute_tools(
-        tools_list, tool_registry, circuit_file, circuit_dir, output_dir, args.timeout
+        tools_list,
+        tool_registry,
+        circuit_file,
+        circuit_dir,
+        output_dir,
+        args.timeout,
     )
 
     # Now do evaluation-specific processing (parse & compare)
@@ -518,7 +542,9 @@ def evaluate_mode(args: argparse.Namespace) -> None:
         try:
             # Parse output using tool's parser
             if hasattr(tool_module, "parse_output"):
-                parsed = tool_module.parse_output(raw_output_file, ground_truth_file)
+                parsed = tool_module.parse_output(
+                    raw_output_file, ground_truth_file
+                )
                 with open(parsed_output_file, "w", encoding="utf-8") as f:
                     json.dump(parsed, f, indent=2)
             else:
@@ -527,19 +553,28 @@ def evaluate_mode(args: argparse.Namespace) -> None:
             # Compare with ground truth
             if hasattr(tool_module, "compare_zkbugs_ground_truth"):
                 comparison = tool_module.compare_zkbugs_ground_truth(
-                    tool_name, args.dsl, bug_name, ground_truth_file, parsed_output_file
+                    tool_name,
+                    args.dsl,
+                    bug_name,
+                    ground_truth_file,
+                    parsed_output_file,
                 )
                 with open(results_file, "w", encoding="utf-8") as f:
                     json.dump(comparison, f, indent=2)
             else:
-                comparison = {"result": "unknown", "reason": "no comparison function"}
+                comparison = {
+                    "result": "unknown",
+                    "reason": "no comparison function",
+                }
 
             evaluation_results[tool_name] = {
                 "status": "success",
                 "execution_time": tool_result.execution_time,
                 "result": comparison.get("result"),
                 "reason": comparison.get("reason", []),
-                "needs_manual_review": comparison.get("need_manual_evaluation", False),
+                "needs_manual_review": comparison.get(
+                    "need_manual_evaluation", False
+                ),
             }
 
             logging.info(
@@ -578,11 +613,23 @@ def generate_evaluation_summary(
     """Generate evaluation summary with TP/FP/FN analysis."""
 
     # Count results
-    correct = sum(1 for r in evaluation_results.values() if r.get("result") == "correct")
-    false_results = sum(1 for r in evaluation_results.values() if r.get("result") == "false")
-    timeouts = sum(1 for r in evaluation_results.values() if r.get("result") == "timeout")
-    errors = sum(1 for r in evaluation_results.values() if r.get("status") == "error")
-    needs_review = [tool for tool, r in evaluation_results.items() if r.get("needs_manual_review")]
+    correct = sum(
+        1 for r in evaluation_results.values() if r.get("result") == "correct"
+    )
+    false_results = sum(
+        1 for r in evaluation_results.values() if r.get("result") == "false"
+    )
+    timeouts = sum(
+        1 for r in evaluation_results.values() if r.get("result") == "timeout"
+    )
+    errors = sum(
+        1 for r in evaluation_results.values() if r.get("status") == "error"
+    )
+    needs_review = [
+        tool
+        for tool, r in evaluation_results.items()
+        if r.get("needs_manual_review")
+    ]
 
     summary = {
         "mode": "evaluate",
@@ -664,8 +711,12 @@ def print_analyze_summary(summary: dict) -> None:
 
             if result.get("findings"):
                 print("\n  Findings List:")
-                for idx, finding in enumerate(result["findings"][:10], 1):  # Show first 10
-                    desc = finding.get("description", finding.get("type", "Unknown"))
+                for idx, finding in enumerate(
+                    result["findings"][:10], 1
+                ):  # Show first 10
+                    desc = finding.get(
+                        "description", finding.get("type", "Unknown")
+                    )
                     print(f"    {idx}. {desc}")
                 if result["findings_count"] > 10:
                     print(f"    ... and {result['findings_count'] - 10} more")

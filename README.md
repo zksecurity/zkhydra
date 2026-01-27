@@ -345,6 +345,47 @@ uv run black zkhydra/ --check
 uv run isort zkhydra/ --check-only --profile black
 ```
 
+### Git Hooks (Pre-commit)
+
+Set up automatic code quality checks before every commit:
+
+```bash
+# Install pre-commit hooks
+uv pip install pre-commit
+pre-commit install
+```
+
+Now, every time you commit, the hooks will:
+- Format code with black and isort
+- Lint code with ruff
+- Check for trailing whitespace, large files, merge conflicts
+
+To run hooks manually without committing:
+```bash
+pre-commit run --all-files
+```
+
+To skip hooks for a specific commit (not recommended):
+```bash
+git commit --no-verify
+```
+
+### GitHub Actions (CI)
+
+The repository includes GitHub Actions workflows that automatically check:
+- Code formatting (black)
+- Import sorting (isort)
+- Linting (ruff)
+
+These checks run on:
+- Every push to `master`, `main`, or `develop` branches
+- Every pull request to these branches
+
+PRs will be blocked if checks fail. Fix issues locally with:
+```bash
+make all
+```
+
 ## Project Structure
 
 ```

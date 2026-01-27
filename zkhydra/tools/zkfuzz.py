@@ -3,7 +3,14 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .base import AbstractTool, Finding, Input, OutputStatus, ToolOutput, get_tool_result_parsed
+from .base import (
+    AbstractTool,
+    Finding,
+    Input,
+    OutputStatus,
+    ToolOutput,
+    get_tool_result_parsed,
+)
 
 
 class ZkFuzz(AbstractTool):
@@ -72,7 +79,10 @@ class ZkFuzz(AbstractTool):
         if "🆗 No Counter Example Found" in raw_output:
             # No bug found - no findings to add
             pass
-        elif "💥 NOT SAFE 💥" in raw_output or "❌ Counter Example Found" in raw_output:
+        elif (
+            "💥 NOT SAFE 💥" in raw_output
+            or "❌ Counter Example Found" in raw_output
+        ):
             # Bug found - try to extract signal/target information
             lines = raw_output.split("\n")
             signal_info = None
@@ -94,25 +104,35 @@ class ZkFuzz(AbstractTool):
                     # Look for "is expected to be" line to identify the problematic signal
                     if "is expected to be" in line and "➡️" in line:
                         # Extract signal name: "`main.c` is expected to be `0`"
-                        match = re.search(r"`([^`]+)`\s+is expected to be", line)
+                        match = re.search(
+                            r"`([^`]+)`\s+is expected to be", line
+                        )
                         if match:
                             signal_info = match.group(1)
                             break
 
             # Also try to extract from "💣 Target" line (format from user's examples)
             for line in lines:
-                if ("💣 Target" in line or "Target" in line) and "signal" in line:
+                if (
+                    "💣 Target" in line or "Target" in line
+                ) and "signal" in line:
                     if ":" in line:
                         target_info = line.split(":", 1)[1].strip()
                         # Parse signal and template from target_info
                         # Format: "signal `out` in template `Multiplier`"
-                        signal_match = re.search(r"signal `([^`]+)`", target_info)
-                        template_match = re.search(r"template `([^`]+)`", target_info)
+                        signal_match = re.search(
+                            r"signal `([^`]+)`", target_info
+                        )
+                        template_match = re.search(
+                            r"template `([^`]+)`", target_info
+                        )
 
                         if signal_match:
                             signal_name = signal_match.group(1)
                             template_name = (
-                                template_match.group(1) if template_match else "unknown"
+                                template_match.group(1)
+                                if template_match
+                                else "unknown"
                             )
 
                             findings.append(
