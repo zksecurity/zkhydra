@@ -216,7 +216,7 @@ def generate_ground_truth(
     output_file.parent.mkdir(parents=True, exist_ok=True)
     # Write back to JSON
     with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(bug_data, f, indent=2)
+        json.dump(bug_data, f, indent=2, ensure_ascii=False)
 
     logging.debug(
         f"Written ground truth for bug '{bug_name}' under DSL '{dsl}' in {output_file}"
