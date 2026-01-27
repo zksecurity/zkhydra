@@ -2,9 +2,8 @@
 """
 zkHydra - Zero-Knowledge Circuit Security Analysis Tool Runner
 
-Supports two modes:
+Supports analyze mode:
 - analyze: Run tools on a specific circuit file and report findings
-- evaluate: Run tools and compare results against ground truth for evaluation
 """
 
 import argparse
@@ -83,8 +82,8 @@ Examples:
   # Analyze with multiple tools
   %(prog)s analyze --input circuit.circom --tools circomspect,circom_civer,picus
 
-  # Evaluate against ground truth
-  %(prog)s evaluate --input test_bug/zkbugs_config.json --tools circomspect
+  # Analyze with all available tools
+  %(prog)s analyze --input circuit.circom --tools all
         """,
     )
 
@@ -92,7 +91,7 @@ Examples:
     parser.add_argument(
         "mode",
         choices=["analyze", "evaluate"],
-        help="Mode: 'analyze' for finding bugs, 'evaluate' for ground truth comparison",
+        help="Mode: 'analyze' for finding bugs (evaluate mode is not implemented)",
     )
 
     # Input/Output
@@ -101,7 +100,7 @@ Examples:
         "-i",
         type=Path,
         required=True,
-        help="Input: circuit file (.circom) for analyze mode, or config file (.json) for evaluate mode",
+        help="Input: circuit file (.circom) to analyze",
     )
     parser.add_argument(
         "--output",
@@ -440,230 +439,14 @@ def analyze_mode(args: argparse.Namespace) -> None:
 
 def evaluate_mode(args: argparse.Namespace) -> None:
     """
-    Evaluate mode: Run tools and compare against ground truth.
+    Evaluate mode: Not implemented.
+
+    Raises:
+        NotImplementedError: Evaluate mode is not yet implemented.
     """
-    logging.info("Running in EVALUATE mode")
-    logging.info(f"Input config: {args.input}")
-    logging.info(f"Tools: {args.tools}")
-
-    # Validate input file
-    if not args.input.exists():
-        logging.error(f"Config file not found: {args.input}")
-        sys.exit(1)
-
-    # Load ground truth config
-    with open(args.input, encoding="utf-8") as f:
-        config_data = json.load(f)
-
-    # Extract bug info (assume first entry)
-    bug_name = next(iter(config_data.keys()))
-    bug_info = config_data[bug_name]
-
-    logging.info(f"Evaluating bug: {bug_name}")
-    logging.info(f"Vulnerability: {bug_info.get('Vulnerability')}")
-
-    # Get circuit file path
-    circuit_file = args.input.parent / bug_info["Location"]["File"]
-    if not circuit_file.exists():
-        # Try alternative path
-        circuit_file = (
-            args.input.parent / "circuits" / bug_info["Location"]["File"]
-        )
-
-    if not circuit_file.exists():
-        logging.error(f"Circuit file not found: {circuit_file}")
-        sys.exit(1)
-
-    logging.info(f"Circuit file: {circuit_file}")
-
-    # Parse tools list (expand 'all' if needed)
-    tools_list = expand_tools_list(args.tools, args.dsl)
-    if not tools_list:
-        logging.error("No tools specified")
-        sys.exit(1)
-
-    # Resolve tool modules
-    tool_registry = resolve_tools(tools_list)
-    if not tool_registry:
-        logging.error("No tools loaded successfully")
-        sys.exit(1)
-
-    # Setup output directory
-    output_dir, timestamp = setup_output_directory(args.output, "evaluate")
-    logging.info(f"Output directory: {output_dir}")
-
-    # Save ground truth
-    ground_truth_file = output_dir / "ground_truth.json"
-    ground_truth = {
-        "Vulnerability": bug_info.get("Vulnerability"),
-        "Impact": bug_info.get("Impact"),
-        "Root Cause": bug_info.get("Root Cause"),
-        "Location": bug_info.get("Location"),
-    }
-    with open(ground_truth_file, "w", encoding="utf-8") as f:
-        json.dump(ground_truth, f, indent=2, ensure_ascii=False)
-
-    # Determine circuit paths
-    circuit_dir, _ = prepare_circuit_paths(circuit_file)
-
-    # Execute all tools (same as analyze mode)
-    tool_results = execute_tools(
-        tools_list,
-        tool_registry,
-        circuit_file,
-        circuit_dir,
-        output_dir,
-        args.timeout,
+    raise NotImplementedError(
+        "Evaluate mode is not yet implemented. Use 'analyze' mode instead."
     )
-
-    # Now do evaluation-specific processing (parse & compare)
-    evaluation_results = {}
-    for tool_name in tools_list:
-        if tool_name not in tool_results:
-            continue
-
-        tool_result = tool_results[tool_name]
-
-        if tool_result.status != ToolStatus.SUCCESS:
-            # Copy status from execution
-            evaluation_results[tool_name] = {
-                "status": tool_result.status.value,
-                "execution_time": tool_result.execution_time,
-                "error": tool_result.error,
-            }
-            continue
-
-        tool_module = tool_registry[tool_name]
-        tool_output_dir = output_dir / tool_name
-        raw_output_file = tool_output_dir / "raw.txt"
-        parsed_output_file = tool_output_dir / "parsed.json"
-        results_file = tool_output_dir / "results.json"
-
-        try:
-            # Parse output using tool's parser
-            if hasattr(tool_module, "parse_output"):
-                parsed = tool_module.parse_output(
-                    raw_output_file, ground_truth_file
-                )
-                with open(parsed_output_file, "w", encoding="utf-8") as f:
-                    json.dump(parsed, f, indent=2, ensure_ascii=False)
-            else:
-                parsed = {"raw": "No parser available"}
-
-            # Compare with ground truth
-            if hasattr(tool_module, "compare_zkbugs_ground_truth"):
-                comparison = tool_module.compare_zkbugs_ground_truth(
-                    tool_name,
-                    args.dsl,
-                    bug_name,
-                    ground_truth_file,
-                    parsed_output_file,
-                )
-                with open(results_file, "w", encoding="utf-8") as f:
-                    json.dump(comparison, f, indent=2, ensure_ascii=False)
-            else:
-                comparison = {
-                    "result": "unknown",
-                    "reason": "no comparison function",
-                }
-
-            evaluation_results[tool_name] = {
-                "status": "success",
-                "execution_time": tool_result.execution_time,
-                "result": comparison.get("result"),
-                "reason": comparison.get("reason", []),
-                "needs_manual_review": comparison.get(
-                    "need_manual_evaluation", False
-                ),
-            }
-
-            logging.info(
-                f"{tool_name}: {comparison.get('result')} in {tool_result.execution_time:.2f}s"
-            )
-
-        except Exception as e:
-            logging.error(f"{tool_name} evaluation failed: {e}")
-            evaluation_results[tool_name] = {
-                "status": "error",
-                "execution_time": tool_result.execution_time,
-                "error": str(e),
-            }
-
-    # Generate evaluation summary
-    summary = generate_evaluation_summary(
-        bug_name, ground_truth, evaluation_results, output_dir, timestamp
-    )
-
-    # Write summary
-    summary_file = output_dir / "summary.json"
-    with open(summary_file, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
-
-    # Print CLI summary
-    print_evaluate_summary(summary)
-
-
-def generate_evaluation_summary(
-    bug_name: str,
-    ground_truth: dict,
-    evaluation_results: dict,
-    output_dir: Path,
-    timestamp: str,
-) -> dict:
-    """Generate evaluation summary with TP/FP/FN analysis."""
-
-    # Count results
-    correct = sum(
-        1 for r in evaluation_results.values() if r.get("result") == "correct"
-    )
-    false_results = sum(
-        1 for r in evaluation_results.values() if r.get("result") == "false"
-    )
-    timeouts = sum(
-        1 for r in evaluation_results.values() if r.get("result") == "timeout"
-    )
-    errors = sum(
-        1 for r in evaluation_results.values() if r.get("status") == "error"
-    )
-    needs_review = [
-        tool
-        for tool, r in evaluation_results.items()
-        if r.get("needs_manual_review")
-    ]
-
-    summary = {
-        "mode": "evaluate",
-        "bug": bug_name,
-        "ground_truth": ground_truth,
-        "timestamp": timestamp,
-        "output_directory": str(output_dir),
-        "tools": evaluation_results,
-        "statistics": {
-            "total_tools": len(evaluation_results),
-            "true_positives": correct,
-            "false_negatives": false_results,
-            "timeouts": timeouts,
-            "errors": errors,
-            "needs_manual_review": len(needs_review),
-        },
-        "manual_review_items": needs_review,
-    }
-
-    # Create evaluation TODO file if needed
-    if needs_review:
-        todo_file = output_dir / "manual_review_todo.md"
-        with open(todo_file, "w") as f:
-            f.write(f"# Manual Review TODO - {bug_name}\n\n")
-            f.write(f"Generated: {timestamp}\n\n")
-            f.write("## Items Requiring Manual Inspection\n\n")
-            for tool in needs_review:
-                result = evaluation_results[tool]
-                f.write(f"### {tool}\n")
-                f.write("- Status: TODO\n")
-                f.write(f"- Reason: {result.get('reason')}\n")
-                f.write(f"- Output: {output_dir / tool / 'raw.txt'}\n\n")
-
-    return summary
 
 
 def print_analyze_summary(summary: dict) -> None:
@@ -726,60 +509,6 @@ def print_analyze_summary(summary: dict) -> None:
 
         elif status == "timeout":
             print("  Status:   Tool execution timed out")
-
-    print("\n" + "=" * 80)
-
-
-def print_evaluate_summary(summary: dict) -> None:
-    """Print formatted summary for evaluate mode."""
-    print("\n" + "=" * 80)
-    print("EVALUATE MODE - SUMMARY")
-    print("=" * 80)
-    print(f"Bug:          {summary['bug']}")
-    print(f"Vulnerability: {summary['ground_truth']['Vulnerability']}")
-    print(f"Output:       {summary['output_directory']}")
-    print("\n" + "-" * 80)
-    print("STATISTICS:")
-    print("-" * 80)
-    stats = summary["statistics"]
-    print(f"Total Tools:         {stats['total_tools']}")
-    print(f"True Positives:      {stats['true_positives']}")
-    print(f"False Negatives:     {stats['false_negatives']}")
-    print(f"Timeouts:            {stats['timeouts']}")
-    print(f"Errors:              {stats['errors']}")
-    print(f"Need Manual Review:  {stats['needs_manual_review']}")
-
-    print("\n" + "-" * 80)
-    print("TOOL RESULTS:")
-    print("-" * 80)
-
-    for tool_name, result in summary["tools"].items():
-        if result["status"] == "success":
-            status_symbol = {
-                "correct": "✓",
-                "false": "✗",
-                "timeout": "⏱",
-                "unknown": "?",
-            }.get(result.get("result"), "?")
-
-            print(
-                f"\n{tool_name.upper()}: {status_symbol} {result.get('result', 'unknown').upper()}"
-            )
-            print(f"  Time: {result['execution_time']}s")
-            if result.get("reason"):
-                print(f"  Reason: {result['reason']}")
-            if result.get("needs_manual_review"):
-                print("  ⚠ Needs Manual Review")
-        else:
-            print(f"\n{tool_name.upper()}: ERROR - {result.get('error')}")
-
-    if summary.get("manual_review_items"):
-        print("\n" + "-" * 80)
-        print("⚠ MANUAL REVIEW REQUIRED:")
-        print("-" * 80)
-        for tool in summary["manual_review_items"]:
-            print(f"  - {tool}")
-        print(f"\nSee: {summary['output_directory']}/manual_review_todo.md")
 
     print("\n" + "=" * 80)
 
