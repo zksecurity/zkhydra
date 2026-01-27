@@ -1,7 +1,8 @@
 import logging
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from .base import (
     AbstractTool,
@@ -9,6 +10,7 @@ from .base import (
     Input,
     OutputStatus,
     ToolOutput,
+    UniformFinding,
     get_tool_result_parsed,
 )
 
@@ -16,6 +18,28 @@ from .base import (
 TOOL_DIR = (
     Path(__file__).resolve().parent.parent.parent / "tools" / "ecneproject"
 )
+
+
+@dataclass
+class EcneProjectParsed:
+    """Structured parsed output from EcneProject tool.
+
+    Contains detailed execution result.
+    """
+
+    # Tool-specific result message
+    result: (
+        str  # "R1CS function circuit has potentially unsound constraints", etc.
+    )
+    # Additional context
+    constraint_status: Optional[str] = None  # "sound", "unsound", None
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        data = {"result": self.result}
+        if self.constraint_status:
+            data["constraint_status"] = self.constraint_status
+        return data
 
 
 class EcneProject(AbstractTool):
@@ -247,22 +271,21 @@ class EcneProject(AbstractTool):
 
         return findings
 
-    def _helper_parse_output(
-        self, tool_result_raw: Path
-    ) -> Dict[str, Dict[str, Dict[str, Dict[str, Any]]]]:
-        """Parse EcneProject output into a small structured summary.
+    def _helper_parse_output(self, tool_result_raw: Path) -> EcneProjectParsed:
+        """Parse EcneProject output into a structured format.
 
         Args:
             tool_result_raw: Path to raw tool output file
 
         Returns:
-            Dictionary with parsed result
+            EcneProjectParsed object with detailed structured data
         """
         with open(tool_result_raw, "r", encoding="utf-8") as f:
             bug_info = [line.strip() for line in f if line.strip()]
 
         # Default to an explicit value so downstream comparison can categorize it
         result = "No result"
+        constraint_status = None
 
         # Fast checks for common sentinel lines
         for line in bug_info:
@@ -282,6 +305,7 @@ class EcneProject(AbstractTool):
                     and "potentially unsound constraints" in line
                 ):
                     result = "R1CS function circuit has potentially unsound constraints"
+                    constraint_status = "unsound"
                     break
 
                 if (
@@ -289,6 +313,7 @@ class EcneProject(AbstractTool):
                     in line
                 ):
                     result = "R1CS function circuit has sound constraints (No trusted functions needed!)"
+                    constraint_status = "sound"
                     break
 
         # Legacy heuristic: sometimes the interesting line appears two lines before 'stderr:'
@@ -298,13 +323,55 @@ class EcneProject(AbstractTool):
                     result = bug_info[i - 2]
                     break
 
-        structured_info: Dict[str, Any] = {}
+        return EcneProjectParsed(
+            result=result,
+            constraint_status=constraint_status,
+        )
 
-        structured_info = {
-            "result": result,
+    def generate_uniform_results(
+        self,
+        parsed_output: EcneProjectParsed,
+        tool_output: ToolOutput,
+        output_file: Path,
+    ) -> None:
+        """Generate uniform results.json file.
+
+        Args:
+            parsed_output: Parsed tool output
+            tool_output: Tool execution output with timing info
+            output_file: Path to write results.json
+        """
+        import json
+
+        findings = []
+
+        # Only add finding if unsound constraints detected
+        if parsed_output.constraint_status == "unsound":
+            finding = UniformFinding(
+                bug_type="Unsound-Constraint",
+                severity="error",
+                message="R1CS function circuit has potentially unsound constraints",
+            )
+            findings.append(finding.to_dict())
+
+        # Determine status
+        if parsed_output.result == "Timed out":
+            status = "timeout"
+        elif parsed_output.constraint_status == "unsound":
+            status = "bugs_found"
+        elif parsed_output.constraint_status == "sound":
+            status = "success"
+        else:
+            status = "error"
+
+        results = {
+            "status": status,
+            "execution_time": round(tool_output.execution_time, 2),
+            "findings": findings,
         }
 
-        return structured_info
+        with open(output_file, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
     def compare_zkbugs_ground_truth(
         self,
