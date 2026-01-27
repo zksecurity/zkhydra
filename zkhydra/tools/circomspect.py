@@ -107,7 +107,6 @@ class Circomspect(AbstractTool):
                             bug_type=bug_type,
                             code=code,
                             severity=severity,
-                            location=location_line if location_line else None,
                             line=line_number,
                             raw_message=line,
                         )
@@ -117,83 +116,44 @@ class Circomspect(AbstractTool):
 
         return findings
 
-    def _helper_parse_output(
-        self, tool_result_raw: Path, ground_truth: Path
-    ) -> Dict[str, Any]:
-        """Parse circomspect output and extract warnings for the vulnerable function.
+    def _helper_parse_output(self, tool_result_raw: Path) -> Dict[str, Any]:
+        """Parse circomspect output and extract all warnings.
 
         Args:
             tool_result_raw: Path to raw tool output file
-            ground_truth: Path to ground truth JSON file
 
         Returns:
             Dictionary with parsed warnings
         """
-        # Get ground truth to reverse search
-        gt_data = self.load_json_file(ground_truth)
-        vuln_function: Optional[str] = gt_data.get("Location", {}).get(
-            "Function"
-        )
-
         # Get tool output
         with open(tool_result_raw, "r", encoding="utf-8") as f:
             bug_info: List[str] = [line.strip() for line in f if line.strip()]
 
-        # If we don't know the function, we cannot find the specific block
-        if not vuln_function:
-            logging.warning(f"Ground truth missing vulnerable function.")
-            return {"warnings": "No Warnings Found"}
-
-        # Get block that is analyzing the vulnerable function or template
-        start_marker_function = (
-            f"circomspect: analyzing function '{vuln_function}'"
-        )
-        start_marker_template = (
-            f"circomspect: analyzing template '{vuln_function}'"
-        )
-
-        block: List[str] = []
-        inside_block = False
-
         warnings: List[Any] = []
 
+        # Check for timeout
         for raw_line in bug_info:
             line = (raw_line or "").rstrip("\n")
             if line == "[Timed out]":
-                warnings = ["Reached zkhydra threshold."]
-                break
-            if line.startswith(
-                "circomspect: analyzing function"
-            ) or line.startswith("circomspect: analyzing template"):
-                # If we were inside the desired block, stop when a new function begins
-                if inside_block:
-                    break
-                # If this is the function we want, start recording
-                if line.strip() in (
-                    start_marker_function,
-                    start_marker_template,
-                ):
-                    inside_block = True
-                    block.append(line)
-            elif inside_block:
-                block.append(line)
+                return {"warnings": "Reached zkhydra threshold."}
 
-        # Extract warnings from block
+        # Extract all warnings from the output
         current_code: Optional[str] = None
-        for i, line in enumerate(block):
-            # Detect a warning line and extract the code (e.g. CS0005)
-            match_warn = re.match(r"\s*warning\[(CS\d+)\]:", line)
+        for i, line in enumerate(bug_info):
+            # Detect a warning line and extract the code (e.g. CS0005 or CA01)
+            match_warn = re.match(r"\s*warning\[([A-Z0-9]+)\]:", line)
             if match_warn:
                 current_code = match_warn.group(1)
+
+            # Try to get line number from next line
             try:
-                match_line = re.search(r":(\d+):", block[i + 1])
+                match_line = re.search(r":(\d+):", bug_info[i + 1])
             except Exception:
                 match_line = None
-            if match_line:
-                line_number = match_line.group(1)
+
             if current_code and match_line:
                 try:
-                    line_number = int(line_number)
+                    line_number = int(match_line.group(1))
                     warnings.append((current_code, line_number))
                 except ValueError:
                     logging.error(f"Failed to parse line number from '{line}'")

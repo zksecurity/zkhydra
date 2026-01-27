@@ -76,6 +76,7 @@ class ToolOutput:
     msg: str  # Combined stdout + stderr message (or other costum message)
     execution_time: Optional[float] = None  # Execution time in seconds
     raw_output_file: Optional[str] = None  # Path to raw output file
+    parsed_output_file: Optional[str] = None  # Path to parsed output file
 
 
 @dataclass
@@ -153,6 +154,7 @@ class ToolResult:
     findings: list[dict] = None
     error: str | None = None
     raw_output_file: str | None = None
+    parsed_output_file: str | None = None
 
     def __post_init__(self):
         if self.findings is None:
@@ -168,6 +170,7 @@ class ToolResult:
             "findings": self.findings,
             "error": self.error,
             "raw_output_file": self.raw_output_file,
+            "parsed_output_file": self.parsed_output_file,
         }
 
 
@@ -234,8 +237,26 @@ class AbstractTool(ABC):
         """
         pass
 
+    @abstractmethod
+    def _helper_parse_output(
+        self,
+        tool_result_raw: Path,
+    ) -> Dict[str, Any]:
+        """Helper method to parse the output of the tool into a structured format.
+
+        Args:
+            tool_result_raw: Path to raw tool output file
+
+        Returns:
+            Dictionary with parsed output
+        """
+
     def process_output(self, tool_output: ToolOutput) -> ToolResult:
         """Process tool output into structured result.
+
+        This method should generate a parsed.json file in the same directory as the raw output file
+        that contains the parsed output of the tool based on its specific output format.
+        It will also generate a findings.json file that contains the findings of the tool in the standardized format.
 
         Args:
             tool_output: ToolOutput object with status, stdout, stderr, return_code, and msg
@@ -243,10 +264,11 @@ class AbstractTool(ABC):
         Returns:
             ToolResult object with status, message, execution_time, findings_count, findings, error, and raw_output_file
         """
+        result = None
         try:
             # Check tool execution status
             if tool_output.status == OutputStatus.TIMEOUT:
-                return ToolResult(
+                result = ToolResult(
                     status=ToolStatus.TIMEOUT,
                     message=tool_output.msg,
                     execution_time=tool_output.execution_time,
@@ -254,9 +276,9 @@ class AbstractTool(ABC):
                     findings=[],
                     raw_output_file=str(tool_output.raw_output_file),
                 )
-            if tool_output.status == OutputStatus.FAIL:
+            elif tool_output.status == OutputStatus.FAIL:
                 # Tool failed (binary not found, file not found, etc.)
-                return ToolResult(
+                result = ToolResult(
                     status=ToolStatus.FAILED,
                     message=tool_output.msg,
                     execution_time=tool_output.execution_time,
@@ -266,39 +288,49 @@ class AbstractTool(ABC):
                     raw_output_file=str(tool_output.raw_output_file),
                 )
                 logging.error(f"{self.name}: {tool_output.msg}")
-            # Success - parse findings from output
-            try:
-                findings = self.parse_findings(tool_output.msg)
-            except ToolError as e:
-                return ToolResult(
-                    status=ToolStatus.FAILED,
-                    message=tool_output.msg,
-                    execution_time=tool_output.execution_time,
-                    findings_count=0,
-                    findings=[],
-                    error=str(e),
-                )
+            else:
+                # Success - parse findings from output
+                try:
 
-            # Convert Finding objects to dictionaries for JSON serialization
-            findings_dicts = [f.to_dict() for f in findings]
+                    # Since it succeeded, we can generate the parsed.json file
+                    raw_output_path = Path(tool_output.raw_output_file)
+                    parsed_output = self._helper_parse_output(raw_output_path)
+                    parsed_output_file = raw_output_path.parent / "parsed.json"
+                    with open(parsed_output_file, "w", encoding="utf-8") as f:
+                        json.dump(parsed_output, f, indent=4)
 
-            logging.info(
-                f"{self.name}: Found {len(findings)} findings in {tool_output.execution_time:.2f}s"
-            )
+                    findings = self.parse_findings(tool_output.msg)
 
-            return ToolResult(
-                status=ToolStatus.SUCCESS,
-                message=tool_output.msg,
-                execution_time=round(tool_output.execution_time, 2),
-                findings_count=len(findings),
-                findings=findings_dicts,
-                raw_output_file=str(tool_output.raw_output_file),
-            )
+                    # Convert Finding objects to dictionaries for JSON serialization
+                    findings_dicts = [f.to_dict() for f in findings]
 
+                    logging.info(
+                        f"{self.name}: Found {len(findings)} findings in {tool_output.execution_time:.2f}s"
+                    )
+                    result = ToolResult(
+                        status=ToolStatus.SUCCESS,
+                        message=tool_output.msg,
+                        execution_time=round(tool_output.execution_time, 2),
+                        findings_count=len(findings),
+                        findings=findings_dicts,
+                        raw_output_file=str(tool_output.raw_output_file),
+                        parsed_output_file=str(parsed_output_file),
+                    )
+                except ToolError as e:
+                    result = ToolResult(
+                        status=ToolStatus.FAILED,
+                        message=tool_output.msg,
+                        execution_time=tool_output.execution_time,
+                        findings_count=0,
+                        findings=[],
+                        error=str(e),
+                    )
         except Exception as e:
             # Let it crash here because we want to see the full traceback
             # and should never be raised an exception here
             raise Exception(f"Error executing {self.name}: {e}") from e
+
+        return result
 
     @abstractmethod
     def parse_findings(self, raw_output: str) -> List[Finding]:

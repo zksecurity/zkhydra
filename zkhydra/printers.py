@@ -53,8 +53,8 @@ def print_analyze_summary(summary: dict) -> None:
 
         print(f"\n{tool_name.upper()}: {status_symbol} {status_text}")
         print(f"  Time:     {result['execution_time']}s")
-        print(f"  Output:   {result.get('raw_output_file', 'N/A')}")
-
+        print(f"  Raw Output:   {result.get('raw_output_file', 'N/A')}")
+        print(f"  Parsed Output:   {result.get('parsed_output_file', 'N/A')}")
         if status == "success":
             print(f"  Findings: {result['findings_count']}")
 
