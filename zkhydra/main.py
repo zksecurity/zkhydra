@@ -17,6 +17,7 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 
+from zkhydra.cli import parse_args
 from zkhydra.tools.base import Input, OutputStatus, ensure_dir
 from zkhydra.utils.logger import setup_logging
 from zkhydra.utils.tools_resolver import resolve_tools
@@ -67,90 +68,6 @@ AVAILABLE_TOOLS = {
     "pil": ["pilspector"],
     "cairo": ["sierra-analyzer"],
 }
-
-
-def parse_args() -> argparse.Namespace:
-    """Parse command line arguments for zkHydra."""
-    parser = argparse.ArgumentParser(
-        description="zkHydra - Zero-Knowledge Circuit Security Analysis Tool Runner",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Analyze a circuit with circomspect
-  %(prog)s analyze --input test_bug/circuits/circuit.circom --tools circomspect
-
-  # Analyze with multiple tools
-  %(prog)s analyze --input circuit.circom --tools circomspect,circom_civer,picus
-
-  # Analyze with all available tools
-  %(prog)s analyze --input circuit.circom --tools all
-        """,
-    )
-
-    # Mode selection
-    parser.add_argument(
-        "mode",
-        choices=["analyze", "evaluate"],
-        help="Mode: 'analyze' for finding bugs (evaluate mode is not implemented)",
-    )
-
-    # Input/Output
-    parser.add_argument(
-        "--input",
-        "-i",
-        type=Path,
-        required=True,
-        help="Input: circuit file (.circom) to analyze",
-    )
-    parser.add_argument(
-        "--output",
-        "-o",
-        type=Path,
-        default=Path("output"),
-        help="Output directory (default: output/)",
-    )
-
-    # Tool selection
-    parser.add_argument(
-        "--tools",
-        "-t",
-        type=str,
-        required=True,
-        help="Comma-separated list of tools or 'all' for all available tools (e.g., circomspect,circom_civer,picus,ecneproject,zkfuzz or all)",
-    )
-
-    # DSL (currently only circom, but future-proof)
-    parser.add_argument(
-        "--dsl",
-        type=str,
-        default="circom",
-        choices=["circom", "pil", "cairo"],
-        help="Domain-specific language (default: circom)",
-    )
-
-    # Execution settings
-    parser.add_argument(
-        "--timeout",
-        type=int,
-        default=1800,
-        help="Timeout per tool execution in seconds (default: 1800)",
-    )
-
-    # Logging
-    parser.add_argument(
-        "--log-level",
-        type=str,
-        default="INFO",
-        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        help="Log level (default: INFO)",
-    )
-    parser.add_argument(
-        "--log-file",
-        action="store_true",
-        help="Enable file logging",
-    )
-
-    return parser.parse_args()
 
 
 def expand_tools_list(tools_str: str, dsl: str) -> list[str]:
@@ -523,14 +440,15 @@ def main() -> None:
 
     logging.info(f"zkHydra starting in {args.mode.upper()} mode")
 
+    if args.dsl != "circom":
+        logging.error(f"DSL '{args.dsl}' is not supported yet")
+        sys.exit(1)
+
     try:
         if args.mode == "analyze":
             analyze_mode(args)
-        elif args.mode == "evaluate":
-            evaluate_mode(args)
         else:
-            logging.error(f"Unknown mode: {args.mode}")
-            sys.exit(1)
+            evaluate_mode(args)
     except KeyboardInterrupt:
         logging.warning("Interrupted by user")
         sys.exit(130)
