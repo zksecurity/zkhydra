@@ -15,6 +15,7 @@ from zkhydra.core import (
     AVAILABLE_TOOLS,
     analyze_mode,
     evaluate_mode,
+    vanilla_mode,
     zkbugs_mode,
 )
 from zkhydra.utils.logger import setup_logging
@@ -35,42 +36,20 @@ def main() -> None:
 
     logging.info(f"zkHydra starting in {args.mode.upper()} mode")
 
-    # Mode-specific validation
-    if args.mode == "zkbugs":
-        # zkbugs mode validation
-        if not args.dataset:
-            logging.error("--dataset is required for zkbugs mode")
-            sys.exit(1)
-        if not args.dataset.exists():
-            logging.error(f"Dataset directory not found: {args.dataset}")
-            sys.exit(1)
-        if args.dsl != "circom":
-            logging.error(
-                f"DSL '{args.dsl}' is not supported yet for zkbugs mode"
-            )
-            sys.exit(1)
-    else:
-        # analyze/evaluate mode validation
-        if not args.input:
-            logging.error(f"--input is required for {args.mode} mode")
-            sys.exit(1)
-        if not args.input.exists():
-            logging.error(f"Input file not found: {args.input}")
-            sys.exit(1)
-        if args.dsl != "circom":
-            logging.error(f"DSL '{args.dsl}' is not supported yet")
-            sys.exit(1)
-
     # Validate tools list
-    tools_list = args.tools.split(",")
-    if not tools_list:
-        logging.error("No tools specified")
-        sys.exit(1)
-    if "all" in tools_list:
-        tools_list = AVAILABLE_TOOLS[args.dsl]
+    tools_list = []
+    if not args.vanilla:
+        tools_list = args.tools.split(",")
+        if not tools_list:
+            logging.error("No tools specified")
+            sys.exit(1)
+        if "all" in tools_list:
+            tools_list = AVAILABLE_TOOLS[args.dsl]
 
     try:
-        if args.mode == "zkbugs":
+        if args.vanilla:
+            vanilla_mode(args.output, args.mode == "zkbugs")
+        elif args.mode == "zkbugs":
             zkbugs_mode(
                 args.dataset, tools_list, args.dsl, args.timeout, args.output
             )

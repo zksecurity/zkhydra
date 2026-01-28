@@ -6,6 +6,8 @@ and validation. The parsed arguments are then passed to the main execution logic
 """
 
 import argparse
+import logging
+import sys
 from pathlib import Path
 
 
@@ -22,6 +24,7 @@ def parse_args() -> argparse.Namespace:
             - timeout: int - Timeout per tool in seconds (default: 1800)
             - log_level: str - Logging level (default: 'INFO')
             - log_file: bool - Whether to enable file logging
+            - vanilla: bool - Whether to just process existing .raw files
     """
     parser = argparse.ArgumentParser(
         description="zkHydra - Zero-Knowledge Circuit Security Analysis Tool Runner",
@@ -77,7 +80,7 @@ Examples:
         "--tools",
         "-t",
         type=str,
-        required=True,
+        required=False,
         help="Comma-separated list of tools or 'all' for all available tools (e.g., circomspect,circom_civer,picus,ecneproject,zkfuzz or all)",
     )
 
@@ -112,4 +115,49 @@ Examples:
         help="Enable file logging",
     )
 
-    return parser.parse_args()
+    # Miscellaneous
+    parser.add_argument(
+        "--vanilla",
+        action="store_true",
+        help="Whether to just process existing .raw files",
+    )
+
+    args = parser.parse_args()
+
+    # Validation
+
+    if args.vanilla and not args.output.exists():
+        logging.error("--output is required and must exist for vanilla mode")
+        sys.exit(1)
+
+    if not args.vanilla and not args.tools:
+        logging.error("--tools is required when not in vanilla mode")
+        sys.exit(1)
+
+    # Mode-specific validation
+    if args.mode == "zkbugs":
+        # zkbugs mode validation
+        if not args.dataset and not args.vanilla:
+            logging.error("--dataset is required for zkbugs mode")
+            sys.exit(1)
+        if not args.vanilla and not args.dataset.exists():
+            logging.error(f"Dataset directory not found: {args.dataset}")
+            sys.exit(1)
+        if args.dsl != "circom":
+            logging.error(
+                f"DSL '{args.dsl}' is not supported yet for zkbugs mode"
+            )
+            sys.exit(1)
+    else:
+        # analyze/evaluate mode validation
+        if not args.input and not args.vanilla:
+            logging.error(f"--input is required for {args.mode} mode")
+            sys.exit(1)
+        if not args.input.exists():
+            logging.error(f"Input file not found: {args.input}")
+            sys.exit(1)
+        if args.dsl != "circom":
+            logging.error(f"DSL '{args.dsl}' is not supported yet")
+            sys.exit(1)
+
+    return args

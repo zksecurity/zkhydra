@@ -100,6 +100,35 @@ class ToolOutput:
     parsed_output_file: Optional[str] = None  # Path to parsed output file
     results_file: Optional[str] = None  # Path to results file
 
+    def to_dict(self) -> dict:
+        """Convert ToolOutput to dictionary for JSON serialization."""
+        return {
+            "status": self.status.value,
+            "stdout": self.stdout,
+            "stderr": self.stderr,
+            "return_code": self.return_code,
+            "msg": self.msg,
+            "execution_time": self.execution_time,
+            "raw_output_file": self.raw_output_file,
+            "parsed_output_file": self.parsed_output_file,
+            "results_file": self.results_file,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "ToolOutput":
+        """Create ToolOutput from dictionary."""
+        return cls(
+            status=OutputStatus(data["status"]),
+            stdout=data["stdout"],
+            stderr=data["stderr"],
+            return_code=data["return_code"],
+            msg=data["msg"],
+            execution_time=data.get("execution_time"),
+            raw_output_file=data.get("raw_output_file"),
+            parsed_output_file=data.get("parsed_output_file"),
+            results_file=data.get("results_file"),
+        )
+
 
 @dataclass
 class Finding:
@@ -151,6 +180,18 @@ class Finding:
 
         return result
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "Finding":
+        """Create Finding from dictionary."""
+        return cls(
+            bug_title=data["bug_title"],
+            unified_bug_title=data["unified_bug_title"],
+            description=data["description"],
+            file=data.get("file"),
+            position=data.get("position", {}),
+            metadata=data.get("metadata", {}),
+        )
+
 
 class ToolStatus(Enum):
     """Status of tool execution."""
@@ -193,6 +234,32 @@ class ToolResult:
         }
 
 
+@dataclass
+class ResultsData:
+    """Data for results.json file."""
+
+    status: AnalysisStatus
+    execution_time: float
+    findings: list[Finding]
+
+    def to_dict(self) -> dict:
+        """Convert ResultsData to dictionary for JSON serialization."""
+        return {
+            "status": self.status.value,
+            "execution_time": self.execution_time,
+            "findings": [f.to_dict() for f in self.findings],
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "ResultsData":
+        """Create ResultsData from dictionary."""
+        return cls(
+            status=AnalysisStatus(data["status"]),
+            execution_time=data["execution_time"],
+            findings=[Finding.from_dict(f) for f in data["findings"]],
+        )
+
+
 class AbstractTool(ABC):
     """Abstract base class for all ZK circuit analysis tools.
 
@@ -233,7 +300,7 @@ class AbstractTool(ABC):
         # Write raw output (msg field contains combined stdout/stderr)
         with open(raw_output_file, "w", encoding="utf-8") as f:
             f.write(tool_output.msg)
-        return ToolOutput(
+        tool_output = ToolOutput(
             status=tool_output.status,
             stdout=tool_output.stdout,
             stderr=tool_output.stderr,
@@ -242,6 +309,10 @@ class AbstractTool(ABC):
             execution_time=execution_time,
             raw_output_file=str(raw_output_file),
         )
+        tool_output_file = raw_output_file.parent / "tool_output.json"
+        with open(tool_output_file, "w", encoding="utf-8") as f:
+            json.dump(tool_output.to_dict(), f, indent=2, ensure_ascii=False)
+        return tool_output
 
     @abstractmethod
     def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
@@ -349,13 +420,18 @@ class AbstractTool(ABC):
 
                     # Generate results.json with uniform findings
                     results_file = raw_output_path.parent / "results.json"
-                    results_data = {
-                        "status": analysis_status.value,
-                        "execution_time": round(tool_output.execution_time, 2),
-                        "findings": [f.to_dict() for f in findings],
-                    }
+                    results_data = ResultsData(
+                        status=analysis_status,
+                        execution_time=round(tool_output.execution_time, 2),
+                        findings=findings,
+                    )
                     with open(results_file, "w", encoding="utf-8") as f:
-                        json.dump(results_data, f, indent=2, ensure_ascii=False)
+                        json.dump(
+                            results_data.to_dict(),
+                            f,
+                            indent=2,
+                            ensure_ascii=False,
+                        )
 
                     # Convert Finding objects to dictionaries for JSON serialization
                     findings_dicts = [f.to_dict() for f in findings]
@@ -449,6 +525,22 @@ class AbstractTool(ABC):
             return False
         return True
 
+    @staticmethod
+    def _decode_output(output: str | bytes | None) -> str:
+        """Safely decode subprocess output to string.
+
+        Args:
+            output: Output that might be str, bytes, or None
+
+        Returns:
+            Decoded string, or empty string if None
+        """
+        if output is None:
+            return ""
+        if isinstance(output, bytes):
+            return output.decode("utf-8", errors="replace")
+        return output
+
     def run_command(
         self, cmd: list[str], timeout: int, bug_path: str
     ) -> ToolOutput:
@@ -481,8 +573,8 @@ class AbstractTool(ABC):
             )
 
         except subprocess.TimeoutExpired as e:
-            stdout = getattr(e, "stdout", "") or ""
-            stderr = getattr(e, "stderr", "") or ""
+            stdout = self._decode_output(getattr(e, "stdout", None))
+            stderr = self._decode_output(getattr(e, "stderr", None))
             logging.warning(
                 f"Process for '{self.name}' analysing '{bug_path}' exceeded {timeout} seconds and timed out. "
                 f"Partial output: {stdout}"
@@ -500,8 +592,8 @@ class AbstractTool(ABC):
             )
 
         except subprocess.CalledProcessError as e:
-            stdout = e.stdout or ""
-            stderr = e.stderr or ""
+            stdout = self._decode_output(e.stdout)
+            stderr = self._decode_output(e.stderr)
             # Some tools (e.g., circomspect) return non-zero exit codes by design
             # but still produce valid output. Return SUCCESS status so output can be parsed.
             # Manually handle all standard linux exit codes
@@ -512,10 +604,10 @@ class AbstractTool(ABC):
                 )
                 return ToolOutput(
                     status=OutputStatus.FAIL,
-                    stdout=e.stdout or "",
-                    stderr=e.stderr or "",
+                    stdout=stdout,
+                    stderr=stderr,
                     return_code=e.returncode,
-                    msg=f"stdout:\n{e.stdout}\nstderr:\n{e.stderr}",
+                    msg=f"stdout:\n{stdout}\nstderr:\n{stderr}",
                 )
 
             msg = f"stdout:\n{stdout}\nstderr:\n{stderr}"
