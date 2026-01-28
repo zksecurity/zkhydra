@@ -9,13 +9,23 @@ including tool execution, result collection, and summary generation.
 import argparse
 import json
 import logging
+import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 from zkhydra.printers import print_analyze_summary
-from zkhydra.tools.base import Input, ToolResult, ToolStatus, ensure_dir
+from zkhydra.tools.base import (
+    AbstractTool,
+    AnalysisStatus,
+    Input,
+    ResultsData,
+    ToolOutput,
+    ToolResult,
+    ToolStatus,
+    ensure_dir,
+)
 from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
 
 BASE_DIR = Path.cwd()
@@ -320,6 +330,38 @@ def generate_ground_truth(config_path: Path, output_path: Path) -> None:
         json.dump(ground_truth, f, indent=2, ensure_ascii=False)
 
 
+def _helper_eval(
+    tool_result: ToolResult,
+    tool_instance: AbstractTool,
+    tool_name: str,
+    dsl: str,
+    bug_name: str,
+    ground_truth_path: Path,
+    bug_output_dir: Path,
+) -> None:
+    if tool_result.status != ToolStatus.SUCCESS:
+        # Tool failed or timed out, skip evaluation
+        return
+
+    # Evaluate findings against ground truth
+    evaluation = tool_instance.evaluate_zkbugs_ground_truth(
+        tool_name,
+        dsl,
+        bug_name,
+        ground_truth_path,
+        bug_output_dir / tool_name / "results.json",
+    )
+
+    # Write evaluation results
+    eval_path = bug_output_dir / tool_name / "evaluation.json"
+    with open(eval_path, "w", encoding="utf-8") as f:
+        json.dump(evaluation, f, indent=2, ensure_ascii=False)
+
+    logging.info(
+        f"{tool_name} evaluation: {evaluation.get('status', 'Unknown')}"
+    )
+
+
 def zkbugs_mode(
     dataset_dir: Path, tools: list[str], dsl: str, timeout: int, output: Path
 ) -> None:
@@ -400,29 +442,84 @@ def zkbugs_mode(
                 continue
 
             tool_result = results[tool_name]
-            if tool_result.status != ToolStatus.SUCCESS:
-                # Tool failed or timed out, skip evaluation
-                continue
-
-            # Evaluate findings against ground truth
-            evaluation = tool_instance.evaluate_zkbugs_ground_truth(
+            _helper_eval(
+                tool_result,
+                tool_instance,
                 tool_name,
                 dsl,
-                bug["bug_name"],
+                bug,
                 ground_truth_path,
-                bug_output_dir / tool_name / "results.json",
-            )
-
-            # Write evaluation results
-            eval_path = bug_output_dir / tool_name / "evaluation.json"
-            with open(eval_path, "w", encoding="utf-8") as f:
-                json.dump(evaluation, f, indent=2, ensure_ascii=False)
-
-            logging.info(
-                f"{tool_name} evaluation: {evaluation.get('status', 'Unknown')}"
+                bug_output_dir,
             )
 
     logging.info(f"\n{'='*80}")
     logging.info("zkbugs mode completed")
     logging.info(f"Results written to: {output}")
     logging.info(f"{'='*80}")
+
+
+def vanilla_mode(output_dir: Path, eval: bool, dsl: str = "circom") -> None:
+    """
+    Vanilla mode: Process existing .raw files.
+
+    Args:
+        output_dir: Output directory
+        eval: Whether to evaluate the results
+    """
+    logging.info("Running in VANILLA mode")
+    logging.info(f"Output directory: {output_dir}")
+    logging.info(f"Evaluate: {eval}")
+
+    # check if there is a ground truth file or a summary file
+    # If there is then we are processing a bug
+    # If not then we are processing a dir of many bugs
+    ground_truth_path = output_dir / "ground_truth.json"
+    summary_path = output_dir / "summary.json"
+    bugs_dir = []
+    if ground_truth_path.exists() or summary_path.exists():
+        logging.info("Processing a bug")
+        bugs_dir.append(output_dir)
+    else:
+        logging.info("Processing a dir of many bugs")
+        bugs_dir = list(output_dir.rglob("*"))
+
+    for bug_dir in bugs_dir:
+        logging.info(f"Processing bug: {bug_dir}")
+        bug_name = bug_dir.name
+        # Find all tool directories in the bug directory
+        tool_dirs = [
+            Path(bug_dir) / d
+            for d in os.listdir(bug_dir)
+            if (Path(bug_dir) / d).is_dir()
+        ]
+        for tool_dir in tool_dirs:
+            tool_name = tool_dir.name
+            logging.info(f"Processing tool: {tool_name}")
+            # Load the results.json file
+            with open(tool_dir / "results.json", encoding="utf-8") as f:
+                results_data = json.load(f)
+            results = ResultsData.from_dict(results_data)
+            # Load the tool_output.json file
+            with open(tool_dir / "tool_output.json", encoding="utf-8") as f:
+                tool_output = ToolOutput.from_dict(json.load(f))
+            # If the result was TIMEOUT, then we can skip
+            if results.status == AnalysisStatus.TIMEOUT:
+                logging.info(f"Tool {tool_name} timed out, skipping")
+                continue
+            # Redo the analysis of the tool result
+            tool_instance = resolve_tools([tool_name])[tool_name]
+            # Process the tool output
+            tool_result = tool_instance.process_output(tool_output)
+
+            # Load the ground truth file
+            if eval:
+                ground_truth_path = bug_dir / "ground_truth.json"
+                _helper_eval(
+                    tool_result,
+                    tool_instance,
+                    tool_name,
+                    dsl,
+                    bug_name,
+                    ground_truth_path,
+                    bug_dir,
+                )
