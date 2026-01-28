@@ -36,14 +36,17 @@ Examples:
 
   # Analyze with all available tools
   %(prog)s analyze --input circuit.circom --tools all
+
+  # Evaluate zkbugs dataset
+  %(prog)s zkbugs --dataset zkbugs/dataset/circom/ --dsl circom --tools all --timeout 600 --output zkbugs-run-1
         """,
     )
 
     # Mode selection
     parser.add_argument(
         "mode",
-        choices=["analyze", "evaluate"],
-        help="Mode: 'analyze' for finding bugs (evaluate mode is not implemented)",
+        choices=["analyze", "evaluate", "zkbugs"],
+        help="Mode: 'analyze' for single circuit, 'zkbugs' for dataset evaluation",
     )
 
     # Input/Output
@@ -51,8 +54,15 @@ Examples:
         "--input",
         "-i",
         type=Path,
-        required=True,
-        help="Input: circuit file (.circom) to analyze",
+        required=False,
+        help="Input: circuit file (.circom) to analyze (required for analyze mode)",
+    )
+    parser.add_argument(
+        "--dataset",
+        "-d",
+        type=Path,
+        required=False,
+        help="Dataset directory for zkbugs mode (e.g., zkbugs/dataset/circom/)",
     )
     parser.add_argument(
         "--output",

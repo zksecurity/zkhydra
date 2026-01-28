@@ -398,30 +398,38 @@ class AbstractTool(ABC):
         return result
 
     @abstractmethod
-    def compare_zkbugs_ground_truth(
+    def evaluate_zkbugs_ground_truth(
         self,
         tool: str,
         dsl: str,
         bug_name: str,
         ground_truth: Path,
-        tool_result_parsed: Path,
+        tool_result_path: Path,
     ) -> Dict[str, Any]:
-        """Compare parsed tool results against ground truth.
+        """Evaluate tool results against ground truth.
 
         Args:
             tool: Tool name
             dsl: Domain-specific language (e.g., "circom", "cairo")
             bug_name: Name of the bug being analyzed
             ground_truth: Path to ground truth JSON file
-            tool_result_parsed: Path to parsed tool results JSON file
+            tool_result_path: Path to tool results.json file
 
         Returns:
-            Dictionary with comparison result:
+            Dictionary with evaluation result:
             {
-                "result": "correct" | "false" | "timeout" | "error",
-                "reason": str (optional explanation),
-                "need_manual_evaluation": bool (optional)
+                "status": "TruePositive" | "FalseNegative" | "Undecided",
+                "reason": str (explanation of the status),
+                "need_manual_analysis": bool (True unless 100% certain),
+                "manual_analysis": "Pending" | "Done" | "N/A",
+                "manual_analysis_reasoning": str ("TODO" or "N/A" or actual reasoning)
             }
+
+        Be conservative: set need_manual_analysis=True unless 100% certain about the status.
+        For example:
+        - Tool found nothing → definitely FalseNegative
+        - Tool found exact bug at exact component/line → definitely TruePositive
+        - Otherwise → Undecided and needs manual analysis
         """
         pass
 
