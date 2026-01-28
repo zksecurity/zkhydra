@@ -244,165 +244,65 @@ class CircomCiver(AbstractTool):
 
         return analysis_status, findings
 
-    def compare_zkbugs_ground_truth(
+    def evaluate_zkbugs_ground_truth(
         self,
         tool: str,
         dsl: str,
         bug_name: str,
         ground_truth: Path,
-        tool_result_parsed: Path,
+        tool_result_path: Path,
     ) -> Dict[str, Any]:
-        """Compare parsed tool output against ground-truth for a single bug.
+        """Evaluate circom_civer results against ground truth.
 
         Args:
             tool: Tool name
             dsl: Domain-specific language
             bug_name: Bug name
             ground_truth: Path to ground truth JSON
-            tool_result_parsed: Path to parsed tool results
+            tool_result_path: Path to results.json
 
         Returns:
-            Comparison result dictionary
+            Evaluation result dictionary
         """
-        output = {}
+        # Load ground truth
+        gt_data = self.load_json_file(ground_truth)
+        gt_location = gt_data.get("location", {})
+        gt_function = gt_location.get("Function")
 
-        # Get ground truth data
-        ground_truth_data = self.load_json_file(ground_truth)
+        # Load tool results
+        tool_results = self.load_json_file(tool_result_path)
+        findings = tool_results.get("findings", [])
 
-        bug_location = ground_truth_data.get("Location", {})
-        if not bug_location:
-            logging.error(
-                f"Location data for bug '{bug_name}' not found in ground truth."
-            )
-            output = {
-                "result": "error",
-                "reason": "Location data not found in ground truth.",
+        # If no findings, it's FalseNegative
+        if not findings:
+            return {
+                "status": "FalseNegative",
+                "reason": "Tool found no components with weak safety violations",
+                "need_manual_analysis": False,
+                "manual_analysis": "N/A",
+                "manual_analysis_reasoning": "N/A",
             }
-            return output
 
-        buggy_function: Optional[str] = bug_location.get("Function")
-        # buggy_line: Optional[str] = bug_location.get("Line")
-        # startline: int
-        # endline: int
-        # if buggy_line and "-" in buggy_line:
-        #     start_str, end_str = buggy_line.split("-", 1)
-        #     startline, endline = int(start_str), int(end_str)
-        # elif not buggy_line:
-        #     startline = endline = 0
-        #     logging.warning(f"Line data for bug '{bug_name}' not found in ground truth.")
-        # else:
-        #     startline = endline = int(buggy_line)
-        # logging.debug(
-        #     f"Buggy function: {buggy_function}, startline: {startline}, endline: {endline}"
-        # )
+        # Check if any finding matches the ground truth function/component
+        for finding in findings:
+            position = finding.get("position", {})
+            component = position.get("component")
 
-        tool_output_data = get_tool_result_parsed(tool_result_parsed)
-
-        buggy_components: List[Any] = tool_output_data.get(
-            "buggy_components", []
-        )
-        timed_out_components: List[Any] = tool_output_data.get(
-            "timed_out_components", []
-        )
-        logging.debug(f"Buggy components: {buggy_components}")
-        logging.debug(f"Timed out components: {timed_out_components}")
-
-        is_correct = False
-        timed_out = False
-        last_comp_name: Optional[str] = None
-        # last_lines: Optional[str] = None
-
-        for component in buggy_components:
-            if component == "Reached zkhydra threshold.":
-                timed_out = True
-                break
-            comp_name = component.get("name")
-            # comp_params = component.get("params", [])
-            # logging.debug(
-            #     f"Found buggy component in '{bug_name}': {comp_name} with params {comp_params}"
-            # )
-            logging.debug(
-                f"Found buggy component in '{bug_name}': '{comp_name}'"
-            )
-
-            # params = comp_params
-            # if not params:
-            #     startline_tool = endline_tool = 0
-            # elif len(params) == 1:
-            #     startline_tool = endline_tool = params[0]
-            # elif len(params) == 2:
-            #     startline_tool, endline_tool = params[0], params[1]
-            # else:
-            #     logging.warning(f"Params should have at most 2 values; got {params}")
-            #     continue
-            last_comp_name = comp_name
-            # last_lines = f"{startline_tool}-{endline_tool}"
-            # logging.debug(
-            #     f"Component lines: startline={startline_tool}, endline={endline_tool}"
-            # )
-
-            # Compare with ground truth
-            if comp_name == buggy_function:
-                logging.debug(
-                    f"Component name matches buggy function: {comp_name}"
-                )
-                is_correct = True
-
-                # # Check lines
-                # if startline_tool == endline_tool == 0:
-                #     logging.debug("Component lines not provided by tool")
-                #     is_correct = True
-                # elif startline_tool <= startline and endline_tool >= endline:
-                #     logging.debug(
-                #         f"Component lines match ground truth: startline={startline_tool}, endline={endline_tool}"
-                #     )
-                #     is_correct = True
-                # else:
-                #     logging.debug(
-                #         f"Component lines do not match ground truth: startline={startline_tool}, endline={endline_tool}"
-                #     )
-
-            logging.debug(f"Component '{comp_name}' correctness: {is_correct}")
-
-        if is_correct:
-            output = {"result": "correct"}
-        else:
-            if timed_out:
-                output = {
-                    "result": "timeout",
-                    "reason": "Reached zkhydra threshold.",
+            if component and gt_function and component == gt_function:
+                # Exact match: component name matches
+                return {
+                    "status": "TruePositive",
+                    "reason": f"Found weak safety violation in component {gt_function}",
+                    "need_manual_analysis": False,
+                    "manual_analysis": "N/A",
+                    "manual_analysis_reasoning": "N/A",
                 }
-            else:
-                if not buggy_components:
-                    reason = (
-                        "Tool found no module that do not satisfy weak safety."
-                    )
-                    output = {
-                        "result": "false",
-                        "reason": reason,
-                        "buggy_components": buggy_components,
-                        "timed_out_components": timed_out_components,
-                        "need_manual_evaluation": True,
-                    }
-                elif last_comp_name != buggy_function:
-                    reason = f"Tool found wrong module; buggy module: '{buggy_function}'."
-                    # reason = f"Tool found wrong module; buggy module: '{buggy_function}' ({buggy_line}))."
-                    output = {
-                        "result": "false",
-                        "reason": reason,
-                        "buggy_components": buggy_components,
-                        "timed_out_components": timed_out_components,
-                        "need_manual_evaluation": True,
-                    }
-                else:
-                    reason = f"xxxxxxxxTool found correct module, but lines didn't match (tool found lines: "
-                    # f"'{last_lines}'; buggy lines: '{startline}-{endline}')"
-                    output = {
-                        "result": "false",
-                        "reason": reason,
-                        "buggy_components": buggy_components,
-                        "timed_out_components": timed_out_components,
-                        "need_manual_evaluation": True,
-                    }
 
-        return output
+        # Found violations but not in the expected component
+        return {
+            "status": "Undecided",
+            "reason": f"Tool found {len(findings)} weak safety violations but not in {gt_function}",
+            "need_manual_analysis": True,
+            "manual_analysis": "Pending",
+            "manual_analysis_reasoning": "TODO",
+        }

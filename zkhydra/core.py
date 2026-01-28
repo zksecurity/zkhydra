@@ -236,3 +236,193 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     raise NotImplementedError(
         "Evaluate mode is not yet implemented. Use 'analyze' mode instead."
     )
+
+
+def discover_zkbugs(dataset_dir: Path) -> list[dict]:
+    """
+    Discover all bugs in the dataset by finding zkbugs_config.json files.
+
+    Args:
+        dataset_dir: Path to the zkbugs dataset directory
+
+    Returns:
+        List of bug information dictionaries containing:
+            - config_path: Path to zkbugs_config.json
+            - bug_dir: Path to the bug directory
+            - bug_name: Name of the bug
+            - circuit_path: Path to circuit.circom (if exists)
+    """
+    bugs = []
+    config_files = list(dataset_dir.rglob("zkbugs_config.json"))
+
+    logging.info(f"Found {len(config_files)} zkbugs_config.json files")
+
+    for config_path in config_files:
+        bug_dir = config_path.parent
+        bug_name = bug_dir.name
+
+        # Check if circuit.circom exists
+        circuit_path = bug_dir / "circuits" / "circuit.circom"
+
+        if not circuit_path.exists():
+            logging.warning(
+                f"Bug '{bug_name}': circuit.circom not found at {circuit_path}"
+            )
+            circuit_path = None
+
+        bugs.append(
+            {
+                "config_path": config_path,
+                "bug_dir": bug_dir,
+                "bug_name": bug_name,
+                "circuit_path": circuit_path,
+            }
+        )
+
+    return bugs
+
+
+def generate_ground_truth(config_path: Path, output_path: Path) -> None:
+    """
+    Generate ground_truth.json from zkbugs_config.json.
+
+    Args:
+        config_path: Path to zkbugs_config.json
+        output_path: Path where ground_truth.json should be written
+    """
+    with open(config_path, encoding="utf-8") as f:
+        config = json.load(f)
+
+    # Extract the bug details (config is dict with single key)
+    bug_key = list(config.keys())[0]
+    bug_data = config[bug_key]
+
+    ground_truth = {
+        "bug_name": bug_key,
+        "vulnerability": bug_data.get("Vulnerability"),
+        "impact": bug_data.get("Impact"),
+        "root_cause": bug_data.get("Root Cause"),
+        "location": bug_data.get("Location", {}),
+        "dsl": bug_data.get("DSL"),
+        "project": bug_data.get("Project"),
+        "commit": bug_data.get("Commit"),
+        "fix_commit": bug_data.get("Fix Commit"),
+        "reproduced": bug_data.get("Reproduced"),
+        "short_description": bug_data.get(
+            "Short Description of the Vulnerability"
+        ),
+        "proposed_mitigation": bug_data.get("Proposed Mitigation"),
+        "source": bug_data.get("Source"),
+    }
+
+    ensure_dir(output_path.parent)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(ground_truth, f, indent=2, ensure_ascii=False)
+
+
+def zkbugs_mode(
+    dataset_dir: Path, tools: list[str], dsl: str, timeout: int, output: Path
+) -> None:
+    """
+    zkbugs mode: Evaluate tools against the zkbugs dataset.
+
+    Args:
+        dataset_dir: Path to zkbugs dataset directory
+        tools: List of tool names to run
+        dsl: Domain-specific language (currently only 'circom')
+        timeout: Timeout per tool execution in seconds
+        output: Output directory for results
+    """
+    logging.info("Running in ZKBUGS mode")
+    logging.info(f"Dataset: {dataset_dir}")
+    logging.info(f"DSL: {dsl}")
+    logging.info(f"Tools: {tools}")
+    logging.info(f"Timeout: {timeout}s")
+
+    # Discover bugs
+    bugs = discover_zkbugs(dataset_dir)
+    logging.info(f"Total bugs discovered: {len(bugs)}")
+
+    # Filter bugs that have circuit.circom
+    bugs_with_circuits = [b for b in bugs if b["circuit_path"] is not None]
+    logging.info(
+        f"Bugs with circuit.circom: {len(bugs_with_circuits)}/{len(bugs)}"
+    )
+
+    if not bugs_with_circuits:
+        logging.error("No bugs with circuit.circom found")
+        sys.exit(1)
+
+    # Resolve tool modules
+    tool_registry = resolve_tools(tools)
+    if not tool_registry:
+        logging.error("No tools loaded successfully")
+        sys.exit(1)
+
+    # Create output directory
+    ensure_dir(output)
+    logging.info(f"Output directory: {output}")
+
+    # Process all bugs with circuits
+    bugs_to_process = bugs_with_circuits
+
+    # Process each bug
+    for idx, bug in enumerate(bugs_to_process, 1):
+        logging.info(f"\n{'='*80}")
+        logging.info(
+            f"Processing bug {idx}/{len(bugs_to_process)}: {bug['bug_name']}"
+        )
+        logging.info(f"{'='*80}")
+
+        # Create bug-specific output directory
+        bug_output_dir = output / bug["bug_name"]
+        ensure_dir(bug_output_dir)
+
+        # Generate ground truth
+        ground_truth_path = bug_output_dir / "ground_truth.json"
+        generate_ground_truth(bug["config_path"], ground_truth_path)
+        logging.info(f"Generated ground truth: {ground_truth_path}")
+
+        # Prepare circuit paths
+        input_paths = prepare_circuit_paths(bug["circuit_path"])
+
+        # Execute all tools
+        results = execute_tools(
+            tool_registry,
+            input_paths,
+            bug_output_dir,
+            timeout,
+        )
+
+        # Evaluate each tool's results against ground truth
+        for tool_name, tool_instance in tool_registry.items():
+            if tool_name not in results:
+                continue
+
+            tool_result = results[tool_name]
+            if tool_result.status != ToolStatus.SUCCESS:
+                # Tool failed or timed out, skip evaluation
+                continue
+
+            # Evaluate findings against ground truth
+            evaluation = tool_instance.evaluate_zkbugs_ground_truth(
+                tool_name,
+                dsl,
+                bug["bug_name"],
+                ground_truth_path,
+                bug_output_dir / tool_name / "results.json",
+            )
+
+            # Write evaluation results
+            eval_path = bug_output_dir / tool_name / "evaluation.json"
+            with open(eval_path, "w", encoding="utf-8") as f:
+                json.dump(evaluation, f, indent=2, ensure_ascii=False)
+
+            logging.info(
+                f"{tool_name} evaluation: {evaluation.get('status', 'Unknown')}"
+            )
+
+    logging.info(f"\n{'='*80}")
+    logging.info("zkbugs mode completed")
+    logging.info(f"Results written to: {output}")
+    logging.info(f"{'='*80}")

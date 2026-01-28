@@ -234,78 +234,74 @@ class ZkFuzz(AbstractTool):
 
         return analysis_status, findings
 
-    def compare_zkbugs_ground_truth(
+    def evaluate_zkbugs_ground_truth(
         self,
         tool: str,
         dsl: str,
         bug_name: str,
         ground_truth: Path,
-        tool_result_parsed: Path,
+        tool_result_path: Path,
     ) -> Dict[str, Any]:
-        """Compare zkfuzz findings against ground truth and update aggregates.
+        """Evaluate zkfuzz results against ground truth.
 
         Args:
             tool: Tool name
             dsl: Domain-specific language
             bug_name: Bug name
             ground_truth: Path to ground truth JSON
-            tool_result_parsed: Path to parsed tool results
+            tool_result_path: Path to results.json
 
         Returns:
-            Comparison result dictionary
+            Evaluation result dictionary
         """
-        output = {}
-
-        tool_output_data = get_tool_result_parsed(tool_result_parsed)
-
-        status: str = tool_output_data.get("result", "tool error")
-        vulnerability: str = tool_output_data.get("vulnerability", "")
-
-        # Load ground truth correctly (file path -> JSON)
+        # Load ground truth
         gt_data = self.load_json_file(ground_truth)
-        gt_vulnerability = gt_data.get("Vulnerability")
+        gt_vulnerability = gt_data.get("vulnerability")
 
-        is_correct = False
-        reason = ""
+        # Load tool results
+        tool_results = self.load_json_file(tool_result_path)
+        findings = tool_results.get("findings", [])
 
-        if status == "Timed out":
-            reason = "Reached zkhydra threshold."
-        elif status == "tool error":
-            reason = vulnerability or "tool error"
-        elif status == "found_bug":
-            reason = "found_bug"
-        elif status == "found_no_bug":
-            reason = "Tool found no counter example"
-        elif status == "previous errors were found":
-            reason = "Tool found previous errors"
-        else:
-            reason = status or "unknown"
+        # If no findings, check ground truth
+        if not findings:
+            if gt_vulnerability in ["Under-Constrained", "Over-Constrained"]:
+                return {
+                    "status": "FalseNegative",
+                    "reason": "Tool found no counter examples",
+                    "need_manual_analysis": False,
+                    "manual_analysis": "N/A",
+                    "manual_analysis_reasoning": "N/A",
+                }
+            else:
+                # Tool correctly found nothing
+                return {
+                    "status": "Undecided",
+                    "reason": f"Tool found nothing, ground truth is {gt_vulnerability}",
+                    "need_manual_analysis": True,
+                    "manual_analysis": "Pending",
+                    "manual_analysis_reasoning": "TODO",
+                }
 
-        # Normalize strings for comparison
-        vulnerability_str = (
-            (vulnerability or "").replace("-", "").replace(" ", "").lower()
-        )
-        gt_vulnerability_str = (
-            (gt_vulnerability or "").replace("-", "").replace(" ", "").lower()
-        )
+        # Tool found counter examples
+        # zkFuzz provides signal-level information
+        for finding in findings:
+            unified_title = finding.get("unified_bug_title", "")
+            if unified_title == gt_vulnerability:
+                # Matching vulnerability type, but zkFuzz doesn't verify exact location
+                # Conservative: needs manual analysis
+                return {
+                    "status": "Undecided",
+                    "reason": f"zkFuzz found {unified_title} but cannot verify exact location",
+                    "need_manual_analysis": True,
+                    "manual_analysis": "Pending",
+                    "manual_analysis_reasoning": "TODO",
+                }
 
-        if (
-            reason == "found_bug"
-            and gt_vulnerability_str
-            and gt_vulnerability_str in vulnerability_str
-        ):
-            is_correct = True
-            reason = gt_vulnerability or "found_bug"
-
-        if is_correct:
-            output = {"result": "correct"}
-        elif reason == "Reached zkhydra threshold.":
-            output = {"result": "timeout", "reason": reason}
-        elif reason in ("tool error", "Tool Error"):
-            output = {"result": "error", "reason": reason}
-        elif reason == "Tool found previous errors":
-            output = {"result": "error", "reason": reason}
-        else:
-            output = {"result": "false", "reason": reason}
-
-        return output
+        # Found something but doesn't match ground truth
+        return {
+            "status": "Undecided",
+            "reason": f"Tool found {len(findings)} issues but ground truth is {gt_vulnerability}",
+            "need_manual_analysis": True,
+            "manual_analysis": "Pending",
+            "manual_analysis_reasoning": "TODO",
+        }

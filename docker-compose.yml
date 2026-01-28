@@ -13,6 +13,8 @@ services:
       - ./configs:/zkhydra/configs
       # Mount bugs directory (if exists locally, otherwise uses container's clone)
       - ./bugs:/zkhydra/bugs
+      # Mount zkbugs
+      - ./zkbugs/:/zkhydra/zkbugs
       # Mount test_bug directories
       - ./test_bug:/zkhydra/test_bug
       - ./test_bug_2:/zkhydra/test_bug_2

@@ -233,62 +233,77 @@ class EcneProject(AbstractTool):
 
         return analysis_status, findings
 
-    def compare_zkbugs_ground_truth(
+    def evaluate_zkbugs_ground_truth(
         self,
         tool: str,
         dsl: str,
         bug_name: str,
         ground_truth: Path,
-        tool_result_parsed: Path,
+        tool_result_path: Path,
     ) -> Dict[str, Any]:
-        """Compare EcneProject result to expectations and update aggregate output.
-
-        EcneProject is heuristic; we treat its positive message as a correct detection
-        and handle timeouts/missing files explicitly. Otherwise it's a false/unknown.
+        """Evaluate EcneProject results against ground truth.
 
         Args:
             tool: Tool name
             dsl: Domain-specific language
             bug_name: Bug name
             ground_truth: Path to ground truth JSON
-            tool_result_parsed: Path to parsed tool results
+            tool_result_path: Path to results.json
 
         Returns:
-            Comparison result dictionary
+            Evaluation result dictionary
         """
-        output = {}
+        # Load ground truth
+        gt_data = self.load_json_file(ground_truth)
+        gt_vulnerability = gt_data.get("vulnerability")
 
-        tool_result: str = get_tool_result_parsed(tool_result_parsed).get(
-            "result", "No result"
-        )
+        # Load tool results
+        tool_results = self.load_json_file(tool_result_path)
+        findings = tool_results.get("findings", [])
 
-        if (
-            tool_result
-            == "R1CS function circuit has potentially unsound constraints"
-        ):
-            output = {"result": "correct"}
-        elif (
-            tool_result
-            == "R1CS function circuit has sound constraints (No trusted functions needed!)"
-        ):
-            output = {
-                "result": "false",
-                "reason": "Tool found sound constraints but the circuit is unsound.",
-            }
-        elif tool_result == "Timed out":
-            output = {
-                "result": "timeout",
-                "reason": "Reached zkhydra threshold.",
-            }
-        elif tool_result == "Circuit file not found":
-            output = {
-                "result": "error",
-                "reason": "Circuit file not found. Might be missing in bug environment setup script.",
-            }
-        else:
-            output = {
-                "result": "false",
-                "reason": "Missing or inconclusive result from parsing.",
-            }
+        # If no findings and ground truth is Under-Constrained, it's FalseNegative
+        if not findings:
+            if gt_vulnerability == "Under-Constrained":
+                return {
+                    "status": "FalseNegative",
+                    "reason": "Tool found no unsound constraints",
+                    "need_manual_analysis": False,
+                    "manual_analysis": "N/A",
+                    "manual_analysis_reasoning": "N/A",
+                }
+            else:
+                # Tool correctly found nothing (not an under-constrained bug)
+                return {
+                    "status": "Undecided",
+                    "reason": f"Tool found nothing, ground truth is {gt_vulnerability}",
+                    "need_manual_analysis": True,
+                    "manual_analysis": "Pending",
+                    "manual_analysis_reasoning": "TODO",
+                }
 
-        return output
+        # Tool found unsound constraints
+        # EcneProject is circuit-level, doesn't provide precise location
+        # So we can only verify the vulnerability type matches
+        for finding in findings:
+            unified_title = finding.get("unified_bug_title", "")
+            if (
+                unified_title == "Under-Constrained"
+                and gt_vulnerability == "Under-Constrained"
+            ):
+                # Conservative: needs manual analysis because EcneProject is circuit-level
+                return {
+                    "status": "Undecided",
+                    "reason": "EcneProject found unsound constraints but cannot verify exact location",
+                    "need_manual_analysis": True,
+                    "manual_analysis": "Pending",
+                    "manual_analysis_reasoning": "TODO",
+                }
+
+        # Found something but doesn't match ground truth
+        return {
+            "status": "Undecided",
+            "reason": f"Tool found {len(findings)} issues but ground truth is {gt_vulnerability}",
+            "need_manual_analysis": True,
+            "manual_analysis": "Pending",
+            "manual_analysis_reasoning": "TODO",
+        }

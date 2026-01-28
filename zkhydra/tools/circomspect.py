@@ -306,111 +306,110 @@ class Circomspect(AbstractTool):
 
         return analysis_status, findings
 
-    def compare_zkbugs_ground_truth(
+    def evaluate_zkbugs_ground_truth(
         self,
         tool: str,
         dsl: str,
         bug_name: str,
         ground_truth: Path,
-        tool_result_parsed: Path,
+        tool_result_path: Path,
     ) -> Dict[str, Any]:
-        """Compare circomspect warnings to ground truth.
+        """Evaluate circomspect results against ground truth.
 
         Args:
             tool: Tool name
             dsl: Domain-specific language
             bug_name: Bug name
             ground_truth: Path to ground truth JSON
-            tool_result_parsed: Path to parsed tool results
+            tool_result_path: Path to results.json
 
         Returns:
-            Comparison result dictionary
+            Evaluation result dictionary
         """
-        output = {}
-
-        warnings: List[Any] = get_tool_result_parsed(tool_result_parsed).get(
-            "warnings", "No Warnings Found"
-        )
-
-        # Handle trivial outcomes first
-        if warnings == "No Warnings Found":
-            output = {"result": "false", "reason": warnings}
-            return output
-        elif warnings == ["Reached zkhydra threshold."]:
-            output = {"result": "timeout", "reason": warnings}
-            return output
-        elif warnings == "No Warnings Found for vulnerable function":
-            output = {"result": "false", "reason": warnings}
-            return output
-
-        # Get ground truth data
+        # Load ground truth
         gt_data = self.load_json_file(ground_truth)
+        gt_vulnerability = gt_data.get("vulnerability")
+        gt_location = gt_data.get("location", {})
+        gt_function = gt_location.get("Function")
+        gt_lines = gt_location.get("Line")
 
-        gt_vulnerability: Optional[str] = gt_data.get("Vulnerability")
-        gt_lines: Optional[str] = gt_data.get("Location", {}).get("Line")
+        # Load tool results
+        tool_results = self.load_json_file(tool_result_path)
+        findings = tool_results.get("findings", [])
 
-        if not gt_vulnerability or not gt_lines:
-            logging.error(
-                f"Ground truth missing fields for '{bug_name}' ({dsl}): "
-                f"vulnerability={gt_vulnerability}, lines={gt_lines}"
+        # If no findings, it's definitely a FalseNegative
+        if not findings:
+            return {
+                "status": "FalseNegative",
+                "reason": "Tool found no issues",
+                "need_manual_analysis": False,
+                "manual_analysis": "N/A",
+                "manual_analysis_reasoning": "N/A",
+            }
+
+        # Parse ground truth line range
+        if gt_lines:
+            if "-" in gt_lines:
+                gt_start, gt_end = gt_lines.split("-", 1)
+                gt_startline, gt_endline = int(gt_start), int(gt_end)
+            else:
+                gt_startline = gt_endline = int(gt_lines)
+        else:
+            gt_startline = gt_endline = None
+
+        # Check if any finding matches the ground truth
+        exact_match = False
+        partial_matches = []
+
+        for finding in findings:
+            unified_title = finding.get("unified_bug_title", "")
+            position = finding.get("position", {})
+            finding_line = position.get("line")
+
+            # Check if vulnerability type matches
+            vuln_match = (
+                gt_vulnerability
+                and unified_title.lower() == gt_vulnerability.lower()
             )
-            output = {"result": "false", "reason": "incomplete ground truth"}
-            return output
 
-        if "-" in gt_lines:
-            gt_startline_str, gt_endline_str = gt_lines.split("-", 1)
-        else:
-            gt_startline_str = gt_endline_str = gt_lines
-        gt_startline, gt_endline = int(gt_startline_str), int(gt_endline_str)
-
-        is_correct = False
-        reason: List[str] = []
-        manual_evaluation = False
-
-        for warning in warnings:
-            try:
-                tool_code, tool_line_raw = warning
-                tool_line = int(tool_line_raw)
-            except Exception:
-                logging.error(f"Unexpected warning format: {warning}")
-                continue
-            tool_vulnerability = CS_MAPPING.get(tool_code)
-
-            if not tool_vulnerability:
-                reason.append(
-                    f"unrecognized warning code '{tool_code}' by circomspect for '{bug_name}'"
-                )
-                continue
-
-            if tool_vulnerability.lower() == gt_vulnerability.lower():
-                if gt_startline <= tool_line <= gt_endline:
-                    is_correct = True
-                else:
-                    reason.append(
-                        f"Tool found correct vulnerability ('{tool_vulnerability}'), but wrong line: "
-                        f"tool found: '{tool_line}'; ground truth line: '{gt_startline}'-'{gt_endline}'"
-                    )
-                    manual_evaluation = True
+            # Check if line matches (if we have line info)
+            if finding_line and gt_startline is not None:
+                line_match = gt_startline <= finding_line <= gt_endline
             else:
-                reason.append(
-                    f"Tool found wrong vulnerability ('{tool_vulnerability}'); "
-                    f"ground truth vulnerability: '{gt_vulnerability}'"
+                line_match = None  # Can't determine without line info
+
+            if vuln_match and line_match:
+                exact_match = True
+            elif vuln_match:
+                partial_matches.append(
+                    f"Found {unified_title} but at different line ({finding_line} vs {gt_lines})"
                 )
 
-        if is_correct:
-            output = {"result": "correct"}
+        # Conservative evaluation
+        if exact_match:
+            # 100% certain: exact vulnerability type and line match
+            return {
+                "status": "TruePositive",
+                "reason": f"Found {gt_vulnerability} at lines {gt_lines}",
+                "need_manual_analysis": False,
+                "manual_analysis": "N/A",
+                "manual_analysis_reasoning": "N/A",
+            }
+        elif partial_matches:
+            # Uncertain: right vulnerability but wrong line
+            return {
+                "status": "Undecided",
+                "reason": "; ".join(partial_matches),
+                "need_manual_analysis": True,
+                "manual_analysis": "Pending",
+                "manual_analysis_reasoning": "TODO",
+            }
         else:
-            if reason == []:
-                reason = [
-                    "circomspect found no warnings for vulnerable function."
-                ]
-            if manual_evaluation:
-                output = {
-                    "result": "false",
-                    "reason": reason,
-                    "need_manual_evaluation": True,
-                }
-            else:
-                output = {"result": "false", "reason": reason}
-
-        return output
+            # Found issues but not the expected vulnerability
+            return {
+                "status": "Undecided",
+                "reason": f"Tool found {len(findings)} issues but none match {gt_vulnerability}",
+                "need_manual_analysis": True,
+                "manual_analysis": "Pending",
+                "manual_analysis_reasoning": "TODO",
+            }
