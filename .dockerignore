@@ -26,12 +26,18 @@ dist/
 # Output directory
 output/
 
+# Documentation (keep only essential docs)
+docs/
+*.md
+!README.md
+
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.claude/
 
 # OS
 .DS_Store
@@ -40,5 +46,13 @@ Thumbs.db
 # Logs
 *.log
 
+# Docker
+docker-compose.yml
+Dockerfile.*
+
 # Lock files (keep uv.lock for reproducibility)
 # uv.lock
+
+# Test/temp directories
+temp/
+test_*/

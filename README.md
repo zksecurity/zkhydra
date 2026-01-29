@@ -378,7 +378,7 @@ The repository includes GitHub Actions workflows that automatically check:
 - Linting (ruff)
 
 These checks run on:
-- Every push to `master`, `main`, or `develop` branches
+- Every push to `main` or `develop` branches
 - Every pull request to these branches
 
 PRs will be blocked if checks fail. Fix issues locally with:
