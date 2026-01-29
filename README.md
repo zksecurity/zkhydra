@@ -284,6 +284,10 @@ docker pull ghcr.io/zksecurity/zkhydra:latest
 docker-compose build --no-cache
 ```
 
+## Funding
+
+This project was partially funded by an [Ethereum Foundation](https://esp.ethereum.foundation/) grant.
+
 ## License
 
 See [LICENSE](LICENSE) file.
