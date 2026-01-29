@@ -3,7 +3,7 @@
 * Id: iden3/circomlib/veridise-V-CIRCOMLIB-VUL-001
 * Project: https://github.com/iden3/circomlib
 * Commit: cff5ab6288b55ef23602221694a6a38a0239dcc0
-* Fix Commit: 
+* Fix Commit:
 * DSL: Circom
 * Vulnerability: Under-Constrained
 * Impact: Soundness

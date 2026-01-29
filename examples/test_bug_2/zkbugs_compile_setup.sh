@@ -26,7 +26,7 @@ echo "Compiling the target circuit: $CIRCOM_CIRCUIT"
 circom $CIRCOM_CIRCUIT --O0 --r1cs --wasm --sym
 
 # Print message and then perform phase 2 of the ceremony.
-echo "Phase 2 of the ceremony producing zkey and verifiaction key: ${ZKEY_FINAL}" 
+echo "Phase 2 of the ceremony producing zkey and verifiaction key: ${ZKEY_FINAL}"
 snarkjs powersoftau prepare phase2 ${PTAU_FILE} ${PTAU_FINAL} -v
 snarkjs groth16 setup $R1CS ${PTAU_FINAL} ${ZKEY_INIT}
 snarkjs zkey contribute ${ZKEY_INIT} ${ZKEY_FINAL} --name="1st Contributor Name" -v

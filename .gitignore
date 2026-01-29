@@ -1,5 +1,9 @@
+.vscode/
 output/
 tags
+zkbugs/
+.claude/
+docs/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

@@ -1,28 +1,21 @@
 services:
   zkhydra:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # Use published image (or build locally by uncommenting below)
+    #image: ghcr.io/zksecurity/zkhydra:latest
     image: zkhydra:latest
+    # To build locally instead:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: zkhydra
     volumes:
-      # Mount the output directory to persist results
+      # Output directory - persist analysis results
       - ./output:/zkhydra/output
-      # Mount config files
-      - ./config.toml:/zkhydra/config.toml
-      - ./configs:/zkhydra/configs
-      # Mount bugs directory (if exists locally, otherwise uses container's clone)
-      - ./bugs:/zkhydra/bugs
-      # Mount zkbugs
-      - ./zkbugs/:/zkhydra/zkbugs
-      # Mount test_bug directories
-      - ./test_bug:/zkhydra/test_bug
-      - ./test_bug_2:/zkhydra/test_bug_2
-      - ./test_bug_3:/zkhydra/test_bug_3
-      # DEBUG: Mount zkhydra Python package
-      - ./zkhydra:/zkhydra/zkhydra
+      # Examples directory - mount your circuits here
+      - ./examples:/zkhydra/examples
+      # Mount zkbugs dataset if you have it locally
+      # - ./zkbugs:/zkhydra/zkbugs
+      # Debug: uncommenting this line to use local changes in zkhydra
+      # ./zkhydra:/zkhydra/zkhydra
     working_dir: /zkhydra
-    # Default command - can be overridden
     command: /bin/bash
-    # Uncomment to run main.py by default
-    # command: uv run main.py

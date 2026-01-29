@@ -26,6 +26,9 @@ dist/
 # Output directory
 output/
 
+# Examples directory (not needed in image)
+examples/
+
 # Documentation (keep only essential docs)
 docs/
 *.md

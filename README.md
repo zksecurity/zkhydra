@@ -1,429 +1,294 @@
 # zkHydra
 
-A tool runner framework for zero-knowledge circuit security analysis. zkHydra orchestrates multiple security analysis tools and provides two operational modes:
+A unified framework for running zero-knowledge circuit security analysis tools. zkHydra orchestrates multiple analysis tools (circomspect, circom_civer, Picus, EcneProject, zkFuzz) to detect vulnerabilities in Circom circuits.
 
-- **Analyze Mode**: Run security tools on any circuit and get findings
-- **Evaluate Mode**: Compare tool results against ground truth for accuracy evaluation
+## Quick Start
+
+### Using Docker (Recommended)
+
+```bash
+# Pull the image
+docker pull ghcr.io/zksecurity/zkhydra:latest
+
+docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
+  --input examples/test_bug_2/circuits/circuit.circom \
+  --tools circomspect,circom_civer,picus,zkfuzz
+
+# or
+docker-compose run --rm zkhydra /bin/bash
+```
+
+### Analyze Your First Circuit
+
+```bash
+# Inside the container, analyze the example circuit
+uv run python -m zkhydra.main analyze \
+  --input examples/test_bug/circuits/circuit.circom \
+  --tools circomspect
+```
+
+### Mount Your Own Circuits
+
+Edit `docker-compose.yml` to mount your circuit directory:
+
+```yaml
+volumes:
+  - ./output:/zkhydra/output
+  - ./examples:/zkhydra/examples
+  - ./my-circuits:/zkhydra/my-circuits  # Add this line
+```
+
+Then analyze:
+
+```bash
+docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
+  --input my-circuits/circuit.circom \
+  --tools circomspect,circom_civer,picus
+```
+
+## Running on zkbugs Dataset
+
+The [zkbugs dataset](https://github.com/zksecurity/zkbugs) contains real-world Circom vulnerabilities.
+
+```bash
+# Clone zkbugs dataset
+git clone --recurse-submodules https://github.com/zksecurity/zkbugs.git
+
+# Update docker-compose.yml to mount it
+# volumes:
+#   - ./zkbugs:/zkhydra/zkbugs
+
+# Run analysis on the entire dataset
+docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
+  --input zkbugs/dataset \
+  --tools all \
+  --timeout 600 \
+  --log-file
+```
+
+This will:
+- Analyze all bugs in the zkbugs dataset
+- Run all available tools (circomspect, circom_civer, picus, ecneproject, zkfuzz)
+- Set 10-minute timeout per tool per bug
+- Generate log file with detailed execution info
+- Output results to `output/zkbugs_YYYYMMDD_HHMMSS/`
 
 ## Supported Tools
 
-- **circomspect** - Static analyzer and linter for Circom circuits
-- **circom_civer** - Static analysis using CVC5 SMT solver backend
-- **Picus** - Symbolic execution tool using Rosette
-- **EcneProject** - Julia-based circuit analysis framework
-- **zkFuzz** - Fuzzing tool for Circom circuits
+- **circomspect** - Static analyzer and linter
+- **circom_civer** - SMT-based verification with CVC5
+- **Picus** - Symbolic execution via Rosette
+- **EcneProject** - Julia-based circuit analysis
+- **zkFuzz** - Fuzzing-based bug detection
 
-## Installation
+## Usage Modes
 
-### Option 1: Native Installation (Ubuntu 24.04)
+### 1. Analyze Mode
 
-```bash
-./setup.sh
-```
-
-This initializes git submodules, installs uv, sets up Rust toolchain, and builds all tools.
-
-### Option 2: Docker
+Run tools on a single circuit without ground truth.
 
 ```bash
-# Build the Docker image (takes 30-60 minutes)
-docker-compose build
-
-# Run interactively
-docker-compose run --rm zkhydra bash
-```
-
-## Usage
-
-zkHydra has two modes: **analyze** and **evaluate**.
-
-### Analyze Mode
-
-Analyze a circuit file with one or more tools. Does not require ground truth.
-
-**Synopsis:**
-```bash
-uv run python -m zkhydra.main analyze --input <circuit.circom> --tools <tool1,tool2,...> [options]
-```
-
-**Output:**
-- Summary of findings per tool
-- Total analysis time per tool
-- One-liner list of findings
-- Raw tool outputs
-- JSON summary file
-
-**Examples:**
-
-```bash
-# Analyze with a single tool
-uv run python -m zkhydra.main analyze --input test_bug/circuits/circuit.circom --tools circomspect
-
-# Analyze with multiple tools
-uv run python -m zkhydra.main analyze \
-  --input test_bug/circuits/circuit.circom \
-  --tools circomspect,circom_civer,picus
-
-# Specify output directory and timeout
 uv run python -m zkhydra.main analyze \
   --input circuit.circom \
-  --tools circomspect \
-  --output results/ \
-  --timeout 3600
+  --tools circomspect,circom_civer \
+  --timeout 600 \
+  --output results/
 ```
 
-**Docker:**
-```bash
-docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
-  --input test_bug/circuits/circuit.circom \
-  --tools circomspect
-```
+**Output**: Raw findings from each tool in `results/`
 
-### Evaluate Mode
+### 2. Evaluate Mode
 
-Run tools and compare results against ground truth from a configuration file.
-
-**Synopsis:**
-```bash
-uv run python -m zkhydra.main evaluate --input <zkbugs_config.json> --tools <tool1,tool2,...> [options]
-```
-
-**Input Format:**
-The JSON config file must follow the zkbugs format:
-```json
-{
-  "bug_name": {
-    "Project": "https://github.com/project/repo",
-    "Commit": "commit_hash",
-    "Vulnerability": "Under-Constrained",
-    "Impact": "Description of impact",
-    "Root Cause": "Description of root cause",
-    "Location": {
-      "Function": "FunctionName",
-      "Line": "10",
-      "File": "circuit.circom"
-    }
-  }
-}
-```
-
-**Output:**
-- Ground truth file
-- Tool comparison results (True Positives, False Negatives, etc.)
-- Summary statistics
-- Evaluation file with TODO items for manual review
-
-**Examples:**
+Compare tool results against known vulnerabilities (requires zkbugs format config).
 
 ```bash
-# Evaluate with ground truth
 uv run python -m zkhydra.main evaluate \
-  --input test_bug/zkbugs_config.json \
-  --tools circomspect
-
-# Evaluate with multiple tools
-uv run python -m zkhydra.main evaluate \
-  --input test_bug/zkbugs_config.json \
-  --tools circomspect,circom_civer,picus
+  --input bug/zkbugs_config.json \
+  --tools all
 ```
 
-**Docker:**
+**Output**: Ground truth comparison, True Positives, False Negatives
+
+### 3. zkbugs Mode
+
+Run tools on the entire zkbugs dataset.
+
 ```bash
-docker-compose run --rm zkhydra uv run python -m zkhydra.main evaluate \
-  --input test_bug/zkbugs_config.json \
-  --tools circomspect
+uv run python -m zkhydra.main zkbugs \
+  --input zkbugs/dataset \
+  --tools all \
+  --timeout 600
 ```
+
+**Output**: Per-bug analysis results and summary statistics
 
 ## CLI Options
 
-### Required Arguments
-
-- `mode` - Operation mode: `analyze` or `evaluate`
-- `--input`, `-i` - Input file:
-  - Analyze mode: Circuit file (`.circom`)
-  - Evaluate mode: Config file (`.json`)
-- `--tools`, `-t` - Tools to run:
-  - Use `all` to run all available tools for the DSL
-  - Or specify comma-separated list: `circomspect,circom_civer,picus`
-  - Available tools for Circom: `circomspect`, `circom_civer`, `picus`, `ecneproject`, `zkfuzz`
-
-### Optional Arguments
-
-- `--output`, `-o` - Output directory (default: `output/`)
-- `--dsl` - Domain-specific language (default: `circom`, options: `circom`, `pil`, `cairo`)
-- `--timeout` - Timeout per tool in seconds (default: `1800`)
-- `--log-level` - Logging level (default: `INFO`, options: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`)
-- `--log-file` - Enable file logging
-
-### Help
-
 ```bash
-uv run python -m zkhydra.main --help
-uv run python -m zkhydra.main analyze --help
-uv run python -m zkhydra.main evaluate --help
-```
+# Required
+--input, -i     Input file or directory
+--tools, -t     Tools to run (comma-separated or 'all')
 
-## Output Structure
-
-### Analyze Mode Output
-
-```
-output/analyze_YYYYMMDD_HHMMSS/
-├── circomspect/
-│   └── raw.txt           # Raw tool output
-├── circom_civer/
-│   └── raw.txt
-├── summary.json          # Complete summary with findings
-```
-
-### Evaluate Mode Output
-
-```
-output/evaluate_YYYYMMDD_HHMMSS/
-├── ground_truth.json              # Extracted ground truth
-├── circomspect/
-│   ├── raw.txt                    # Raw tool output
-│   ├── parsed.json                # Structured output
-│   └── results.json               # Comparison result
-├── circom_civer/
-│   ├── raw.txt
-│   ├── parsed.json
-│   └── results.json
-├── summary.json                   # Evaluation statistics
-└── manual_review_todo.md          # Items needing manual review (if any)
+# Optional
+--output, -o    Output directory (default: output/)
+--timeout       Timeout per tool in seconds (default: 1800)
+--log-file      Enable file logging
+--log-level     Logging verbosity (default: INFO)
 ```
 
 ## Examples
 
-### Quick Start: Analyze a Test Circuit
+### Single Tool Analysis
 
 ```bash
-# Analyze the example underconstrained circuit
-uv run python -m zkhydra.main analyze \
-  --input test_bug/circuits/circuit.circom \
+docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
+  --input examples/test_bug/circuits/circuit.circom \
   --tools circomspect
-
-# Expected output: 1 finding (underconstrained signal)
 ```
 
-### Evaluate Against Ground Truth
+### Multiple Tools with Timeout
 
 ```bash
-# Evaluate tools against known vulnerability
-uv run python -m zkhydra.main evaluate \
-  --input test_bug/zkbugs_config.json \
-  --tools circomspect
-
-# Expected output: True positive detection
+docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
+  --input examples/test_bug/circuits/circuit.circom \
+  --tools circomspect,circom_civer,zkfuzz \
+  --timeout 300
 ```
 
-### Run All Tools
+### Full zkbugs Evaluation
 
 ```bash
-# Analyze with all available tools (using 'all' keyword)
-uv run python -m zkhydra.main analyze \
-  --input test_bug/circuits/circuit.circom \
+# From host machine with zkbugs cloned locally
+docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
+  --input zkbugs/dataset \
   --tools all \
-  --timeout 3600
-
-# Or specify tools explicitly
-uv run python -m zkhydra.main analyze \
-  --input test_bug/circuits/circuit.circom \
-  --tools circomspect,circom_civer,picus,ecneproject,zkfuzz \
-  --timeout 3600
+  --timeout 600 \
+  --log-file \
+  --output output/zkbugs-run
 ```
 
-## Understanding Output
+## Output Structure
 
-### Analyze Mode Summary
-
-The CLI prints:
-- **Input**: Path to analyzed circuit
-- **Output**: Where results are saved
-- **Total Time**: Combined execution time
-- **Total Findings**: Sum of all findings across tools
-- **Per-tool Results**: Findings count, execution time, and top findings
-
-Example:
 ```
-================================================================================
-ANALYZE MODE - SUMMARY
-================================================================================
-Input:        test_bug/circuits/circuit.circom
-Output:       output/analyze_20260126_153045
-Total Time:   2.45s
-Total Findings: 1
-
---------------------------------------------------------------------------------
-TOOL RESULTS:
---------------------------------------------------------------------------------
-
-CIRCOMSPECT:
-  Time:     2.45s
-  Findings: 1
-  Output:   output/analyze_20260126_153045/circomspect/raw.txt
-
-  Findings List:
-    1. warning[CS0017]: Signal `c` is not constrained
+output/
+└── analyze_YYYYMMDD_HHMMSS/
+    ├── circomspect/
+    │   ├── raw.txt          # Raw tool output
+    │   ├── tool_output.json # Execution metadata
+    │   ├── parsed.json      # Structured findings
+    │   └── results.json     # Standardized format
+    ├── circom_civer/
+    │   └── ...
+    └── summary.json         # Aggregated results
 ```
 
-### Evaluate Mode Summary
-
-The CLI prints:
-- **Bug**: Name from config
-- **Vulnerability**: Type from ground truth
-- **Statistics**: TP, FN, timeouts, errors, manual review needs
-- **Per-tool Results**: Verdict (✓ correct, ✗ false, ⏱ timeout)
-
-Example:
+For zkbugs mode:
 ```
-================================================================================
-EVALUATE MODE - SUMMARY
-================================================================================
-Bug:          test_bug
-Vulnerability: Under-Constrained
-Output:       output/evaluate_20260126_153045
+output/zkbugs_YYYYMMDD_HHMMSS/
+├── bug_name_1/
+│   ├── ground_truth.json
+│   ├── circomspect/
+│   │   ├── raw.txt
+│   │   ├── results.json
+│   │   └── evaluation.json  # TP/FN/Undecided
+│   └── ...
+├── bug_name_2/
+│   └── ...
+└── summary.json             # Dataset-wide statistics
+```
 
---------------------------------------------------------------------------------
-STATISTICS:
---------------------------------------------------------------------------------
-Total Tools:         1
-True Positives:      1
-False Negatives:     0
-Timeouts:            0
-Errors:              0
-Need Manual Review:  0
+## Installation (Local Development)
 
---------------------------------------------------------------------------------
-TOOL RESULTS:
---------------------------------------------------------------------------------
+### Prerequisites
+- Ubuntu 24.04
+- Python 3.12+
+- Rust toolchain
+- Julia, Node.js, Racket
 
-CIRCOMSPECT: ✓ CORRECT
-  Time: 2.45s
+### Build from Source
+
+```bash
+# Clone repository with submodules
+git clone --recurse-submodules https://github.com/zksecurity/zkhydra.git
+cd zkhydra
+
+# Run setup script (installs all dependencies and builds tools)
+./setup.sh
+
+# Run zkHydra
+uv run python -m zkhydra.main --help
+```
+
+### Docker Build
+
+```bash
+# Build image locally (takes 30-60 minutes)
+docker build -t zkhydra:latest .
+
+# Or use docker-compose
+docker-compose build
 ```
 
 ## Development
 
-### Code Quality Tools
+### Code Quality
 
-The project uses:
-- **black** - Code formatter
-- **isort** - Import sorter
-- **ruff** - Fast Python linter
-
-### Quick Commands (using Make)
-
-Format and lint code (recommended):
 ```bash
+# Format and lint (requires uv)
 make all
-```
 
-Or run individually:
-```bash
-make format    # Format with black and isort
-make lint      # Lint with ruff and auto-fix issues
-make check     # Check without making changes
-```
-
-### Manual Commands
-
-Format the codebase:
-```bash
+# Or manually
 uv run black zkhydra/
 uv run isort zkhydra/ --profile black
-```
-
-Lint the codebase:
-```bash
 uv run ruff check zkhydra/ --fix
 ```
 
-Check code quality without making changes:
-```bash
-uv run ruff check zkhydra/
-uv run black zkhydra/ --check
-uv run isort zkhydra/ --check-only --profile black
-```
-
-### Git Hooks (Pre-commit)
-
-Set up automatic code quality checks before every commit:
-
-```bash
-# Install pre-commit hooks
-uv pip install pre-commit
-pre-commit install
-```
-
-Now, every time you commit, the hooks will:
-- Format code with black and isort
-- Lint code with ruff
-- Check for trailing whitespace, large files, merge conflicts
-
-To run hooks manually without committing:
-```bash
-pre-commit run --all-files
-```
-
-To skip hooks for a specific commit (not recommended):
-```bash
-git commit --no-verify
-```
-
-### GitHub Actions (CI)
-
-The repository includes GitHub Actions workflows that automatically check:
-- Code formatting (black)
-- Import sorting (isort)
-- Linting (ruff)
-
-These checks run on:
-- Every push to `main` or `develop` branches
-- Every pull request to these branches
-
-PRs will be blocked if checks fail. Fix issues locally with:
-```bash
-make all
-```
-
-## Project Structure
+### Project Structure
 
 ```
 zkhydra/
-├── tools/                      # Tool source code repositories (git submodules)
-│   ├── circomspect/           # circomspect source
-│   ├── circom_civer/          # circom_civer source
-│   ├── picus/                 # picus source
-│   ├── ecneproject/           # ecneproject source
-│   └── zkfuzz/                # zkfuzz source
-├── zkhydra/                    # Python package
-│   ├── tools/                 # Tool Python wrappers
-│   │   ├── base.py           # AbstractTool base class, Finding dataclass
-│   │   ├── circomspect.py    # Circomspect wrapper
-│   │   ├── circom_civer.py   # CiVer wrapper
-│   │   ├── zkfuzz.py         # zkFuzz wrapper
-│   │   ├── picus.py          # Picus wrapper
-│   │   └── ecneproject.py    # EcneProject wrapper
-│   ├── utils/                 # Utility modules
-│   │   ├── logger.py         # Logging setup
-│   │   └── tools_resolver.py # Tool registry and resolution
-│   ├── bugs/                  # Bug management
-│   │   └── zkbugs.py         # zkbugs dataset handling
-│   ├── cli.py                 # Command-line argument parsing
-│   └── main.py                # Main entry point and execution logic
-├── bugs/zkbugs/               # zkbugs dataset (git submodule)
-├── output/                    # Analysis results
-├── run.py                     # Convenience entry point wrapper
-└── pyproject.toml            # Python dependencies
+├── zkhydra/              # Python package
+│   ├── tools/           # Tool wrappers (circomspect.py, etc.)
+│   ├── cli.py           # CLI argument parsing
+│   ├── core.py          # Execution orchestration
+│   └── main.py          # Entry point
+├── tools/               # Tool source repos (git submodules)
+├── examples/            # Example circuits for testing
+├── docker-compose.yml   # Docker configuration
+└── Dockerfile          # Multi-stage build with all tools
 ```
 
-## Legacy Config File Mode
+## Troubleshooting
 
-The tool previously used TOML config files. This mode will be added back in a future update with:
+### Tools Timeout
+
+Increase timeout for slow tools:
 ```bash
-uv run python -m zkhydra.main --config config.toml
+--timeout 1800  # 30 minutes
+```
+
+### Out of Memory
+
+For large circuits, run tools individually:
+```bash
+--tools circomspect  # Run one at a time
+```
+
+### Docker Issues
+
+```bash
+# Pull latest image
+docker pull ghcr.io/zksecurity/zkhydra:latest
+
+# Rebuild locally if needed
+docker-compose build --no-cache
 ```
 
 ## License
 
 See [LICENSE](LICENSE) file.
+
+## Resources
+
+- **zkbugs Dataset**: https://github.com/zksecurity/zkbugs
+- **Issues**: https://github.com/zksecurity/zkhydra/issues
