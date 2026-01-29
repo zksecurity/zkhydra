@@ -197,6 +197,10 @@ output/zkbugs_YYYYMMDD_HHMMSS/
 └── summary.json             # Dataset-wide statistics
 ```
 
+## Existing zkbugs analysis
+
+You can find a report of the zkbugs analysis in `output/zkbugs-report.pdf` and you can download a tar with all the results here: https://drive.google.com/file/d/1zTIrrVqy0MXMxC4tRiPoFMEfXv-2TLYY/view?usp=sharing.
+
 ## Installation (Local Development)
 
 ### Prerequisites
