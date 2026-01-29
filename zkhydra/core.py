@@ -18,9 +18,7 @@ from pathlib import Path
 from zkhydra.printers import print_analyze_summary
 from zkhydra.tools.base import (
     AbstractTool,
-    AnalysisStatus,
     Input,
-    ResultsData,
     ToolOutput,
     ToolResult,
     ToolStatus,
@@ -495,17 +493,9 @@ def vanilla_mode(output_dir: Path, eval: bool, dsl: str = "circom") -> None:
         for tool_dir in tool_dirs:
             tool_name = tool_dir.name
             logging.info(f"Processing tool: {tool_name}")
-            # Load the results.json file
-            with open(tool_dir / "results.json", encoding="utf-8") as f:
-                results_data = json.load(f)
-            results = ResultsData.from_dict(results_data)
             # Load the tool_output.json file
             with open(tool_dir / "tool_output.json", encoding="utf-8") as f:
                 tool_output = ToolOutput.from_dict(json.load(f))
-            # If the result was TIMEOUT, then we can skip
-            if results.status == AnalysisStatus.TIMEOUT:
-                logging.info(f"Tool {tool_name} timed out, skipping")
-                continue
             # Redo the analysis of the tool result
             tool_instance = resolve_tools([tool_name])[tool_name]
             # Process the tool output
