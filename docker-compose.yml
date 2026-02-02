@@ -16,6 +16,6 @@ services:
       # Mount zkbugs dataset if you have it locally
       # - ./zkbugs:/zkhydra/zkbugs
       # Debug: uncommenting this line to use local changes in zkhydra
-      # ./zkhydra:/zkhydra/zkhydra
+      # - ./zkhydra:/zkhydra/zkhydra
     working_dir: /zkhydra
     command: /bin/bash
