@@ -79,7 +79,7 @@ class Summary:
 
 # Available tools per DSL
 AVAILABLE_TOOLS = {
-    "circom": ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz"],
+    "circom": ["circomspect", "circom_civer", "conscs", "picus", "ecneproject", "zkfuzz"],
     "pil": ["pilspector"],
     "cairo": ["sierra-analyzer"],
 }
