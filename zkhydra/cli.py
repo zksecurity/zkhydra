@@ -121,6 +121,29 @@ Examples:
         action="store_true",
         help="Whether to just process existing .raw files",
     )
+    parser.add_argument(
+        "--zkbugs-mode",
+        type=str,
+        default="direct",
+        choices=["direct", "original"],
+        help="Entrypoint per bug for zkbugs mode (default: direct). "
+        "'original' requires dataset/codebases/ populated via scripts/download_sources.sh.",
+    )
+    parser.add_argument(
+        "--bugs",
+        type=str,
+        default=None,
+        help="Comma-separated bug selectors (substrings matched against the "
+        "bug directory name or its dataset-relative path). "
+        "Example: --bugs veridise_decoder,darkforest/daira_hopwood",
+    )
+    parser.add_argument(
+        "--bugs-file",
+        type=Path,
+        default=None,
+        help="File with one bug selector per line (lines starting with # are "
+        "ignored). Selectors follow the same rules as --bugs.",
+    )
 
     args = parser.parse_args()
 
@@ -147,6 +170,17 @@ Examples:
             logging.error(
                 f"DSL '{args.dsl}' is not supported yet for zkbugs mode"
             )
+            sys.exit(1)
+        if args.zkbugs_mode == "original" and not args.vanilla:
+            codebases = args.dataset.parent / "codebases"
+            if not codebases.exists():
+                logging.warning(
+                    "zkbugs-mode=original but codebases dir not found: %s. "
+                    "Run scripts/download_sources.sh on the zkbugs repo first.",
+                    codebases,
+                )
+        if args.bugs_file is not None and not args.bugs_file.is_file():
+            logging.error(f"--bugs-file not found: {args.bugs_file}")
             sys.exit(1)
     else:
         # analyze/evaluate mode validation
