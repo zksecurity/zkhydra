@@ -10,8 +10,10 @@ import argparse
 import json
 import logging
 import os
+import shlex
+import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
 
@@ -25,6 +27,15 @@ from zkhydra.tools.base import (
     ensure_dir,
 )
 from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
+from zkhydra.utils.zkbugs_loader import (
+    ZkbugsLoaderError,
+    find_print_bug_vars,
+    load_bug_config,
+    load_bug_input,
+)
+
+# Tools that consume R1CS (the shared pre-compile feeds these).
+ARTIFACT_TOOLS = frozenset({"ecneproject", "picus"})
 
 BASE_DIR = Path.cwd()
 
@@ -246,62 +257,140 @@ def evaluate_mode(args: argparse.Namespace) -> None:
     )
 
 
-def discover_zkbugs(dataset_dir: Path) -> list[dict]:
+SKIP_PATH_PARTS = {"codebases", "dependencies"}
+
+
+def _is_excluded_config(config_path: Path) -> bool:
+    """Skip configs that are not actual bugs (shared codebases, deps)."""
+    parts = set(config_path.parts)
+    return bool(parts & SKIP_PATH_PARTS)
+
+
+def load_bug_selectors(
+    selectors: str | None, selectors_file: Path | None
+) -> list[str]:
+    """Collect bug selectors from --bugs (comma-separated) and --bugs-file."""
+    result: list[str] = []
+    if selectors:
+        result.extend(s.strip() for s in selectors.split(",") if s.strip())
+    if selectors_file is not None:
+        for raw in selectors_file.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if line and not line.startswith("#"):
+                result.append(line)
+    return result
+
+
+def _bug_matches_selectors(
+    bug_dir: Path, dataset_dir: Path, selectors: list[str]
+) -> bool:
+    """True if any selector is a substring of the bug name or relative path."""
+    if not selectors:
+        return True
+    name = bug_dir.name
+    try:
+        rel = str(bug_dir.resolve().relative_to(dataset_dir.resolve()))
+    except ValueError:
+        rel = str(bug_dir)
+    return any(sel in name or sel in rel for sel in selectors)
+
+
+def discover_zkbugs(
+    dataset_dir: Path,
+    mode: str,
+    script_path: Path,
+    selectors: list[str] | None = None,
+) -> list[dict]:
+    """Discover bugs by walking zkbugs_config.json files and loading an Input.
+
+    Each bug entry carries:
+        - config_path: Path to zkbugs_config.json
+        - bug_dir: Path to the bug directory
+        - bug_name: Name of the bug
+        - config: parsed single-bug section of zkbugs_config.json
+        - input: populated Input (None if loading failed or bug is skipped)
+        - skip_reason: str | None, set when the bug must be skipped
+
+    If `selectors` is non-empty, bugs whose directory name and
+    dataset-relative path both lack every selector substring are dropped
+    entirely (not listed in summary; they are not real candidates).
     """
-    Discover all bugs in the dataset by finding zkbugs_config.json files.
+    selectors = selectors or []
+    bugs: list[dict] = []
+    config_files = [
+        p
+        for p in dataset_dir.rglob("zkbugs_config.json")
+        if not _is_excluded_config(p)
+        and _bug_matches_selectors(p.parent, dataset_dir, selectors)
+    ]
 
-    Args:
-        dataset_dir: Path to the zkbugs dataset directory
+    if selectors:
+        logging.info(
+            "Selectors %s matched %d bug(s)", selectors, len(config_files)
+        )
+    logging.info("Found %d zkbugs_config.json files", len(config_files))
 
-    Returns:
-        List of bug information dictionaries containing:
-            - config_path: Path to zkbugs_config.json
-            - bug_dir: Path to the bug directory
-            - bug_name: Name of the bug
-            - circuit_path: Path to circuit.circom (if exists)
-    """
-    bugs = []
-    config_files = list(dataset_dir.rglob("zkbugs_config.json"))
-
-    logging.info(f"Found {len(config_files)} zkbugs_config.json files")
+    compile_flag = (
+        "Compiled Direct" if mode == "direct" else "Compiled Original"
+    )
 
     for config_path in config_files:
         bug_dir = config_path.parent
         bug_name = bug_dir.name
+        entry: dict = {
+            "config_path": config_path,
+            "bug_dir": bug_dir,
+            "bug_name": bug_name,
+            "config": None,
+            "input": None,
+            "skip_reason": None,
+        }
 
-        # Check if circuit.circom exists
-        circuit_path = bug_dir / "circuits" / "circuit.circom"
+        try:
+            config = load_bug_config(bug_dir)
+        except (OSError, ZkbugsLoaderError) as exc:
+            entry["skip_reason"] = f"failed to read zkbugs_config.json: {exc}"
+            bugs.append(entry)
+            continue
+        entry["config"] = config
 
-        if not circuit_path.exists():
-            logging.warning(
-                f"Bug '{bug_name}': circuit.circom not found at {circuit_path}"
+        # Skip only on compile flags, never on Executed=false.
+        if config.get(compile_flag) is False:
+            entry["skip_reason"] = f"{compile_flag}=false"
+            bugs.append(entry)
+            continue
+
+        try:
+            inp = load_bug_input(bug_dir, mode, script_path)
+        except ZkbugsLoaderError as exc:
+            entry["skip_reason"] = f"loader error: {exc}"
+            bugs.append(entry)
+            continue
+
+        if (
+            inp.codebase
+            and not inp.codebase_exists
+            and any(flag == inp.codebase for flag in inp.link_flags)
+        ):
+            entry["skip_reason"] = (
+                "codebase missing: run scripts/download_sources.sh"
             )
-            circuit_path = None
+            bugs.append(entry)
+            continue
 
-        bugs.append(
-            {
-                "config_path": config_path,
-                "bug_dir": bug_dir,
-                "bug_name": bug_name,
-                "circuit_path": circuit_path,
-            }
-        )
+        entry["input"] = inp
+        bugs.append(entry)
 
     return bugs
 
 
-def generate_ground_truth(config_path: Path, output_path: Path) -> None:
-    """
-    Generate ground_truth.json from zkbugs_config.json.
-
-    Args:
-        config_path: Path to zkbugs_config.json
-        output_path: Path where ground_truth.json should be written
-    """
+def generate_ground_truth(
+    config_path: Path, output_path: Path, mode: str
+) -> None:
+    """Write ground_truth.json from zkbugs_config.json + active mode."""
     with open(config_path, encoding="utf-8") as f:
         config = json.load(f)
 
-    # Extract the bug details (config is dict with single key)
     bug_key = list(config.keys())[0]
     bug_data = config[bug_key]
 
@@ -321,11 +410,77 @@ def generate_ground_truth(config_path: Path, output_path: Path) -> None:
         ),
         "proposed_mitigation": bug_data.get("Proposed Mitigation"),
         "source": bug_data.get("Source"),
+        "codebase": bug_data.get("Codebase"),
+        "direct_entrypoint": bug_data.get("Direct Entrypoint"),
+        "original_entrypoint": bug_data.get("Original Entrypoint", []),
+        "input": bug_data.get("Input", {}),
+        "executed": bug_data.get("Executed"),
+        "compiled_direct": bug_data.get("Compiled Direct"),
+        "compiled_original": bug_data.get("Compiled Original"),
+        "similar_bugs": bug_data.get("Similar Bugs", []),
+        "mode": mode,
     }
 
     ensure_dir(output_path.parent)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(ground_truth, f, indent=2, ensure_ascii=False)
+
+
+def precompile_circuit(
+    input_paths: Input, scratch_dir: Path, timeout: int
+) -> Input | None:
+    """Compile circom once so ecneproject / picus can reuse the artifacts.
+
+    Returns a new Input with r1cs_file/sym_file populated, or None if
+    compilation failed. Writes compile.log to scratch_dir.
+    """
+    ensure_dir(scratch_dir)
+    cmd = [
+        "circom",
+        input_paths.circuit_file,
+        "--r1cs",
+        "--sym",
+        "--wasm",
+        "--O0",
+        "-o",
+        str(scratch_dir),
+        *input_paths.link_flags,
+    ]
+    log_path = scratch_dir / "compile.log"
+    try:
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=timeout
+        )
+    except subprocess.TimeoutExpired:
+        log_path.write_text("[circom compile timed out]\n", encoding="utf-8")
+        logging.warning(
+            "precompile_circuit: timed out for %s", input_paths.circuit_file
+        )
+        return None
+
+    combined = f"cmd: {shlex.join(cmd)}\n\nstdout:\n{result.stdout}\n\nstderr:\n{result.stderr}\n"
+    log_path.write_text(combined, encoding="utf-8")
+    if result.returncode != 0:
+        logging.warning(
+            "precompile_circuit: circom failed for %s (rc=%s)",
+            input_paths.circuit_file,
+            result.returncode,
+        )
+        return None
+
+    r1cs = next(iter(scratch_dir.glob("*.r1cs")), None)
+    sym = next(iter(scratch_dir.glob("*.sym")), None)
+    if r1cs is None or sym is None:
+        logging.warning(
+            "precompile_circuit: r1cs/sym missing in %s", scratch_dir
+        )
+        return None
+
+    return replace(
+        input_paths,
+        r1cs_file=str(r1cs.resolve()),
+        sym_file=str(sym.resolve()),
+    )
 
 
 def _helper_eval(
@@ -361,72 +516,96 @@ def _helper_eval(
 
 
 def zkbugs_mode(
-    dataset_dir: Path, tools: list[str], dsl: str, timeout: int, output: Path
+    dataset_dir: Path,
+    tools: list[str],
+    dsl: str,
+    timeout: int,
+    output: Path,
+    mode: str = "direct",
+    selectors: list[str] | None = None,
 ) -> None:
-    """
-    zkbugs mode: Evaluate tools against the zkbugs dataset.
-
-    Args:
-        dataset_dir: Path to zkbugs dataset directory
-        tools: List of tool names to run
-        dsl: Domain-specific language (currently only 'circom')
-        timeout: Timeout per tool execution in seconds
-        output: Output directory for results
-    """
+    """Evaluate tools against the refactored zkbugs dataset."""
     logging.info("Running in ZKBUGS mode")
     logging.info(f"Dataset: {dataset_dir}")
     logging.info(f"DSL: {dsl}")
     logging.info(f"Tools: {tools}")
     logging.info(f"Timeout: {timeout}s")
+    logging.info(f"zkbugs-mode: {mode}")
+    if selectors:
+        logging.info("Bug selectors: %s", selectors)
 
-    # Discover bugs
-    bugs = discover_zkbugs(dataset_dir)
+    try:
+        script_path = find_print_bug_vars(dataset_dir)
+    except ZkbugsLoaderError as exc:
+        logging.error(str(exc))
+        sys.exit(1)
+    logging.info("Using runner contract: %s", script_path)
+
+    bugs = discover_zkbugs(dataset_dir, mode, script_path, selectors)
     logging.info(f"Total bugs discovered: {len(bugs)}")
-
-    # Filter bugs that have circuit.circom
-    bugs_with_circuits = [b for b in bugs if b["circuit_path"] is not None]
-    logging.info(
-        f"Bugs with circuit.circom: {len(bugs_with_circuits)}/{len(bugs)}"
-    )
-
-    if not bugs_with_circuits:
-        logging.error("No bugs with circuit.circom found")
+    if selectors and not bugs:
+        logging.error(
+            "No bugs matched selectors %s under %s", selectors, dataset_dir
+        )
         sys.exit(1)
 
-    # Resolve tool modules
+    runnable = [b for b in bugs if b["input"] is not None]
+    skipped = [b for b in bugs if b["input"] is None]
+    logging.info(
+        "Runnable: %d, skipped: %d/%d",
+        len(runnable),
+        len(skipped),
+        len(bugs),
+    )
+    for bug in skipped:
+        logging.info(
+            "  skip %s: %s",
+            bug["bug_name"],
+            bug.get("skip_reason", "unknown"),
+        )
+
+    if not runnable:
+        logging.error("No runnable bugs in %s (mode=%s)", dataset_dir, mode)
+        sys.exit(1)
+
     tool_registry = resolve_tools(tools)
     if not tool_registry:
         logging.error("No tools loaded successfully")
         sys.exit(1)
+    needs_artifacts = bool(set(tool_registry) & ARTIFACT_TOOLS)
 
-    # Create output directory
     ensure_dir(output)
     logging.info(f"Output directory: {output}")
 
-    # Process all bugs with circuits
-    bugs_to_process = bugs_with_circuits
+    summary_rows: list[dict] = []
 
-    # Process each bug
-    for idx, bug in enumerate(bugs_to_process, 1):
-        logging.info(f"\n{'='*80}")
+    for idx, bug in enumerate(runnable, 1):
+        logging.info("\n" + "=" * 80)
         logging.info(
-            f"Processing bug {idx}/{len(bugs_to_process)}: {bug['bug_name']}"
+            "Processing bug %d/%d: %s", idx, len(runnable), bug["bug_name"]
         )
-        logging.info(f"{'='*80}")
+        logging.info("=" * 80)
 
-        # Create bug-specific output directory
         bug_output_dir = output / bug["bug_name"]
         ensure_dir(bug_output_dir)
 
-        # Generate ground truth
         ground_truth_path = bug_output_dir / "ground_truth.json"
-        generate_ground_truth(bug["config_path"], ground_truth_path)
+        generate_ground_truth(bug["config_path"], ground_truth_path, mode)
         logging.info(f"Generated ground truth: {ground_truth_path}")
 
-        # Prepare circuit paths
-        input_paths = prepare_circuit_paths(bug["circuit_path"])
+        input_paths: Input = bug["input"]
 
-        # Execute all tools
+        if needs_artifacts:
+            scratch_dir = bug_output_dir / "scratch"
+            compiled = precompile_circuit(input_paths, scratch_dir, timeout)
+            if compiled is not None:
+                input_paths = compiled
+            else:
+                logging.warning(
+                    "Precompile failed for %s; ecneproject/picus will report errors",
+                    bug["bug_name"],
+                )
+
         results = execute_tools(
             tool_registry,
             input_paths,
@@ -434,26 +613,65 @@ def zkbugs_mode(
             timeout,
         )
 
-        # Evaluate each tool's results against ground truth
         for tool_name, tool_instance in tool_registry.items():
             if tool_name not in results:
                 continue
-
             tool_result = results[tool_name]
             _helper_eval(
                 tool_result,
                 tool_instance,
                 tool_name,
                 dsl,
-                bug,
+                bug["bug_name"],
                 ground_truth_path,
                 bug_output_dir,
             )
 
-    logging.info(f"\n{'='*80}")
+        summary_rows.append(
+            {
+                "bug_name": bug["bug_name"],
+                "status": "processed",
+                "mode": mode,
+                "tools": {
+                    name: {
+                        "status": r.status.value,
+                        "findings_count": r.findings_count,
+                    }
+                    for name, r in results.items()
+                },
+            }
+        )
+
+    for bug in skipped:
+        summary_rows.append(
+            {
+                "bug_name": bug["bug_name"],
+                "status": "skipped",
+                "reason": bug.get("skip_reason"),
+                "mode": mode,
+            }
+        )
+
+    summary_path = output / "summary.json"
+    with open(summary_path, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "mode": mode,
+                "dataset": str(dataset_dir),
+                "total": len(bugs),
+                "processed": len(runnable),
+                "skipped": len(skipped),
+                "bugs": summary_rows,
+            },
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    logging.info("\n" + "=" * 80)
     logging.info("zkbugs mode completed")
     logging.info(f"Results written to: {output}")
-    logging.info(f"{'='*80}")
+    logging.info("=" * 80)
 
 
 def vanilla_mode(output_dir: Path, eval: bool, dsl: str = "circom") -> None:
