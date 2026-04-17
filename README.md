@@ -48,11 +48,15 @@ docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
 
 ## Running on zkbugs Dataset
 
-The [zkbugs dataset](https://github.com/zksecurity/zkbugs) contains real-world Circom vulnerabilities.
+The [zkbugs dataset](https://github.com/zksecurity/zkbugs) contains real-world Circom vulnerabilities. zkhydra consumes the refactored dataset format via the runner contract (`scripts/print_bug_vars.sh` inside the zkbugs repo) — each bug's entrypoint, input JSON, ptau, codebase path, and `-l` link flags are resolved from that script.
 
 ```bash
 # Clone zkbugs dataset
 git clone --recurse-submodules https://github.com/zksecurity/zkbugs.git
+
+# (optional) populate project codebases — required for --zkbugs-mode original
+# and for every bug whose wrapper includes "circuits/..." resolved via -l
+(cd zkbugs && ./scripts/download_sources.sh)
 
 # Update docker-compose.yml to mount it
 # volumes:
@@ -60,18 +64,48 @@ git clone --recurse-submodules https://github.com/zksecurity/zkbugs.git
 
 # Run analysis on the entire dataset
 docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
-  --input zkbugs/dataset \
+  --dataset zkbugs/dataset/circom \
+  --zkbugs-mode direct \
   --tools all \
   --timeout 600 \
   --log-file
 ```
 
 This will:
-- Analyze all bugs in the zkbugs dataset
-- Run all available tools (circomspect, circom_civer, picus, ecneproject, zkfuzz)
-- Set 10-minute timeout per tool per bug
-- Generate log file with detailed execution info
-- Output results to `output/zkbugs_YYYYMMDD_HHMMSS/`
+- Walk `--dataset` for `zkbugs_config.json` files (excluding `dataset/codebases/` and `dataset/*/dependencies/`).
+- Build each bug's `Input` via `scripts/print_bug_vars.sh` (located by walking up from `--dataset`).
+- Skip bugs whose `Compiled Direct=false` (or `Compiled Original=false` in original mode), or whose codebase wasn't downloaded. Skipped rows show up in `summary.json` with a reason.
+- Run all available tools (circomspect, circom_civer, picus, ecneproject, zkfuzz) with 10-minute timeout per tool per bug.
+- Output per-bug results and a dataset-level `summary.json` under `output/zkbugs_.../`.
+
+### zkbugs modes
+
+- `--zkbugs-mode direct` (default) — run against each bug's isolated wrapper `circuit.circom`. Every bug supports this mode and it's the fastest path. circom link flags are still needed because the wrapper typically `include`s files from the codebase (e.g. `include "circuits/..."`).
+- `--zkbugs-mode original` — run against the project's real entrypoint (`Original Entrypoint` in `zkbugs_config.json`). Requires `dataset/codebases/` to be populated.
+
+### Selecting a subset of bugs
+
+- `--bugs <sel1>,<sel2>,...` — comma-separated substrings matched against each bug's directory name or its `--dataset`-relative path.
+- `--bugs-file <path>` — one selector per line (lines starting with `#` are ignored).
+
+Both flags combine as a union. Missing-match exits with an error.
+
+```bash
+# Single bug
+uv run python -m zkhydra.main zkbugs \
+  --dataset zkbugs/dataset/circom --tools circomspect \
+  --bugs veridise_decoder_accepting_bogus_output_signal
+
+# Path fragment (matches all bugs under darkforest-v0.3/)
+uv run python -m zkhydra.main zkbugs \
+  --dataset zkbugs/dataset/circom --tools all \
+  --bugs darkforest-eth/darkforest-v0.3
+
+# From a file
+uv run python -m zkhydra.main zkbugs \
+  --dataset zkbugs/dataset/circom --tools all \
+  --bugs-file my-selectors.txt
+```
 
 ## Supported Tools
 
@@ -111,29 +145,37 @@ uv run python -m zkhydra.main evaluate \
 
 ### 3. zkbugs Mode
 
-Run tools on the entire zkbugs dataset.
+Run tools against the refactored zkbugs dataset.
 
 ```bash
 uv run python -m zkhydra.main zkbugs \
-  --input zkbugs/dataset \
+  --dataset zkbugs/dataset/circom \
+  --zkbugs-mode direct \
   --tools all \
   --timeout 600
 ```
 
-**Output**: Per-bug analysis results and summary statistics
+**Output**: Per-bug analysis results, per-bug `ground_truth.json` (with the full refactored config: `codebase`, `direct_entrypoint`, `original_entrypoint`, `input`, `executed`, `compiled_direct`, `compiled_original`), and a dataset-level `summary.json` that records processed and skipped bugs with reasons.
 
 ## CLI Options
 
 ```bash
-# Required
---input, -i     Input file or directory
---tools, -t     Tools to run (comma-separated or 'all')
+# analyze / evaluate
+--input, -i        Circuit file (.circom) for analyze mode
 
-# Optional
---output, -o    Output directory (default: output/)
---timeout       Timeout per tool in seconds (default: 1800)
---log-file      Enable file logging
---log-level     Logging verbosity (default: INFO)
+# zkbugs
+--dataset, -d      Path to <zkbugs>/dataset/circom
+--zkbugs-mode      direct (default) | original
+--bugs             Comma-separated bug selectors (substring match)
+--bugs-file        File with one bug selector per line (# comments allowed)
+
+# shared
+--tools, -t        Tools to run (comma-separated or 'all')
+--output, -o       Output directory (default: output/)
+--timeout          Timeout per tool in seconds (default: 1800)
+--log-file         Enable file logging
+--log-level        Logging verbosity (default: INFO)
+--vanilla          Re-process existing raw output instead of running tools
 ```
 
 ## Examples
@@ -144,6 +186,19 @@ uv run python -m zkhydra.main zkbugs \
 docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
   --input examples/test_bug/circuits/circuit.circom \
   --tools circomspect
+```
+
+### New-format smoke test (no zkbugs checkout required)
+
+`examples/zkbugs_new_format/` ships a self-contained toy bug that mirrors the refactored layout:
+
+```bash
+uv run python -m zkhydra.main zkbugs \
+  --dataset examples/zkbugs_new_format/dataset/circom \
+  --zkbugs-mode direct \
+  --tools circomspect \
+  --timeout 30 \
+  --output output/zkbugs-new-format-smoke
 ```
 
 ### Multiple Tools with Timeout
@@ -160,11 +215,22 @@ docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
 ```bash
 # From host machine with zkbugs cloned locally
 docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
-  --input zkbugs/dataset \
+  --dataset zkbugs/dataset/circom \
+  --zkbugs-mode direct \
   --tools all \
   --timeout 600 \
   --log-file \
   --output output/zkbugs-run
+```
+
+### Single bug (fast feedback loop)
+
+```bash
+docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
+  --dataset zkbugs/dataset/circom \
+  --tools circomspect,circom_civer \
+  --bugs veridise_decoder_accepting_bogus_output_signal \
+  --timeout 120
 ```
 
 ## Output Structure
@@ -184,17 +250,16 @@ output/
 
 For zkbugs mode:
 ```
-output/zkbugs_YYYYMMDD_HHMMSS/
-├── bug_name_1/
-│   ├── ground_truth.json
+output/zkbugs-run/
+├── <bug_name>/
+│   ├── ground_truth.json        # includes new keys (codebase, entrypoints, compile flags, mode)
+│   ├── scratch/                 # precompile artifacts (.r1cs / .sym / compile.log)
 │   ├── circomspect/
 │   │   ├── raw.txt
 │   │   ├── results.json
-│   │   └── evaluation.json  # TP/FN/Undecided
+│   │   └── evaluation.json      # TP/FN/Undecided
 │   └── ...
-├── bug_name_2/
-│   └── ...
-└── summary.json             # Dataset-wide statistics
+└── summary.json                 # processed + skipped rows with reasons, per-mode totals
 ```
 
 ## Existing zkbugs analysis
