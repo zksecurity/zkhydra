@@ -48,27 +48,33 @@ docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
 
 ## Running on zkbugs Dataset
 
-The [zkbugs dataset](https://github.com/zksecurity/zkbugs) contains real-world Circom vulnerabilities. zkhydra consumes the refactored dataset format via the runner contract (`scripts/print_bug_vars.sh` inside the zkbugs repo) — each bug's entrypoint, input JSON, ptau, codebase path, and `-l` link flags are resolved from that script.
+The [zkbugs dataset](https://github.com/zksecurity/zkbugs) contains real-world Circom vulnerabilities. zkhydra does NOT vendor it as a submodule — clone it yourself outside the zkhydra tree and point `--dataset` at it. Each bug's entrypoint, input JSON, ptau, codebase path, and `-l` link flags are resolved from the runner contract (`scripts/print_bug_vars.sh` inside the zkbugs repo).
 
 ```bash
-# Clone zkbugs dataset
-git clone --recurse-submodules https://github.com/zksecurity/zkbugs.git
+# 1. Clone zkbugs next to (or anywhere outside) your zkhydra checkout
+git clone https://github.com/zksecurity/zkbugs.git ../zkbugs
 
-# (optional) populate project codebases — required for --zkbugs-mode original
-# and for every bug whose wrapper includes "circuits/..." resolved via -l
-(cd zkbugs && ./scripts/download_sources.sh)
+# 2. (Required for --zkbugs-mode original, and for direct-mode bugs whose
+#    wrappers include files from the project codebase via -l)
+(cd ../zkbugs && ./scripts/download_sources.sh)
 
-# Update docker-compose.yml to mount it
-# volumes:
-#   - ./zkbugs:/zkhydra/zkbugs
-
-# Run analysis on the entire dataset
-docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
+# 3. Mount it into the Docker container (edit docker-compose.yml once, or
+#    use an ad-hoc -v:)
+docker-compose run --rm \
+  -v $(pwd)/../zkbugs:/zkhydra/zkbugs \
+  zkhydra uv run python -m zkhydra.main zkbugs \
   --dataset zkbugs/dataset/circom \
   --zkbugs-mode direct \
   --tools all \
   --timeout 600 \
   --log-file
+
+# Or locally without Docker:
+uv run python -m zkhydra.main zkbugs \
+  --dataset ../zkbugs/dataset/circom \
+  --zkbugs-mode direct \
+  --tools all \
+  --timeout 600
 ```
 
 This will:
