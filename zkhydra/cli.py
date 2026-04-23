@@ -7,6 +7,7 @@ and validation. The parsed arguments are then passed to the main execution logic
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -144,6 +145,28 @@ Examples:
         help="File with one bug selector per line (lines starting with # are "
         "ignored). Selectors follow the same rules as --bugs.",
     )
+    parser.add_argument(
+        "--jobs",
+        "-j",
+        type=int,
+        default=1,
+        help="Number of parallel workers for zkbugs mode. Each worker runs "
+        "one bug at a time; tools within a bug stay sequential. Default: 1.",
+    )
+    parser.add_argument(
+        "--random-bugs",
+        "-n",
+        type=int,
+        default=None,
+        help="After selector filtering, randomly pick N bugs to run. Useful "
+        "for quick parallel smoke tests.",
+    )
+    parser.add_argument(
+        "--random-seed",
+        type=int,
+        default=None,
+        help="Seed for --random-bugs (default: non-deterministic).",
+    )
 
     args = parser.parse_args()
 
@@ -181,6 +204,19 @@ Examples:
                 )
         if args.bugs_file is not None and not args.bugs_file.is_file():
             logging.error(f"--bugs-file not found: {args.bugs_file}")
+            sys.exit(1)
+        if args.jobs < 1:
+            logging.warning("--jobs < 1 clamped to 1")
+            args.jobs = 1
+        cpu = os.cpu_count() or 1
+        if args.jobs > cpu:
+            logging.warning(
+                "--jobs=%d exceeds os.cpu_count()=%d; workers will queue",
+                args.jobs,
+                cpu,
+            )
+        if args.random_bugs is not None and args.random_bugs <= 0:
+            logging.error("--random-bugs must be positive")
             sys.exit(1)
     else:
         # analyze/evaluate mode validation
