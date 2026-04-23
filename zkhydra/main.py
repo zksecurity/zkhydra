@@ -59,6 +59,10 @@ def main() -> None:
                 args.output,
                 mode=args.zkbugs_mode,
                 selectors=load_bug_selectors(args.bugs, args.bugs_file),
+                jobs=args.jobs,
+                random_bugs=args.random_bugs,
+                random_seed=args.random_seed,
+                log_level=args.log_level,
             )
         elif args.mode == "analyze":
             is_tolm_file = args.input.suffix == ".tolm"

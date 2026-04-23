@@ -107,6 +107,22 @@ uv run python -m zkhydra.main zkbugs \
   --bugs-file my-selectors.txt
 ```
 
+### Parallelism and random sampling
+
+- `--jobs N` (default `1`) — dispatch one bug per worker process. Tools within a bug still run sequentially. Each worker writes its detailed log to `<output>/<bug_name>/run.log`; the top-level log stays a concise index.
+- `--random-bugs N` — after selector filtering, randomly pick N bugs. Handy for quick parallel smoke tests. Ignored if N exceeds the runnable set.
+- `--random-seed <int>` — make `--random-bugs` reproducible.
+
+```bash
+# 6 random bugs across 4 workers, reproducible
+uv run python -m zkhydra.main zkbugs \
+  --dataset zkbugs/dataset/circom --tools all \
+  --jobs 4 --random-bugs 6 --random-seed 42 \
+  --timeout 600 --output output/parallel-smoke
+```
+
+`--jobs 1` is byte-identical to a serial run. `summary.json` adds an `errors` field and a `jobs` field; rows are sorted by `(status, bug_name)` so diffs between serial and parallel runs stay clean.
+
 ## Supported Tools
 
 - **circomspect** - Static analyzer and linter
@@ -168,6 +184,9 @@ uv run python -m zkhydra.main zkbugs \
 --zkbugs-mode      direct (default) | original
 --bugs             Comma-separated bug selectors (substring match)
 --bugs-file        File with one bug selector per line (# comments allowed)
+--jobs, -j         Parallel workers (one bug per worker; default 1)
+--random-bugs, -n  Randomly pick N bugs after selector filtering
+--random-seed      Seed for --random-bugs
 
 # shared
 --tools, -t        Tools to run (comma-separated or 'all')

@@ -9,10 +9,13 @@ including tool execution, result collection, and summary generation.
 import argparse
 import json
 import logging
+import multiprocessing as mp
 import os
+import random
 import shlex
 import subprocess
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
@@ -26,6 +29,7 @@ from zkhydra.tools.base import (
     ToolStatus,
     ensure_dir,
 )
+from zkhydra.utils.logger import setup_logging
 from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
 from zkhydra.utils.zkbugs_loader import (
     ZkbugsLoaderError,
@@ -515,6 +519,97 @@ def _helper_eval(
     )
 
 
+def _process_one_bug(
+    bug: dict,
+    tools: list[str],
+    dsl: str,
+    timeout: int,
+    output: Path,
+    mode: str,
+    needs_artifacts: bool,
+    in_worker: bool,
+    log_level: str,
+) -> dict:
+    """Run all tools against a single bug and return its summary row.
+
+    Top-level (picklable) so it can be dispatched via ProcessPoolExecutor.
+    When `in_worker` is True (jobs > 1), reroute logging to a per-bug
+    run.log so parallel workers don't race on the main log.
+    """
+    bug_output_dir = output / bug["bug_name"]
+    ensure_dir(bug_output_dir)
+
+    if in_worker:
+        setup_logging(
+            log_level,
+            bug_output_dir,
+            file_logging=True,
+            log_filename="run.log",
+            console=False,
+        )
+
+    logging.info("=" * 80)
+    logging.info("Processing bug: %s", bug["bug_name"])
+    logging.info("=" * 80)
+
+    ground_truth_path = bug_output_dir / "ground_truth.json"
+    generate_ground_truth(bug["config_path"], ground_truth_path, mode)
+    logging.info("Generated ground truth: %s", ground_truth_path)
+
+    input_paths: Input = bug["input"]
+
+    if needs_artifacts:
+        scratch_dir = bug_output_dir / "scratch"
+        compiled = precompile_circuit(input_paths, scratch_dir, timeout)
+        if compiled is not None:
+            input_paths = compiled
+        else:
+            logging.warning(
+                "Precompile failed for %s; ecneproject/picus will report errors",
+                bug["bug_name"],
+            )
+
+    tool_registry = resolve_tools(tools)
+    results = execute_tools(tool_registry, input_paths, bug_output_dir, timeout)
+
+    for tool_name, tool_instance in tool_registry.items():
+        if tool_name not in results:
+            continue
+        tool_result = results[tool_name]
+        _helper_eval(
+            tool_result,
+            tool_instance,
+            tool_name,
+            dsl,
+            bug["bug_name"],
+            ground_truth_path,
+            bug_output_dir,
+        )
+
+    return {
+        "bug_name": bug["bug_name"],
+        "status": "processed",
+        "mode": mode,
+        "tools": {
+            name: {
+                "status": r.status.value,
+                "findings_count": r.findings_count,
+            }
+            for name, r in results.items()
+        },
+    }
+
+
+_STATUS_RANK = {"processed": 0, "error": 1, "skipped": 2}
+
+
+def _sort_summary_rows(rows: list[dict]) -> list[dict]:
+    """Order rows by (status, bug_name) so serial/parallel runs diff cleanly."""
+    return sorted(
+        rows, key=lambda r: (_STATUS_RANK.get(r["status"], 99), r["bug_name"])
+    )
+
+
 def zkbugs_mode(
     dataset_dir: Path,
     tools: list[str],
@@ -523,6 +618,10 @@ def zkbugs_mode(
     output: Path,
     mode: str = "direct",
     selectors: list[str] | None = None,
+    jobs: int = 1,
+    random_bugs: int | None = None,
+    random_seed: int | None = None,
+    log_level: str = "INFO",
 ) -> None:
     """Evaluate tools against the refactored zkbugs dataset."""
     logging.info("Running in ZKBUGS mode")
@@ -531,6 +630,7 @@ def zkbugs_mode(
     logging.info(f"Tools: {tools}")
     logging.info(f"Timeout: {timeout}s")
     logging.info(f"zkbugs-mode: {mode}")
+    logging.info(f"Jobs: {jobs}")
     if selectors:
         logging.info("Bug selectors: %s", selectors)
 
@@ -568,79 +668,115 @@ def zkbugs_mode(
         logging.error("No runnable bugs in %s (mode=%s)", dataset_dir, mode)
         sys.exit(1)
 
+    # Fail-fast binary check in the main process before spawning workers.
     tool_registry = resolve_tools(tools)
     if not tool_registry:
         logging.error("No tools loaded successfully")
         sys.exit(1)
     needs_artifacts = bool(set(tool_registry) & ARTIFACT_TOOLS)
 
+    # Optional random sampling after selector filtering.
+    if random_bugs is not None and random_bugs < len(runnable):
+        rng = random.Random(random_seed)
+        runnable = rng.sample(runnable, random_bugs)
+        logging.info(
+            "Random sampled %d/%d bugs (seed=%s)",
+            len(runnable),
+            len(bugs),
+            random_seed,
+        )
+    elif random_bugs is not None:
+        logging.info(
+            "--random-bugs=%d >= runnable=%d; using all runnable bugs",
+            random_bugs,
+            len(runnable),
+        )
+
     ensure_dir(output)
     logging.info(f"Output directory: {output}")
 
     summary_rows: list[dict] = []
+    error_rows: list[dict] = []
 
-    for idx, bug in enumerate(runnable, 1):
-        logging.info("\n" + "=" * 80)
-        logging.info(
-            "Processing bug %d/%d: %s", idx, len(runnable), bug["bug_name"]
-        )
-        logging.info("=" * 80)
-
-        bug_output_dir = output / bug["bug_name"]
-        ensure_dir(bug_output_dir)
-
-        ground_truth_path = bug_output_dir / "ground_truth.json"
-        generate_ground_truth(bug["config_path"], ground_truth_path, mode)
-        logging.info(f"Generated ground truth: {ground_truth_path}")
-
-        input_paths: Input = bug["input"]
-
-        if needs_artifacts:
-            scratch_dir = bug_output_dir / "scratch"
-            compiled = precompile_circuit(input_paths, scratch_dir, timeout)
-            if compiled is not None:
-                input_paths = compiled
-            else:
-                logging.warning(
-                    "Precompile failed for %s; ecneproject/picus will report errors",
-                    bug["bug_name"],
+    if jobs == 1:
+        # Preserve byte-identical serial behavior: inline, no pickling, no
+        # per-bug log redirection. Workers in serial mode == main process.
+        for idx, bug in enumerate(runnable, 1):
+            logging.info("[%d/%d] %s", idx, len(runnable), bug["bug_name"])
+            try:
+                summary_rows.append(
+                    _process_one_bug(
+                        bug,
+                        tools,
+                        dsl,
+                        timeout,
+                        output,
+                        mode,
+                        needs_artifacts,
+                        in_worker=False,
+                        log_level=log_level,
+                    )
                 )
-
-        results = execute_tools(
-            tool_registry,
-            input_paths,
-            bug_output_dir,
-            timeout,
-        )
-
-        for tool_name, tool_instance in tool_registry.items():
-            if tool_name not in results:
-                continue
-            tool_result = results[tool_name]
-            _helper_eval(
-                tool_result,
-                tool_instance,
-                tool_name,
-                dsl,
-                bug["bug_name"],
-                ground_truth_path,
-                bug_output_dir,
-            )
-
-        summary_rows.append(
-            {
-                "bug_name": bug["bug_name"],
-                "status": "processed",
-                "mode": mode,
-                "tools": {
-                    name: {
-                        "status": r.status.value,
-                        "findings_count": r.findings_count,
+            except Exception as exc:  # noqa: BLE001
+                logging.exception(
+                    "[%d/%d] ✗ %s: %s",
+                    idx,
+                    len(runnable),
+                    bug["bug_name"],
+                    exc,
+                )
+                error_rows.append(
+                    {
+                        "bug_name": bug["bug_name"],
+                        "status": "error",
+                        "mode": mode,
+                        "error": str(exc),
                     }
-                    for name, r in results.items()
-                },
-            }
+                )
+    else:
+        logging.info(
+            "Dispatching %d bugs across %d workers", len(runnable), jobs
         )
+        ctx = mp.get_context("spawn")
+        with ProcessPoolExecutor(max_workers=jobs, mp_context=ctx) as ex:
+            futures = {
+                ex.submit(
+                    _process_one_bug,
+                    bug,
+                    tools,
+                    dsl,
+                    timeout,
+                    output,
+                    mode,
+                    needs_artifacts,
+                    True,
+                    log_level,
+                ): bug
+                for bug in runnable
+            }
+            for done, fut in enumerate(as_completed(futures), 1):
+                bug = futures[fut]
+                try:
+                    summary_rows.append(fut.result())
+                    logging.info(
+                        "[%d/%d] ✓ %s", done, len(runnable), bug["bug_name"]
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    logging.error(
+                        "[%d/%d] ✗ %s: %s",
+                        done,
+                        len(runnable),
+                        bug["bug_name"],
+                        exc,
+                    )
+                    error_rows.append(
+                        {
+                            "bug_name": bug["bug_name"],
+                            "status": "error",
+                            "mode": mode,
+                            "error": str(exc),
+                        }
+                    )
 
     for bug in skipped:
         summary_rows.append(
@@ -652,6 +788,9 @@ def zkbugs_mode(
             }
         )
 
+    summary_rows.extend(error_rows)
+    summary_rows = _sort_summary_rows(summary_rows)
+
     summary_path = output / "summary.json"
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(
@@ -659,8 +798,10 @@ def zkbugs_mode(
                 "mode": mode,
                 "dataset": str(dataset_dir),
                 "total": len(bugs),
-                "processed": len(runnable),
+                "processed": len(runnable) - len(error_rows),
+                "errors": len(error_rows),
                 "skipped": len(skipped),
+                "jobs": jobs,
                 "bugs": summary_rows,
             },
             f,
@@ -669,7 +810,12 @@ def zkbugs_mode(
         )
 
     logging.info("\n" + "=" * 80)
-    logging.info("zkbugs mode completed")
+    logging.info(
+        "zkbugs mode completed: processed=%d errors=%d skipped=%d",
+        len(runnable) - len(error_rows),
+        len(error_rows),
+        len(skipped),
+    )
     logging.info(f"Results written to: {output}")
     logging.info("=" * 80)
 
