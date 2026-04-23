@@ -12,9 +12,7 @@ Follow-ups for the zkbugs new-format migration (branch
   `--zkbugs-mode direct` and `--zkbugs-mode original` across all
   bugs, collect fresh results, and publish the updated evaluation
   alongside `output/zkbugs-report.pdf`.
-- [ ] **Helper skills for validating tool findings against ground
-  truth**: current `evaluate_zkbugs_ground_truth` implementations
-  return `Undecided` for anything that isn't a trivial match. Add
-  reusable skills/agents that triage `Undecided` verdicts
-  per-tool (inspect raw output, cross-reference the bug's
-  Location, promote to TruePositive / FalseNegative with a reason).
+- [x] **Helper skills for validating tool findings against ground
+  truth**: shipped as `.claude/skills/triage-zkbugs-finding/` plus
+  `scripts/triage_zkbugs_run.py`. Run the script against a zkbugs
+  output dir with `--auto` to invoke Claude per Undecided case.
