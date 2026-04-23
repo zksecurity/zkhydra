@@ -12,6 +12,7 @@ import logging
 import multiprocessing as mp
 import os
 import random
+import re
 import shlex
 import subprocess
 import sys
@@ -263,11 +264,41 @@ def evaluate_mode(args: argparse.Namespace) -> None:
 
 SKIP_PATH_PARTS = {"codebases", "dependencies"}
 
+# Matches: include "path"; or include 'path'; (ignoring // line comments).
+_INCLUDE_RE = re.compile(r'^\s*include\s+["\']([^"\']+)["\']\s*;', re.MULTILINE)
+
 
 def _is_excluded_config(config_path: Path) -> bool:
     """Skip configs that are not actual bugs (shared codebases, deps)."""
     parts = set(config_path.parts)
     return bool(parts & SKIP_PATH_PARTS)
+
+
+def _wrapper_needs_codebase(circuit_file: str | None, bug_dir: Path) -> bool:
+    """True if the wrapper has an include that can't be resolved locally.
+
+    An include path is considered locally-resolvable when it's either an
+    absolute path that exists, or relative to the bug dir and the target
+    file exists there. Everything else (e.g. ``include "circuits/foo.circom"``)
+    requires the project codebase, so the bug should be skipped when that
+    codebase is missing.
+    """
+    if not circuit_file:
+        return False
+    try:
+        src = Path(circuit_file).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    for inc in _INCLUDE_RE.findall(src):
+        candidate = Path(inc)
+        if candidate.is_absolute():
+            if candidate.is_file():
+                continue
+            return True
+        if (bug_dir / candidate).is_file():
+            continue
+        return True
+    return False
 
 
 def load_bug_selectors(
@@ -375,9 +406,10 @@ def discover_zkbugs(
             inp.codebase
             and not inp.codebase_exists
             and any(flag == inp.codebase for flag in inp.link_flags)
+            and _wrapper_needs_codebase(inp.circuit_file, bug_dir)
         ):
             entry["skip_reason"] = (
-                "codebase not available locally "
+                "codebase not available locally and wrapper needs it "
                 "(run scripts/download_sources.sh, or source is private)"
             )
             bugs.append(entry)
