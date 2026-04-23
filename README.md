@@ -50,39 +50,129 @@ docker-compose run --rm zkhydra uv run python -m zkhydra.main analyze \
 
 The [zkbugs dataset](https://github.com/zksecurity/zkbugs) contains real-world Circom vulnerabilities. zkhydra does NOT vendor it as a submodule — clone it yourself outside the zkhydra tree and point `--dataset` at it. Each bug's entrypoint, input JSON, ptau, codebase path, and `-l` link flags are resolved from the runner contract (`scripts/print_bug_vars.sh` inside the zkbugs repo).
 
+### End-to-end workflow
+
+The full flow is: **clone → download sources → run tools → triage Undecided → print results**. Commands below assume zkhydra is your cwd and zkbugs is cloned alongside at `../zkbugs`.
+
+#### Step 1 — Clone zkbugs and populate codebases
+
 ```bash
-# 1. Clone zkbugs next to (or anywhere outside) your zkhydra checkout
 git clone https://github.com/zksecurity/zkbugs.git ../zkbugs
 
-# 2. (Required for --zkbugs-mode original, and for direct-mode bugs whose
-#    wrappers include files from the project codebase via -l)
+# Required for --zkbugs-mode original and for any direct-mode bug whose
+# wrapper pulls files from the project codebase via -l. Run once; rerun
+# with --force to refresh.
 (cd ../zkbugs && ./scripts/download_sources.sh)
+```
 
-# 3. Mount it into the Docker container (edit docker-compose.yml once, or
-#    use an ad-hoc -v:)
+#### Step 2 — Run zkhydra on the dataset
+
+Pick one of the three patterns below. All of them write per-bug outputs
+under `<output>/<bug_name>/` plus a dataset-level `summary.json`.
+
+```bash
+# Docker (recommended): mount both your zkhydra source and the zkbugs clone.
 docker-compose run --rm \
+  -v $(pwd)/zkhydra:/zkhydra/zkhydra \
   -v $(pwd)/../zkbugs:/zkhydra/zkbugs \
   zkhydra uv run python -m zkhydra.main zkbugs \
-  --dataset zkbugs/dataset/circom \
-  --zkbugs-mode direct \
-  --tools all \
-  --timeout 600 \
-  --log-file
+    --dataset zkbugs/dataset/circom \
+    --zkbugs-mode direct \
+    --tools all \
+    --jobs 4 \
+    --timeout 600 \
+    --log-file \
+    --output output/zkbugs-run
 
-# Or locally without Docker:
+# Local (no Docker, tools installed on the host):
 uv run python -m zkhydra.main zkbugs \
   --dataset ../zkbugs/dataset/circom \
   --zkbugs-mode direct \
   --tools all \
-  --timeout 600
+  --jobs 4 \
+  --timeout 600 \
+  --output output/zkbugs-run
+
+# Quick smoke — 6 random bugs, reproducible via --random-seed:
+uv run python -m zkhydra.main zkbugs \
+  --dataset ../zkbugs/dataset/circom \
+  --tools circomspect,circom_civer \
+  --jobs 4 --random-bugs 6 --random-seed 42 \
+  --timeout 120 --output output/zkbugs-smoke
 ```
 
-This will:
-- Walk `--dataset` for `zkbugs_config.json` files (excluding `dataset/codebases/` and `dataset/*/dependencies/`).
-- Build each bug's `Input` via `scripts/print_bug_vars.sh` (located by walking up from `--dataset`).
-- Skip bugs whose `Compiled Direct=false` (or `Compiled Original=false` in original mode), or whose codebase wasn't downloaded. Skipped rows show up in `summary.json` with a reason.
-- Run all available tools (circomspect, circom_civer, picus, ecneproject, zkfuzz) with 10-minute timeout per tool per bug.
-- Output per-bug results and a dataset-level `summary.json` under `output/zkbugs_.../`.
+What this does:
+- Walks `--dataset` for `zkbugs_config.json` files (excluding `dataset/codebases/` and `dataset/*/dependencies/`).
+- Builds each bug's `Input` via `scripts/print_bug_vars.sh` (located by walking up from `--dataset`).
+- Skips bugs whose `Compiled Direct=false` (or `Compiled Original=false` in original mode), and bugs whose codebase is missing. Skipped rows land in `summary.json` with a reason.
+- Runs the requested tools with per-bug precompilation; per-worker detail logs land at `<output>/<bug>/run.log`.
+
+#### Step 3 — Triage the `Undecided` verdicts
+
+`evaluate_zkbugs_ground_truth` is conservative — anything that isn't a trivial match is reported `Undecided`. The `triage-zkbugs-finding` skill + driver script promote those to `TruePositive` / `FalseNegative` (or keep `Undecided` with a reason when evidence is genuinely thin).
+
+```bash
+# Dry-run: collect every Undecided case into triage_queue.json for inspection.
+python3 scripts/triage_zkbugs_run.py output/zkbugs-run \
+  --dataset ../zkbugs/dataset/circom
+
+# Automated: invoke Claude headlessly per case, write triage.json alongside
+# each evaluation.json, rewrite evaluation.json with the triaged verdict
+# (preserving the original at evaluation.original.json), and patch
+# summary.json with an evaluation_counts rollup.
+python3 scripts/triage_zkbugs_run.py output/zkbugs-run \
+  --dataset ../zkbugs/dataset/circom \
+  --auto --jobs 4 \
+  --update-evaluation --update-summary
+```
+
+Flags in brief:
+- `--auto` — shell out to `claude -p` per case; write `<bug>/<tool>/triage.json` and a top-level `triage_summary.json`.
+- `--update-evaluation` — additionally rewrite each `evaluation.json` with the triaged verdict, preserving the original at `evaluation.original.json` (written once; re-runs do not clobber it).
+- `--update-summary` — patch the dataset `summary.json` with an `evaluation_counts` rollup and a per-tool `evaluation` subsection. Implies `--update-evaluation`.
+- `--tool <name>` — triage only one tool's verdicts (e.g. `--tool picus`).
+
+Prerequisites: the `claude` CLI must be on PATH for `--auto`. Dry-run (default) needs no CLI.
+
+#### Step 4 — Print the final results
+
+```bash
+# Tabular summary: header, TP/FN/Undecided rollup, per-tool counts, and
+# a per-(bug, tool) table sorted by verdict.
+python3 scripts/print_zkbugs_summary.py output/zkbugs-run
+
+# Drill down by verdict or tool:
+python3 scripts/print_zkbugs_summary.py output/zkbugs-run --filter FalseNegative
+python3 scripts/print_zkbugs_summary.py output/zkbugs-run --tool picus
+python3 scripts/print_zkbugs_summary.py output/zkbugs-run --no-rows
+```
+
+Raw JSON is always available too:
+
+```bash
+jq '.evaluation_counts' output/zkbugs-run/summary.json
+jq '.bugs[] | select(.status=="skipped") | {bug_name, reason}' \
+  output/zkbugs-run/summary.json
+jq '.' output/zkbugs-run/<some_bug>/circomspect/evaluation.json
+```
+
+#### Step 5 — Inspect individual cases
+
+Each bug dir has the per-tool detail:
+
+```
+output/zkbugs-run/<bug_name>/
+├── ground_truth.json           # expected vulnerability, location, refs
+├── run.log                     # per-bug worker log (parallel runs only)
+├── scratch/                    # precompile artifacts (.r1cs / .sym)
+└── <tool>/
+    ├── raw.txt                 # tool stdout/stderr
+    ├── parsed.json             # tool-specific structured output
+    ├── results.json            # unified findings
+    ├── evaluation.json         # final verdict (triaged or not)
+    ├── evaluation.original.json  # pre-triage verdict (only after --update-evaluation)
+    └── triage.json             # skill response (only after --auto)
+```
 
 ### zkbugs modes
 
@@ -202,6 +292,13 @@ uv run python -m zkhydra.main zkbugs \
 --log-level        Logging verbosity (default: INFO)
 --vanilla          Re-process existing raw output instead of running tools
 ```
+
+### Companion scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/triage_zkbugs_run.py <run>` | Walk a run dir and collect every `Undecided` verdict; with `--auto` invoke the `triage-zkbugs-finding` skill per case; with `--update-evaluation` / `--update-summary` write verdicts back into `evaluation.json` and `summary.json`. |
+| `scripts/print_zkbugs_summary.py <run>` | Pretty-print a run's header, per-tool TP/FN/Undecided rollup, skipped/errored bugs, and the full per-(bug, tool) verdict table. Filters via `--tool` / `--filter`. |
 
 ## Examples
 
