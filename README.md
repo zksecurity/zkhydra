@@ -65,6 +65,12 @@ git clone https://github.com/zksecurity/zkbugs.git ../zkbugs
 (cd ../zkbugs && ./scripts/download_sources.sh)
 ```
 
+A small number of bugs reference **private** project codebases that
+`download_sources.sh` cannot pull. Those bugs will stay skipped in every
+run with reason `"codebase not available locally (run
+scripts/download_sources.sh, or source is private)"` — expected behavior;
+nothing to fix on the zkhydra side.
+
 #### Step 2 — Run zkhydra on the dataset
 
 Pick one of the three patterns below. All of them write per-bug outputs
