@@ -75,7 +75,7 @@ class ZkFuzz(AbstractTool):
         """
         circuit_file_path = Path(input_paths.circuit_file)
 
-        cmd = ["zkfuzz", str(circuit_file_path)]
+        cmd = ["zkfuzz", str(circuit_file_path), *input_paths.link_flags]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
 
     def _helper_parse_output(self, tool_result_raw: Path) -> ZkFuzzParsed:

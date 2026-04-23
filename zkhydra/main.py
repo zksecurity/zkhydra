@@ -15,6 +15,7 @@ from zkhydra.core import (
     AVAILABLE_TOOLS,
     analyze_mode,
     evaluate_mode,
+    load_bug_selectors,
     vanilla_mode,
     zkbugs_mode,
 )
@@ -51,7 +52,17 @@ def main() -> None:
             vanilla_mode(args.output, args.mode == "zkbugs")
         elif args.mode == "zkbugs":
             zkbugs_mode(
-                args.dataset, tools_list, args.dsl, args.timeout, args.output
+                args.dataset,
+                tools_list,
+                args.dsl,
+                args.timeout,
+                args.output,
+                mode=args.zkbugs_mode,
+                selectors=load_bug_selectors(args.bugs, args.bugs_file),
+                jobs=args.jobs,
+                random_bugs=args.random_bugs,
+                random_seed=args.random_seed,
+                log_level=args.log_level,
             )
         elif args.mode == "analyze":
             is_tolm_file = args.input.suffix == ".tolm"

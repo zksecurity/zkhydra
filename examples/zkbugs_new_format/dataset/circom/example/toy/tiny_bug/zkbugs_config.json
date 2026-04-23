@@ -1,0 +1,45 @@
+{
+    "Tiny Toy Bug": {
+        "Id": "example/toy/tiny-1",
+        "Path": "dataset/circom/example/toy/tiny_bug",
+        "Project": "https://example.invalid/toy",
+        "Commit": "abc",
+        "Fix Commit": "",
+        "DSL": "Circom",
+        "Vulnerability": "Under-Constrained",
+        "Impact": "Soundness",
+        "Root Cause": "Synthetic fixture",
+        "Reproduced": false,
+        "Codebase": "dataset/codebases/circom/example/toy/abc",
+        "Direct Entrypoint": "circuit.circom",
+        "Location": {
+            "Path": "circuits/toy.circom",
+            "Function": "ToyDouble",
+            "Line": "3-6"
+        },
+        "Source": {
+            "Audit Report": {
+                "Source Link": "",
+                "Bug ID": "N/A"
+            }
+        },
+        "Input": {
+            "Original": "input.json",
+            "Direct": "direct_input.json"
+        },
+        "Commands": {
+            "Setup Environment": "./zkbugs_setup.sh",
+            "Compile and Preprocess": "./zkbugs_compile_setup.sh",
+            "Positive Test": "./zkbugs_positive_test.sh",
+            "Clean": "./zkbugs_clean.sh",
+            "Compile": "./zkbugs_compile.sh"
+        },
+        "Short Description of the Vulnerability": "Toy fixture used by zkhydra CI to exercise the new-format path (wrapper + codebase + link flags). Not an actual vulnerability.",
+        "Proposed Mitigation": "N/A",
+        "Similar Bugs": [],
+        "Executed": true,
+        "Compiled Direct": true,
+        "Compiled Original": true,
+        "Original Entrypoint": []
+    }
+}
