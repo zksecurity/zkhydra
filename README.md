@@ -105,6 +105,16 @@ uv run python -m zkhydra.main zkbugs \
   --tools circomspect,circom_civer \
   --jobs 4 --random-bugs 6 --random-seed 42 \
   --timeout 120 --output output/zkbugs-smoke
+
+# Run both direct AND original for every bug (original is skipped when
+# it would be identical to direct). Writes output/zkbugs-run/{direct,original}/.
+uv run python -m zkhydra.main zkbugs \
+  --dataset ../zkbugs/dataset/circom \
+  --zkbugs-mode both \
+  --tools all \
+  --jobs 4 \
+  --timeout 600 \
+  --output output/zkbugs-run
 ```
 
 What this does:
@@ -184,6 +194,7 @@ output/zkbugs-run/<bug_name>/
 
 - `--zkbugs-mode direct` (default) — run against each bug's isolated wrapper `circuit.circom`. Every bug supports this mode and it's the fastest path. circom link flags are still needed because the wrapper typically `include`s files from the codebase (e.g. `include "circuits/..."`).
 - `--zkbugs-mode original` — run against the project's real entrypoint (`Original Entrypoint` in `zkbugs_config.json`). Requires `dataset/codebases/` to be populated.
+- `--zkbugs-mode both` — run direct for every bug, then original **only** for bugs whose `Original Entrypoint` is non-empty (i.e. distinct from direct). Writes `<output>/direct/` + `<output>/original/` with their own per-mode `summary.json`, plus a combined `<output>/summary.json` that aggregates both. Scripts like `triage_zkbugs_run.py` and `print_zkbugs_summary.py` operate on each sub-dir independently.
 
 ### Selecting a subset of bugs
 
