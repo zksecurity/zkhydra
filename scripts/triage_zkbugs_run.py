@@ -14,9 +14,20 @@ source at the bug's Location), and either:
   `<run>/<bug>/<tool>/triage.json` and a rolled-up
   `<run>/triage_summary.json`.
 
+Mutating flags (opt-in, implies --auto):
+
+- `--update-evaluation`: rewrite each case's `evaluation.json` with
+  the triaged verdict. The pre-triage file is preserved at
+  `evaluation.original.json` (written once; not clobbered on re-run).
+- `--update-summary`: patch the run's `summary.json` with an
+  `evaluation_counts` rollup and an `evaluation` object under each
+  tool entry. Implies `--update-evaluation`.
+
 Examples:
     python3 scripts/triage_zkbugs_run.py output/zkbugs-run
     python3 scripts/triage_zkbugs_run.py output/zkbugs-run --auto --jobs 4
+    python3 scripts/triage_zkbugs_run.py output/zkbugs-run --auto \\
+        --update-evaluation --update-summary
     python3 scripts/triage_zkbugs_run.py output/zkbugs-run --tool picus
 """
 
@@ -233,18 +244,104 @@ def run_skill(bundle: dict, claude_bin: str, timeout: int) -> dict:
     return verdict
 
 
+def _merge_evaluation(
+    tool_dir: Path, triaged: dict, original: dict
+) -> None:
+    """Rewrite evaluation.json with the triaged verdict in place.
+
+    The pre-triage evaluation is preserved at evaluation.original.json
+    (written once; not overwritten on re-runs so the original zkhydra
+    verdict stays intact).
+    """
+    eval_path = tool_dir / "evaluation.json"
+    orig_path = tool_dir / "evaluation.original.json"
+    if not orig_path.exists():
+        orig_path.write_text(
+            json.dumps(original, indent=2, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+    merged = {
+        "status": triaged.get("status", original.get("status")),
+        "reason": triaged.get("reason", original.get("reason")),
+        "need_manual_analysis": triaged.get("status") == "Undecided",
+        "manual_analysis": triaged.get("manual_analysis", "Done"),
+        "manual_analysis_reasoning": triaged.get(
+            "manual_analysis_reasoning", ""
+        ),
+        "confidence": triaged.get("confidence", "low"),
+        "triaged_by": "triage-zkbugs-finding",
+        "triaged_from_status": original.get("status"),
+    }
+    eval_path.write_text(
+        json.dumps(merged, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+
 def _process_case(args_tuple):
-    bundle, claude_bin, timeout, tool_dir_str = args_tuple
+    bundle, claude_bin, timeout, tool_dir_str, update_evaluation = args_tuple
     verdict = run_skill(bundle, claude_bin, timeout)
-    triage_path = Path(tool_dir_str) / "triage.json"
+    tool_dir = Path(tool_dir_str)
+    triage_path = tool_dir / "triage.json"
     triage_path.write_text(
         json.dumps(verdict, indent=2, ensure_ascii=False), encoding="utf-8"
     )
+    if update_evaluation:
+        _merge_evaluation(tool_dir, verdict, bundle["existing_evaluation"])
     return {
         "bug_name": bundle["bug_name"],
         "tool": bundle["tool"],
         "triage": verdict,
     }
+
+
+def _update_run_summary(run_dir: Path, verdicts: list[dict]) -> None:
+    """Patch summary.json with an `evaluation` aggregate + per-tool status.
+
+    Non-destructive: the existing bugs[] rows keep their fields; each
+    tool entry gains an `evaluation` object {status, confidence, triaged}.
+    Top-level gains `evaluation_counts` {TruePositive, FalseNegative,
+    Undecided, untriaged}.
+    """
+    summary_path = run_dir / "summary.json"
+    data = _read_json(summary_path)
+    if data is None:
+        logging.warning("summary.json missing; cannot update")
+        return
+
+    by_bug_tool: dict[tuple[str, str], dict] = {
+        (v["bug_name"], v["tool"]): v["triage"] for v in verdicts
+    }
+
+    # Walk every evaluation.json in the tree to also count non-triaged
+    # verdicts (TruePositive/FalseNegative already set by zkhydra).
+    counts = {s: 0 for s in VALID_STATUSES}
+    counts["untriaged"] = 0
+    for bug in data.get("bugs", []):
+        bug_name = bug["bug_name"]
+        tools = bug.get("tools", {})
+        for tool_name, tool_entry in tools.items():
+            eval_data = _read_json(
+                run_dir / bug_name / tool_name / "evaluation.json"
+            )
+            if eval_data is None:
+                continue
+            status = eval_data.get("status", "Undecided")
+            counts[status] = counts.get(status, 0) + 1
+            triaged = (bug_name, tool_name) in by_bug_tool
+            if status == "Undecided" and not triaged:
+                counts["untriaged"] += 1
+            tool_entry["evaluation"] = {
+                "status": status,
+                "confidence": eval_data.get("confidence"),
+                "triaged": triaged,
+            }
+
+    data["evaluation_counts"] = counts
+    summary_path.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    logging.info("Updated summary.json evaluation_counts: %s", counts)
 
 
 def main() -> int:
@@ -285,6 +382,19 @@ def main() -> int:
         type=int,
         default=180,
         help="Timeout per claude -p invocation in seconds (default 180).",
+    )
+    p.add_argument(
+        "--update-evaluation",
+        action="store_true",
+        help="Rewrite each case's evaluation.json with the triaged verdict. "
+        "The original is preserved at evaluation.original.json (written once).",
+    )
+    p.add_argument(
+        "--update-summary",
+        action="store_true",
+        help="Patch the run's summary.json with an evaluation_counts rollup "
+        "and a per-tool evaluation object. Implies --update-evaluation for "
+        "the rollup to reflect triaged verdicts.",
     )
     p.add_argument(
         "--log-level",
@@ -335,8 +445,10 @@ def main() -> int:
         )
         return 2
 
+    update_evaluation = args.update_evaluation or args.update_summary
     work = [
-        (b, args.claude_bin, args.timeout, b["tool_dir"]) for b in bundles
+        (b, args.claude_bin, args.timeout, b["tool_dir"], update_evaluation)
+        for b in bundles
     ]
     verdicts = []
     if args.jobs == 1:
@@ -392,6 +504,10 @@ def main() -> int:
         json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
     logging.info("Triage summary: %s — %s", counts, summary_path)
+
+    if args.update_summary:
+        _update_run_summary(run_dir, verdicts)
+
     return 0
 
 
