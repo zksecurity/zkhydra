@@ -377,7 +377,8 @@ def discover_zkbugs(
             and any(flag == inp.codebase for flag in inp.link_flags)
         ):
             entry["skip_reason"] = (
-                "codebase missing: run scripts/download_sources.sh"
+                "codebase not available locally "
+                "(run scripts/download_sources.sh, or source is private)"
             )
             bugs.append(entry)
             continue
