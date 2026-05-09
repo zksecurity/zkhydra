@@ -1,9 +1,8 @@
 services:
   zkhydra:
-    # Use published image (or build locally by uncommenting below)
-    #image: ghcr.io/zksecurity/zkhydra:latest
-    image: zkhydra:latest
-    # To build locally instead:
+    # Use published image (recommended)
+    image: ghcr.io/zksecurity/zkhydra:latest
+    # To build locally instead, comment out the image line and uncomment below:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
@@ -16,7 +15,7 @@ services:
       # Mount the zkbugs dataset you cloned separately (not bundled as a
       # submodule). Adjust the host path to wherever you cloned it.
       # - ../zkbugs:/zkhydra/zkbugs
-      # Debug: uncommenting this line to use local changes in zkhydra
+      # Debug: uncomment this line to use local changes in zkhydra.
       # - ./zkhydra:/zkhydra/zkhydra
     working_dir: /zkhydra
     command: /bin/bash

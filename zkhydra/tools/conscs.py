@@ -91,7 +91,9 @@ class ConsCS(AbstractTool):
             logging.error("[Binary not found: install circom]")
             sys.exit(1)
 
-    def _compile_circom_to_r1cs(self, circuit_file: Path) -> Optional[Path]:
+    def _compile_circom_to_r1cs(
+        self, circuit_file: Path, link_flags: Optional[List[str]] = None
+    ) -> Optional[Path]:
         """Compile a Circom circuit to R1CS format.
 
         Args:
@@ -118,6 +120,8 @@ class ConsCS(AbstractTool):
             "-o",
             str(circuit_dir),
         ]
+        if link_flags:
+            cmd.extend(link_flags)
 
         try:
             result = subprocess.run(
@@ -162,7 +166,9 @@ class ConsCS(AbstractTool):
         circuit_dir = Path(input_paths.circuit_dir)
 
         # Compile circuit to R1CS if needed
-        r1cs_file = self._compile_circom_to_r1cs(circuit_file)
+        r1cs_file = self._compile_circom_to_r1cs(
+            circuit_file, input_paths.link_flags
+        )
         if not r1cs_file:
             return ToolOutput(
                 status=OutputStatus.FAIL,
@@ -190,7 +196,7 @@ class ConsCS(AbstractTool):
         max_depth = "4"
 
         cmd = [
-            "python3",
+            sys.executable,
             str(self.analyze_script),
             str(r1cs_file),
             str(log_file),
