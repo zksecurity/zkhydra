@@ -13,8 +13,9 @@ services:
       - ./output:/zkhydra/output
       # Examples directory - mount your circuits here
       - ./examples:/zkhydra/examples
-      # Mount zkbugs dataset if you have it locally
-      # - ./zkbugs:/zkhydra/zkbugs
+      # Mount the zkbugs dataset you cloned separately (not bundled as a
+      # submodule). Adjust the host path to wherever you cloned it.
+      # - ../zkbugs:/zkhydra/zkbugs
       # Debug: uncommenting this line to use local changes in zkhydra
       # - ./zkhydra:/zkhydra/zkhydra
     working_dir: /zkhydra

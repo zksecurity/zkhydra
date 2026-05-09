@@ -67,51 +67,54 @@ class EcneProject(AbstractTool):
     def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run EcneProject (Julia) against the circuit's R1CS and sym files.
 
-        Args:
-            input_paths: Input object containing circuit_dir and circuit_file paths
-            timeout: Maximum execution time in seconds
-
-        Returns:
-            ToolOutput object with execution results
+        If the caller pre-compiled (zkbugs_mode via precompile_circuit), use
+        those artifacts directly. Otherwise invoke circom locally, forwarding
+        any link_flags from the Input contract.
         """
-        # EcneProject needs R1CS and sym files from the circuit directory
-        circuit_file_path = Path(input_paths.circuit_file)
-        cmd = [
-            "circom",
-            str(circuit_file_path),
-            "--r1cs",
-            "--sym",
-            "--output",
-            input_paths.circuit_dir,
-        ]
-        circom_output = self.run_command(cmd, timeout, input_paths.circuit_dir)
-        if circom_output.status != OutputStatus.SUCCESS:
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout=circom_output.stdout,
-                stderr=circom_output.stderr,
-                return_code=circom_output.return_code,
-                msg=f"[Circom failed: {circom_output.msg}]",
+        if input_paths.r1cs_file and input_paths.sym_file:
+            r1cs_file = Path(input_paths.r1cs_file)
+            sym_file = Path(input_paths.sym_file)
+            cleanup_artifacts = False
+        else:
+            circuit_file_path = Path(input_paths.circuit_file)
+            cmd = [
+                "circom",
+                str(circuit_file_path),
+                "--r1cs",
+                "--sym",
+                "--output",
+                input_paths.circuit_dir,
+                *input_paths.link_flags,
+            ]
+            circom_output = self.run_command(
+                cmd, timeout, input_paths.circuit_dir
             )
+            if circom_output.status != OutputStatus.SUCCESS:
+                return ToolOutput(
+                    status=OutputStatus.FAIL,
+                    stdout=circom_output.stdout,
+                    stderr=circom_output.stderr,
+                    return_code=circom_output.return_code,
+                    msg=f"[Circom failed: {circom_output.msg}]",
+                )
 
-        # Now we need to find the R1CS and sym files
-        # The r1cs should end with .r1cs and the sym should end with .sym
-        r1cs_file = next(
-            (f for f in Path(input_paths.circuit_dir).glob("*.r1cs")), None
-        )
-        sym_file = next(
-            (f for f in Path(input_paths.circuit_dir).glob("*.sym")), None
-        )
-        if not r1cs_file or not sym_file:
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout=circom_output.stdout,
-                stderr=circom_output.stderr,
-                return_code=circom_output.return_code,
-                msg=f"[R1CS or sym file not found: {circom_output.msg}]",
+            r1cs_file = next(
+                (f for f in Path(input_paths.circuit_dir).glob("*.r1cs")),
+                None,
             )
+            sym_file = next(
+                (f for f in Path(input_paths.circuit_dir).glob("*.sym")), None
+            )
+            if not r1cs_file or not sym_file:
+                return ToolOutput(
+                    status=OutputStatus.FAIL,
+                    stdout=circom_output.stdout,
+                    stderr=circom_output.stderr,
+                    return_code=circom_output.return_code,
+                    msg=f"[R1CS or sym file not found: {circom_output.msg}]",
+                )
+            cleanup_artifacts = True
 
-        # Ensure project and entrypoint exist
         ecne_entry = TOOL_DIR / "src" / "Ecne.jl"
 
         current_dir = Path.cwd()
@@ -131,9 +134,9 @@ class EcneProject(AbstractTool):
         result = self.run_command(cmd, timeout, input_paths.circuit_dir)
         self.change_directory(current_dir)
 
-        # remove the R1CS and sym files
-        r1cs_file.unlink()
-        sym_file.unlink()
+        if cleanup_artifacts:
+            r1cs_file.unlink(missing_ok=True)
+            sym_file.unlink(missing_ok=True)
 
         return result
 

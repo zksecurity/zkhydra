@@ -55,14 +55,26 @@ class StandardizedBugCategory(StrEnum):
 
 @dataclass
 class Input:
-    """Input paths for circuit analysis.
+    """Input paths and link contract for a circuit analysis run.
 
-    Encapsulates both the circuit directory and circuit file paths,
-    allowing tools to choose which to use based on their requirements.
+    circuit_dir / circuit_file are always set. Remaining fields carry the
+    per-bug contract produced by zkbugs' print_bug_vars.sh (link flags,
+    codebase path, input.json, ptau, mode). They default to empty values
+    so analyze-mode callers (no bug context) keep working unchanged.
     """
 
-    circuit_dir: str  # Directory containing the circuit and artifacts
-    circuit_file: str  # Path to the circuit file
+    circuit_dir: str
+    circuit_file: str
+    link_flags: List[str] = field(default_factory=list)
+    input_json: Optional[str] = None
+    ptau: Optional[str] = None
+    codebase: Optional[str] = None
+    codebase_exists: bool = True
+    mode: str = "analyze"  # "analyze" | "direct" | "original"
+    target: Optional[str] = None
+    bug_dir: Optional[str] = None
+    r1cs_file: Optional[str] = None
+    sym_file: Optional[str] = None
 
 
 class OutputStatus(Enum):

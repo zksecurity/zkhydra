@@ -97,6 +97,7 @@ class CircomCiver(AbstractTool):
             "--verification_timeout",
             "500000",
             "--O0",
+            *input_paths.link_flags,
         ]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
 

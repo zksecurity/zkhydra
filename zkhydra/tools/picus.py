@@ -96,21 +96,23 @@ class Picus(AbstractTool):
     def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run Picus on the given circuit.
 
-        Args:
-            input_paths: Input object containing circuit_dir and circuit_file paths
-            timeout: Maximum execution time in seconds
-
-        Returns:
-            ToolOutput object with execution results
+        Picus has no CLI for circom `-l` link paths. When a pre-compiled
+        R1CS is available (zkbugs_mode precompile_circuit), feed it in
+        directly; picus dispatches on file extension (.circom / .r1cs /
+        .sr1cs). Otherwise invoke picus on the source and let it try to
+        compile (will fail for bugs whose includes need `-l`).
         """
-        circuit_file_path = Path(input_paths.circuit_file)
+        if input_paths.r1cs_file:
+            source_path = Path(input_paths.r1cs_file)
+        else:
+            source_path = Path(input_paths.circuit_file)
 
         run_script = TOOL_DIR / "run-picus"
 
         current_dir = Path.cwd()
         self.change_directory(TOOL_DIR)
 
-        cmd = [str(run_script), str(circuit_file_path)]
+        cmd = [str(run_script), str(source_path)]
         result = self.run_command(cmd, timeout, input_paths.circuit_dir)
         self.change_directory(current_dir)
         return result
