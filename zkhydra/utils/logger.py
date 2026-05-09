@@ -5,13 +5,24 @@ from pathlib import Path
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
+def setup_logging(
+    log_level: str,
+    output_dir: Path,
+    file_logging: bool,
+    log_filename: str = "zkhydra.log",
+    console: bool = True,
+) -> None:
     """Initialize root logger with console and optional file handlers.
 
     Args:
         log_level: One of DEBUG, INFO, WARNING, ERROR, CRITICAL (case-insensitive).
         output_dir: Directory where log files are written when file logging is enabled.
         file_logging: Whether to enable file logging in addition to console output.
+        log_filename: Filename for the log file (default: zkhydra.log). Worker
+            processes use "run.log" so per-bug logs stay self-contained.
+        console: Whether to add a stdout StreamHandler (default: True).
+            Workers disable this so their output doesn't race with the main
+            process on stdout.
     """
     # Normalize and validate log level
     log_level = str(log_level).upper()
@@ -33,14 +44,15 @@ def setup_logging(log_level: str, output_dir: Path, file_logging: bool) -> None:
     root_logger.handlers = []  # Clear existing handlers
 
     # Create console logging
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(log_level)
-    console_handler.setFormatter(formatter)
-    root_logger.addHandler(console_handler)
+    if console:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(log_level)
+        console_handler.setFormatter(formatter)
+        root_logger.addHandler(console_handler)
 
     if file_logging:
         # Create file logging
-        file_path = output_dir / "zkhydra.log"
+        file_path = output_dir / log_filename
         file_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             file_handler = logging.FileHandler(file_path, encoding="utf-8")

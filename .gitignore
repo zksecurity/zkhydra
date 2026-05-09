@@ -3,7 +3,9 @@ report.pdf
 output/
 tags
 zkbugs/
-.claude/
+.claude/*
+!.claude/skills/
+.claude/skills/*/.*
 docs/
 # Byte-compiled / optimized / DLL files
 __pycache__/

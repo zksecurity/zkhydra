@@ -1,7 +1,10 @@
 import json
 import logging
+import os
 import re
+import shutil
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -138,16 +141,77 @@ class Circomspect(AbstractTool):
     def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run circomspect on a given circuit.
 
-        Args:
-            input_paths: Input object containing circuit_dir and circuit_file paths
-            timeout: Maximum execution time in seconds
-
-        Returns:
-            ToolOutput object with execution results
+        circomspect has no library-path flag, so when the wrapper circuit's
+        includes point into a separate codebase we materialize a scratch
+        directory that mirrors the link contract via symlinks.
         """
         circuit_file_path = Path(input_paths.circuit_file)
-        cmd = ["circomspect", str(circuit_file_path), "-l", "INFO", "-v"]
+        target_circuit = self._prepare_circuit_for_circomspect(
+            input_paths, circuit_file_path
+        )
+        cmd = ["circomspect", str(target_circuit), "-l", "INFO", "-v"]
         return self.run_command(cmd, timeout, input_paths.circuit_dir)
+
+    def _prepare_circuit_for_circomspect(
+        self, input_paths: Input, circuit_file_path: Path
+    ) -> Path:
+        """Return a circom entrypoint that circomspect can resolve.
+
+        - If circuit_file_path already lives under the codebase, sibling
+          includes resolve naturally; run in place.
+        - Otherwise mirror the link contract into a fresh scratch dir under
+          $TMPDIR: copy the wrapper and symlink each `-l <path>` target's
+          children into the scratch root so `include "circuits/..."` lines
+          resolve without polluting the dataset.
+        """
+        if not input_paths.link_flags:
+            return circuit_file_path
+
+        codebase = Path(input_paths.codebase) if input_paths.codebase else None
+        if codebase is not None:
+            try:
+                circuit_file_path.resolve().relative_to(codebase.resolve())
+                return circuit_file_path
+            except ValueError:
+                pass
+
+        scratch_root = Path(tempfile.mkdtemp(prefix="zkhydra-circomspect-"))
+
+        target_wrapper = scratch_root / circuit_file_path.name
+        shutil.copy2(circuit_file_path, target_wrapper)
+
+        link_paths = self._extract_link_paths(input_paths.link_flags)
+        for link_path in link_paths:
+            link_path_obj = Path(link_path)
+            if not link_path_obj.is_dir():
+                continue
+            for child in link_path_obj.iterdir():
+                dest = scratch_root / child.name
+                if dest.is_symlink() or dest.exists():
+                    continue
+                try:
+                    os.symlink(child.resolve(), dest)
+                except OSError as exc:
+                    logging.debug(
+                        "circomspect scratch: cannot symlink %s -> %s: %s",
+                        child,
+                        dest,
+                        exc,
+                    )
+
+        return target_wrapper
+
+    @staticmethod
+    def _extract_link_paths(link_flags: List[str]) -> List[str]:
+        paths: List[str] = []
+        it = iter(link_flags)
+        for flag in it:
+            if flag in ("-l", "-L", "--link-libraries"):
+                try:
+                    paths.append(next(it))
+                except StopIteration:
+                    break
+        return paths
 
     def _helper_parse_output(self, tool_result_raw: Path) -> CircomspectParsed:
         """Parse circomspect output and extract all issues.
