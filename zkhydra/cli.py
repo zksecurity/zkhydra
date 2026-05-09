@@ -126,9 +126,11 @@ Examples:
         "--zkbugs-mode",
         type=str,
         default="direct",
-        choices=["direct", "original"],
+        choices=["direct", "original", "both"],
         help="Entrypoint per bug for zkbugs mode (default: direct). "
-        "'original' requires dataset/codebases/ populated via scripts/download_sources.sh.",
+        "'original' requires dataset/codebases/ populated via scripts/download_sources.sh. "
+        "'both' runs direct for every bug, then original only for bugs whose "
+        "Original Entrypoint differs (sub-output dirs output/direct/ and output/original/).",
     )
     parser.add_argument(
         "--bugs",

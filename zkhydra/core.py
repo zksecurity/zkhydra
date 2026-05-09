@@ -12,6 +12,7 @@ import logging
 import multiprocessing as mp
 import os
 import random
+import re
 import shlex
 import subprocess
 import sys
@@ -270,11 +271,41 @@ def evaluate_mode(args: argparse.Namespace) -> None:
 
 SKIP_PATH_PARTS = {"codebases", "dependencies"}
 
+# Matches: include "path"; or include 'path'; (ignoring // line comments).
+_INCLUDE_RE = re.compile(r'^\s*include\s+["\']([^"\']+)["\']\s*;', re.MULTILINE)
+
 
 def _is_excluded_config(config_path: Path) -> bool:
     """Skip configs that are not actual bugs (shared codebases, deps)."""
     parts = set(config_path.parts)
     return bool(parts & SKIP_PATH_PARTS)
+
+
+def _wrapper_needs_codebase(circuit_file: str | None, bug_dir: Path) -> bool:
+    """True if the wrapper has an include that can't be resolved locally.
+
+    An include path is considered locally-resolvable when it's either an
+    absolute path that exists, or relative to the bug dir and the target
+    file exists there. Everything else (e.g. ``include "circuits/foo.circom"``)
+    requires the project codebase, so the bug should be skipped when that
+    codebase is missing.
+    """
+    if not circuit_file:
+        return False
+    try:
+        src = Path(circuit_file).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    for inc in _INCLUDE_RE.findall(src):
+        candidate = Path(inc)
+        if candidate.is_absolute():
+            if candidate.is_file():
+                continue
+            return True
+        if (bug_dir / candidate).is_file():
+            continue
+        return True
+    return False
 
 
 def load_bug_selectors(
@@ -382,9 +413,11 @@ def discover_zkbugs(
             inp.codebase
             and not inp.codebase_exists
             and any(flag == inp.codebase for flag in inp.link_flags)
+            and _wrapper_needs_codebase(inp.circuit_file, bug_dir)
         ):
             entry["skip_reason"] = (
-                "codebase missing: run scripts/download_sources.sh"
+                "codebase not available locally and wrapper needs it "
+                "(run scripts/download_sources.sh, or source is private)"
             )
             bugs.append(entry)
             continue
@@ -617,6 +650,153 @@ def _sort_summary_rows(rows: list[dict]) -> list[dict]:
     )
 
 
+def _zkbugs_both(
+    dataset_dir: Path,
+    tools: list[str],
+    dsl: str,
+    timeout: int,
+    output: Path,
+    selectors: list[str] | None,
+    jobs: int,
+    random_bugs: int | None,
+    random_seed: int | None,
+    log_level: str,
+) -> None:
+    """Run direct for every bug, then original only for bugs with a
+    distinct Original Entrypoint. Emits <output>/{direct,original}/
+    sub-runs and a combined top-level summary.json.
+    """
+    logging.info("Running in ZKBUGS mode (both)")
+    logging.info("Output root: %s", output)
+
+    ensure_dir(output)
+    direct_out = output / "direct"
+    original_out = output / "original"
+
+    # Pass 1: direct.
+    zkbugs_mode(
+        dataset_dir,
+        tools,
+        dsl,
+        timeout,
+        direct_out,
+        mode="direct",
+        selectors=selectors,
+        jobs=jobs,
+        random_bugs=random_bugs,
+        random_seed=random_seed,
+        log_level=log_level,
+    )
+
+    # Determine which of the processed bugs have a distinct original
+    # entrypoint — reading the direct summary avoids re-discovering bugs.
+    direct_summary_path = direct_out / "summary.json"
+    direct_summary: dict = {}
+    try:
+        direct_summary = json.loads(
+            direct_summary_path.read_text(encoding="utf-8")
+        )
+    except (OSError, json.JSONDecodeError) as exc:
+        logging.error(
+            "both-mode: cannot read %s (%s); skipping original pass",
+            direct_summary_path,
+            exc,
+        )
+
+    processed_bug_names = [
+        b["bug_name"]
+        for b in direct_summary.get("bugs", [])
+        if b.get("status") == "processed"
+    ]
+
+    distinct_names: list[str] = []
+    for bug_name in processed_bug_names:
+        # Locate the bug dir under the dataset to read its config.
+        matches = list(dataset_dir.rglob(f"{bug_name}/zkbugs_config.json"))
+        matches = [m for m in matches if not _is_excluded_config(m)]
+        if not matches:
+            continue
+        try:
+            config = load_bug_config(matches[0].parent)
+        except (OSError, ZkbugsLoaderError):
+            continue
+        if config.get("Original Entrypoint"):
+            distinct_names.append(bug_name)
+
+    logging.info(
+        "both-mode: %d/%d processed bugs have a distinct Original Entrypoint",
+        len(distinct_names),
+        len(processed_bug_names),
+    )
+
+    # Pass 2: original, narrowed to the distinct set. Skip entirely if
+    # nothing qualifies — keeps the empty original/ subdir off disk.
+    original_summary: dict = {}
+    if distinct_names:
+        zkbugs_mode(
+            dataset_dir,
+            tools,
+            dsl,
+            timeout,
+            original_out,
+            mode="original",
+            selectors=distinct_names,
+            jobs=jobs,
+            random_bugs=None,
+            random_seed=random_seed,
+            log_level=log_level,
+        )
+        original_summary_path = original_out / "summary.json"
+        try:
+            original_summary = json.loads(
+                original_summary_path.read_text(encoding="utf-8")
+            )
+        except (OSError, json.JSONDecodeError) as exc:
+            logging.error(
+                "both-mode: cannot read %s (%s)",
+                original_summary_path,
+                exc,
+            )
+    else:
+        logging.info("both-mode: no distinct originals; original pass skipped")
+
+    combined = {
+        "mode": "both",
+        "dataset": str(dataset_dir),
+        "output_root": str(output),
+        "modes": {
+            "direct": _extract_mode_rollup(direct_summary, direct_out),
+            "original": (
+                _extract_mode_rollup(original_summary, original_out)
+                if original_summary
+                else {"ran": False, "reason": "no distinct originals"}
+            ),
+        },
+        "bugs_with_distinct_original": distinct_names,
+    }
+    (output / "summary.json").write_text(
+        json.dumps(combined, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+    logging.info("\n" + "=" * 80)
+    logging.info("zkbugs mode (both) completed")
+    logging.info("Combined summary: %s", output / "summary.json")
+    logging.info("=" * 80)
+
+
+def _extract_mode_rollup(summary: dict, output_dir: Path) -> dict:
+    """One-line rollup of a sub-run's summary, for the combined top-level."""
+    return {
+        "ran": True,
+        "output_dir": str(output_dir),
+        "total": summary.get("total", 0),
+        "processed": summary.get("processed", 0),
+        "errors": summary.get("errors", 0),
+        "skipped": summary.get("skipped", 0),
+        "evaluation_counts": summary.get("evaluation_counts"),
+    }
+
+
 def zkbugs_mode(
     dataset_dir: Path,
     tools: list[str],
@@ -631,6 +811,21 @@ def zkbugs_mode(
     log_level: str = "INFO",
 ) -> None:
     """Evaluate tools against the refactored zkbugs dataset."""
+    if mode == "both":
+        _zkbugs_both(
+            dataset_dir,
+            tools,
+            dsl,
+            timeout,
+            output,
+            selectors,
+            jobs,
+            random_bugs,
+            random_seed,
+            log_level,
+        )
+        return
+
     logging.info("Running in ZKBUGS mode")
     logging.info(f"Dataset: {dataset_dir}")
     logging.info(f"DSL: {dsl}")
