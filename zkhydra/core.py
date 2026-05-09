@@ -1011,7 +1011,7 @@ def zkbugs_mode(
             ensure_ascii=False,
         )
 
-    logging.info("\n" + "=" * 80)
+    logging.info("=" * 80)
     logging.info(
         "zkbugs mode completed: processed=%d errors=%d skipped=%d",
         len(runnable) - len(error_rows),
