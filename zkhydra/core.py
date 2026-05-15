@@ -102,6 +102,7 @@ AVAILABLE_TOOLS = {
         "picus",
         "ecneproject",
         "zkfuzz",
+        "circom_auditor",
     ],
     "pil": ["pilspector"],
     "cairo": ["sierra-analyzer"],
