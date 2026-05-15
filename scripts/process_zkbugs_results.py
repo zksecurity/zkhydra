@@ -18,6 +18,20 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 
+# All tools evaluated by zkhydra zkbugs sweeps. Order matters: it sets the
+# column order in every printed table, the LaTeX report, and the bug-tool
+# matrix. Add a tool here to surface it everywhere.
+TOOLS = [
+    "circomspect",
+    "circom_civer",
+    "picus",
+    "ecneproject",
+    "zkfuzz",
+    "conscs",
+    "circom_auditor",
+]
+
+
 def load_json(file_path: Path) -> dict:
     """Load JSON file safely."""
     try:
@@ -116,7 +130,7 @@ def collect_results(
     bug_dirs = sorted([d for d in results_dir.iterdir() if d.is_dir()])
 
     # Tools to check
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = TOOLS
 
     for bug_dir in bug_dirs:
         bug_name = bug_dir.name
@@ -155,7 +169,7 @@ def print_tool_summary_table(tool_stats: Dict[str, Dict[str, int]], tool_times: 
 
     # Define columns and tools
     columns = ["TP", "FN", "Undecided", "Timeout", "Failure"]
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = TOOLS
 
     # Calculate column widths
     tool_width = max(len(tool) for tool in tools + ["TOTAL"])
@@ -222,7 +236,7 @@ def print_bug_tool_matrix(
         bug_tool_matrix: Dictionary mapping bug names to tool statuses (with asterisks)
         full_path: If True, print full bug names without truncation
     """
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = TOOLS
 
     # Calculate column widths
     bug_width = max(len(bug) for bug in bug_tool_matrix.keys())
@@ -271,7 +285,7 @@ def print_execution_time_stats(
     print("EXECUTION TIME STATISTICS")
     print("=" * 100)
 
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = TOOLS
 
     # Calculate column widths
     tool_width = max(len(tool) for tool in tools)
@@ -326,8 +340,8 @@ def print_statistics(
     print("STATISTICS")
     print("=" * 80)
     print(f"Total bugs processed: {bug_count}")
-    print(f"Total tools evaluated: 5")
-    print(f"Total possible evaluations: {bug_count * 5}")
+    print(f"Total tools evaluated: {len(TOOLS)}")
+    print(f"Total possible evaluations: {bug_count * len(TOOLS)}")
 
     # Count actual evaluations (excluding N/A and Unknown)
     actual_evals = sum(sum(counts.values()) for counts in tool_stats.values())
@@ -354,8 +368,8 @@ def print_statistics(
         print(f"  Failures:        {total_failure:3d} ({total_failure/evaluated*100:5.1f}%)")
 
     # Bug-level detection statistics
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
-    tools_without_ecne = ["circomspect", "circom_civer", "picus", "zkfuzz"]
+    tools = TOOLS
+    tools_without_ecne = [t for t in TOOLS if t != "ecneproject"]
 
     # Count bugs where at least one tool detected the vulnerability
     bugs_detected_all = 0
@@ -400,7 +414,7 @@ def generate_latex_report(
     output_pdf: Path,
 ):
     """Generate LaTeX report with four tables."""
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = TOOLS
     columns = ["TP", "FN", "Timeout", "Failure"]
 
     # Create bug ID mapping
@@ -505,6 +519,16 @@ def generate_latex_report(
                 f"{latex_tool_name} & 0 & --- & --- & --- & --- & {nr_timeout} " + r"\\" + "\n"
             )
 
+    # Build dynamic LaTeX bits driven by `tools` so adding a tool here is a
+    # one-line change to TOOLS rather than four hand-edited table headers.
+    matrix_col_spec = "l|" + "c" * len(tools)
+    time_col_spec = "l|" + "r" * len(tools)
+    tool_headers = " & ".join(
+        rf"\textbf{{{t.replace('_', r'\_')}}}" for t in tools
+    )
+    matrix_header_row = rf"\textbf{{Bug ID}} & {tool_headers} \\"
+    matrix_continued_cols = len(tools) + 1
+
     latex_content += r"""\bottomrule
 \end{tabular}
 \end{table}
@@ -515,19 +539,19 @@ def generate_latex_report(
 
 \begin{landscape}
 \footnotesize
-\begin{longtable}{l|ccccc}
+""" + rf"""\begin{{longtable}}{{{matrix_col_spec}}}
 \toprule
-\textbf{Bug ID} & \textbf{circomspect} & \textbf{circom\_civer} & \textbf{picus} & \textbf{ecneproject} & \textbf{zkfuzz} \\
+{matrix_header_row}
 \midrule
 \endfirsthead
 
 \toprule
-\textbf{Bug ID} & \textbf{circomspect} & \textbf{circom\_civer} & \textbf{picus} & \textbf{ecneproject} & \textbf{zkfuzz} \\
+{matrix_header_row}
 \midrule
 \endhead
 
 \midrule
-\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\multicolumn{{{matrix_continued_cols}}}{{r}}{{\textit{{Continued on next page}}}} \\
 \endfoot
 
 \bottomrule
@@ -594,19 +618,19 @@ def generate_latex_report(
 
 \begin{landscape}
 \footnotesize
-\begin{longtable}{l|rrrrr}
+""" + rf"""\begin{{longtable}}{{{time_col_spec}}}
 \toprule
-\textbf{Bug ID} & \textbf{circomspect} & \textbf{circom\_civer} & \textbf{picus} & \textbf{ecneproject} & \textbf{zkfuzz} \\
+{matrix_header_row}
 \midrule
 \endfirsthead
 
 \toprule
-\textbf{Bug ID} & \textbf{circomspect} & \textbf{circom\_civer} & \textbf{picus} & \textbf{ecneproject} & \textbf{zkfuzz} \\
+{matrix_header_row}
 \midrule
 \endhead
 
 \midrule
-\multicolumn{6}{r}{\textit{Continued on next page}} \\
+\multicolumn{{{matrix_continued_cols}}}{{r}}{{\textit{{Continued on next page}}}} \\
 \endfoot
 
 \bottomrule

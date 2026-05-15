@@ -28,7 +28,8 @@ tools = [
     "circomspect",
     "EcneProject",
     "Picus",
-    "zkFuzz"
+    "zkFuzz",
+    "circom_auditor",
 ]
 
 # List of bugs to analyze
