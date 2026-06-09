@@ -25,6 +25,7 @@ Runtime characteristics:
 
 import logging
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -93,16 +94,36 @@ class CircomAuditorClaude(CircomAuditorBase):
                 "If the run fails with a 401, set ANTHROPIC_API_KEY."
             )
 
+    def _materialize_skill(self, target_dir: Path) -> None:
+        """Symlink the circom-auditor skill into the sandbox at skills/circom-auditor/.
+
+        SKILL.md instructs claude to run:
+            python3 skills/circom-auditor/scripts/build_audit_context.py --repo "$PWD"
+        That relative path only resolves if the skill tree is present under the cwd.
+        """
+        skill_src = (
+            Path(self.plugin_dir) / "skills" / "circom-auditor"
+        ).resolve()
+        scratch_skill = target_dir / "skills" / "circom-auditor"
+        if scratch_skill.exists():
+            return
+        scratch_skill.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            scratch_skill.symlink_to(skill_src, target_is_directory=True)
+        except OSError:
+            shutil.copytree(skill_src, scratch_skill, symlinks=True)
+
     def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run `claude --print` on a sandboxed copy of the circuit dir."""
         circuit_file_path = Path(input_paths.circuit_file)
         target_dir, target_file, scope = self._prepare_scratch_dir(
             input_paths, circuit_file_path
         )
+        self._materialize_skill(target_dir)
 
         prompt = (
-            f"run circom auditor on {target_file.name} (sandboxed eval — "
-            f"no web, no external context, audit constraint logic only). "
+            f"Run the circom-auditor skill on `{target_file.name}`. "
+            f"Use the full delegated multi-agent workflow. "
             f"Scope: {scope.summary_line()}"
         )
         cmd = [

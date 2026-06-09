@@ -237,15 +237,15 @@ uv run python -m zkhydra.main zkbugs \
 - **Picus** - Symbolic execution via Rosette
 - **EcneProject** - Julia-based circuit analysis
 - **zkFuzz** - Fuzzing-based bug detection
-- **circom_auditor** - 9-agent parallel LLM audit via [zksecurity/zk-skills](https://github.com/zksecurity/zk-skills) — **native-only, not bundled in Docker**; ~3-5 min per circuit
+- **circom_auditor_claude / circom_auditor_codex** - 17-agent parallel LLM audit via [zksecurity/zk-skills](https://github.com/zksecurity/zk-skills) — **native-only, not bundled in Docker**; ~3-10 min per circuit
 
 ### circom-auditor — native-only
 
-> ⚠️ **`circom_auditor` only runs in native mode.** It is *not* installed in the zkhydra Docker image. If you try to invoke it inside `docker-compose run`, the tool plugin will exit with an error pointing back here.
+> ⚠️ **`circom_auditor_claude` and `circom_auditor_codex` only run in native mode.** They are *not* installed in the zkhydra Docker image. If you try to invoke them inside `docker-compose run`, the tool plugin will exit with an error pointing back here.
 
-`circom_auditor` invokes the [zksecurity/zk-skills](https://github.com/zksecurity/zk-skills) `circom-auditor` Claude Code skill, which spawns 9 specialist sub-agents (vector-scan, signal-flow, range-check, arithmetic-field, selector-mux, invariant, intent-binding, first-principles, free-flow) in parallel and produces a deduplicated, gate-validated security report.
+`circom_auditor_claude` invokes the [zksecurity/zk-skills](https://github.com/zksecurity/zk-skills) `circom-auditor` Claude Code skill. `circom_auditor_codex` invokes the same skill through Codex's native skill discovery (`.agents/skills`, user skills, admin skills, or installed plugins). The Codex wrapper prebuilds the delegated worker bundles and forbids local fallback: if Codex subagents are unavailable, the run fails instead of doing a single-agent audit. The skill spawns specialist sub-agents in parallel and produces a deduplicated, gate-validated security report.
 
-The reason for native-only: Claude Code stores subscription/OAuth credentials in the host OS keychain (macOS Keychain / libsecret on Linux / DPAPI on Windows). Those credentials cannot be mounted into a Linux container, so a containerised version would force everyone onto API-key billing. By keeping this tool native, you can use whatever auth your host's `claude` is set up with — subscription, API key, or both. (The same constraint applies to any other LLM CLI that uses keychain-backed OAuth, e.g. OpenAI's Codex; that's also why `circom-auditor` is Claude-only — it depends on Claude Code's `--plugin-dir` skill system, which Codex doesn't implement.)
+The reason for native-only: LLM CLIs may store subscription/OAuth credentials in the host OS keychain (macOS Keychain / libsecret on Linux / DPAPI on Windows). Those credentials cannot be mounted into a Linux container, so a containerised version would force everyone onto API-key billing. By keeping these tools native, you can use the host CLI auth already configured for Claude or Codex.
 
 #### One-time host setup
 
@@ -264,6 +264,12 @@ git clone https://github.com/zksecurity/zk-skills.git ~/zk-skills
 
 # 4. Tell zkhydra where the plugin dir is (add this to your shell rc)
 export CLAUDE_PLUGIN_DIR=~/zk-skills
+
+# Optional Codex variant
+npm install -g @openai/codex
+codex login                      # or export CODEX_API_KEY=...
+mkdir -p ~/.agents/skills
+ln -s ~/zk-skills/skills/circom-auditor ~/.agents/skills/circom-auditor
 ```
 
 #### Run it
@@ -273,7 +279,7 @@ From a checkout of zkhydra, **without Docker**:
 ```bash
 uv run python -m zkhydra.main analyze \
   --input examples/test_bug/circuits/circuit.circom \
-  --tools circom_auditor \
+  --tools circom_auditor_claude \
   --timeout 600
 ```
 
@@ -290,7 +296,7 @@ docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
 # 2. LLM auditor natively, against the same bug
 uv run python -m zkhydra.main zkbugs \
   --dataset zkbugs/dataset/circom \
-  --tools circom_auditor \
+  --tools circom_auditor_claude \
   --bugs daira_hopwood_darkforest_v0_3_missing_bit_length_check \
   --output output/llm-only
 
@@ -299,22 +305,22 @@ uv run python -m zkhydra.main zkbugs \
 
 #### Caveats
 
-- Each `circom_auditor` run spawns 9 parallel Claude sub-agents and takes 3-5 minutes wall-clock on a small bundle (1-5 templates / a few hundred lines). On larger scopes the wall-clock grows non-linearly — the 9 sub-agents each have to ingest the full bundle before producing findings.
+- Each `circom_auditor_claude` / `circom_auditor_codex` run spawns up to 17 parallel specialist sub-agents and takes 3-10 minutes wall-clock on a small bundle (1-5 templates / a few hundred lines). On larger scopes the wall-clock grows non-linearly — the sub-agents each have to ingest the full bundle before producing findings.
 - **Use a per-bug timeout of `1800` (30 min), not 24h.** A bug that doesn't finish in 30 min is hung — fail it and move on. The skill is designed for the 2-5 templates a developer is actively touching, not monorepo-sized audits.
 - **Bundle-size guard:** the tool plugin refuses to launch on scratch dirs above 30 `.circom` files or 5 000 lines of source (override via `CIRCOM_AUDITOR_MAX_FILES` / `CIRCOM_AUDITOR_MAX_LINES` env vars). zkbugs reproducers from large monorepos like Panther transitively pull in ~200 files / ~50K lines via `-l` link flags; those will be skipped with a clear "bundle too large" failure rather than hanging the run.
-- Cost: subscription quota (with `claude login`) or per-token API spend (with `ANTHROPIC_API_KEY`). Pair with `--tools` and `--bugs` filtering to avoid running it on every bug in a large dataset sweep unless that's what you want.
+- Cost: subscription quota / account quota or per-token API spend, depending on the CLI auth you use. Pair with `--tools` and `--bugs` filtering to avoid running it on every bug in a large dataset sweep unless that's what you want.
 - The skill follows Circom `include` chains (so wrapper-only zkbugs reproducers see the actual buggy template body via the `-l` link flag → scratch-dir trick the tool plugin handles automatically).
 - Output is rich markdown — the tool plugin parses the `## Findings` and `## Leads` sections into zkhydra's standardized `Finding` schema.
 
 #### Eval-mode sandboxing (zkbugs honesty guarantees)
 
-When you point `circom_auditor` at a zkbugs reproducer, the bug folder ships sidecar files that contain the literal answer key — `README.md` lists the vulnerability class, root cause, location, and proposed mitigation; `zkbugs_config.json` carries the same structured data. To prevent the LLM from "auditing" by reading the answer, the tool plugin runs every audit inside a fresh tmp dir and keeps the answer key out of it. Three layers of defence:
+When you point `circom_auditor_claude` or `circom_auditor_codex` at a zkbugs reproducer, the bug folder ships sidecar files that contain the literal answer key — `README.md` lists the vulnerability class, root cause, location, and proposed mitigation; `zkbugs_config.json` carries the same structured data. To prevent the LLM from "auditing" by reading the answer, the tool plugin runs every audit inside a fresh tmp dir and keeps the answer key out of it. Three layers of defence:
 
 1. **Filesystem isolation** — the scratch dir contains *only* `.circom` source: the wrapper, any sibling `.circom` files at the top level of the bug dir, and symlinks to the linked codebase's source subdirectories. Excluded by name: `README*`, `zkbugs_config.json`, `zkbugs_*.sh`, `input.json`, `direct_input.json`. Excluded by directory blocklist: `test`, `tests`, `doc`, `docs`, `client`, `examples`, `node_modules`, hidden dirs, and a few other common project-noise names that could leak per-bug hints.
-2. **Tool restrictions on the Claude CLI** — `--disallowedTools` blocks `WebSearch`, `WebFetch`, and the common Exa MCP web tools (`mcp__exa__web_search_exa`, `mcp__exa__web_fetch_exa`); `--setting-sources ""` skips the user/project/local Claude settings stack so personal MCP servers (Drive, Gmail, custom search, etc.) don't leak into the run.
-3. **Plain-text instruction** — `--append-system-prompt` injects an explicit "sandboxed eval mode: no web, no external context, audit constraint logic only" note that every sub-agent reads.
+2. **CLI restrictions** — the Claude variant blocks web/search tools and skips the user/project/local Claude settings stack; the Codex variant prebuilds delegated bundles, runs `codex exec` in read-only sandbox mode from the scratch directory, and refuses local fallback.
+3. **Plain-text instruction** — both variants inject an explicit "sandboxed eval mode: no web, no external context, audit constraint logic only" note that every sub-agent reads.
 
-Layer 1 is the load-bearing one; 2 and 3 are belt-and-suspenders. Net effect: when you run `circom_auditor` on `dataset/circom/.../daira_hopwood_..._missing_bit_length_check`, Claude sees a tmp dir with `circuit.circom` and a `circuits/` symlink — nothing that names the bug, no reference to the audit report, no exploit witness.
+Layer 1 is the load-bearing one; 2 and 3 are belt-and-suspenders. Net effect: when you run an LLM auditor on `dataset/circom/.../daira_hopwood_..._missing_bit_length_check`, the CLI sees a tmp dir with `circuit.circom` and a `circuits/` symlink — nothing that names the bug, no reference to the audit report, no exploit witness.
 
 ## Usage Modes
 
@@ -446,12 +452,12 @@ docker-compose run --rm zkhydra uv run python -m zkhydra.main zkbugs \
 
 ### circom-auditor (native only — single circuit)
 
-> See the **circom-auditor — native-only** section above for the one-time host setup. Briefly: install Claude Code, run `claude login` (subscription) or set `ANTHROPIC_API_KEY`, clone zk-skills, and `export CLAUDE_PLUGIN_DIR=~/zk-skills`.
+> See the **circom-auditor — native-only** section above for the one-time host setup. Briefly: install Claude Code and/or Codex, authenticate the CLI, clone zk-skills, and expose the skill through `CLAUDE_PLUGIN_DIR` or `.agents/skills`.
 
 ```bash
 uv run python -m zkhydra.main analyze \
   --input examples/test_bug/circuits/circuit.circom \
-  --tools circom_auditor \
+  --tools circom_auditor_claude \
   --timeout 600
 ```
 
@@ -460,7 +466,7 @@ uv run python -m zkhydra.main analyze \
 ```bash
 uv run python -m zkhydra.main zkbugs \
   --dataset zkbugs/dataset/circom \
-  --tools circom_auditor \
+  --tools circom_auditor_claude \
   --bugs veridise_decoder_accepting_bogus_output_signal \
   --timeout 600
 ```
