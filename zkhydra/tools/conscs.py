@@ -539,13 +539,14 @@ class ConsCS(AbstractTool):
                     "manual_analysis_reasoning": "N/A",
                 }
 
-        # NOT SURE findings on an Under-Constrained target need manual review
-        if not_sure_findings and gt_vulnerability == "Under-Constrained":
+        # NOT SURE means ConsCS finished but could not find a counterexample
+        # the tool failed to detect the bug, which is a FalseNegative.
+        if not_sure_findings:
             return {
-                "status": "Undecided",
-                "reason": f"ConsCS reported NOT SURE for {len(not_sure_findings)} component(s) — manual review required",
-                "need_manual_analysis": True,
-                "manual_analysis": "Pending",
+                "status": "FalseNegative",
+                "reason": f"ConsCS reported NOT SURE for {len(not_sure_findings)} component(s), could not find a counterexample",
+                "need_manual_analysis": False,
+                "manual_analysis": "N/A",
                 "manual_analysis_reasoning": "N/A",
             }
 
