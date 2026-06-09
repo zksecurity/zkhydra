@@ -40,7 +40,7 @@ from zkhydra.utils.zkbugs_loader import (
 )
 
 # Tools that consume R1CS (the shared pre-compile feeds these).
-ARTIFACT_TOOLS = frozenset({"ecneproject", "picus"})
+ARTIFACT_TOOLS = frozenset({"ecneproject", "picus", "conscs"})
 
 BASE_DIR = Path.cwd()
 
