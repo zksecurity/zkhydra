@@ -10,7 +10,8 @@ import logging
 from zkhydra.tools.base import AbstractTool
 
 # Import all tool instances
-from zkhydra.tools.circom_auditor import CircomAuditor
+from zkhydra.tools.circom_auditor_claude import CircomAuditorClaude
+from zkhydra.tools.circom_auditor_codex import CircomAuditorCodex
 from zkhydra.tools.circom_civer import CircomCiver
 from zkhydra.tools.circomspect import Circomspect
 from zkhydra.tools.conscs import ConsCS
@@ -29,8 +30,8 @@ TOOL_REGISTRY: ToolsDict = {
     "zkfuzz": ZkFuzz,
     "picus": Picus,
     "ecneproject": EcneProject,
-    "circom_auditor": CircomAuditor,
-    # Add other tools here as they are refactored
+    "circom_auditor_claude": CircomAuditorClaude,
+    "circom_auditor_codex": CircomAuditorCodex,
 }
 
 
