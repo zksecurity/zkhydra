@@ -328,7 +328,12 @@ def load_bug_selectors(
 def _bug_matches_selectors(
     bug_dir: Path, dataset_dir: Path, selectors: list[str]
 ) -> bool:
-    """True if any selector is a substring of the bug name or relative path."""
+    """True if any selector overlaps with the bug name or dataset-relative path.
+
+    Supports both short selectors (e.g. "0xbok", "veridise_decoder") and full
+    config-file paths (e.g. "bugs/zkbugs/dataset/circom/org/repo/bug") by
+    checking in both directions.
+    """
     if not selectors:
         return True
     name = bug_dir.name
@@ -336,7 +341,10 @@ def _bug_matches_selectors(
         rel = str(bug_dir.resolve().relative_to(dataset_dir.resolve()))
     except ValueError:
         rel = str(bug_dir)
-    return any(sel in name or sel in rel for sel in selectors)
+    return any(
+        sel in name or sel in rel or name in sel or rel in sel
+        for sel in selectors
+    )
 
 
 def discover_zkbugs(
