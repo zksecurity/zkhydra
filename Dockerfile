@@ -287,6 +287,8 @@ RUN echo "Cloning runtime dependencies..." && \
     git clone https://github.com/Veridise/Picus.git tools/picus || true && \
     # EcneProject - NEEDED as Julia package
     git clone https://github.com/franklynwang/EcneProject.git tools/ecneproject || true && \
+    # ConsCS
+    git clone https://github.com/jinan789/ConsCS.git tools/conscs || true && \
     # Helpers - NEEDED for some tools
     git clone https://github.com/cvc5/cvc5.git helpers/cvc5 || true && \
     git clone https://github.com/mit-plv/rewriter.git helpers/rewriter || true
