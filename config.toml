@@ -78,23 +78,67 @@ bugs = [
     "bugs/zkbugs/dataset/circom/succinctlabs/telepathy-circuits/veridise_zero_padding_for_sha256_in_ExpandMessageXMD_is_vulnerable_to_an_overflow",
     ## tangle-network
     "bugs/zkbugs/dataset/circom/tangle-network/protocol-solidity/veridise_incorrect_initialization_in_membership_circuits",
-    ## zkopru-network
-    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
-]
-
-# List of unreproducible bugs
-unreproducible_bugs = [
-    ## personaelabs
+    ## personaelabs (cont.)
     "bugs/zkbugs/dataset/circom/personaelabs/spartan-ecdsa/yacademy_Knowledge_of_any_member_signature_allow_to_generate_proof_of_membership",
     ## privacy-scaling-explorations
     "bugs/zkbugs/dataset/circom/privacy-scaling-explorations/maci/hashcloak_data_are_not_fully_verified_during_state_update",
+    ## reclaimprotocol (cont.)
+    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_Addition_Gadget",
+    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_XOR_gadget",
+    ## zkopru-network
+    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_Circuit_Does_Not_Check_the_ERC_20_Sum_Correctly_",
+    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_previously_correct_ownership_proof_disabled_via_code_changes",
+    ## aptos-labs
+    "bugs/zkbugs/dataset/circom/aptos-labs/keyless-zk-proofs/koukyosyumei_unconstrained_base64_decoded_len",
+    ## Arianee
+    "bugs/zkbugs/dataset/circom/Arianee/arianee-sdk/veridise_creditnoteproofs_can_be_stolen",
+    "bugs/zkbugs/dataset/circom/Arianee/arianee-sdk/veridise_ownershipproofs_could_identify_issuers",
+    ## banyancomputer
+    "bugs/zkbugs/dataset/circom/banyancomputer/hot-proofs-blake3-circom/koukyosyumei_checkdepth_comparator_overflow",
+    ## inference-labs-inc
+    "bugs/zkbugs/dataset/circom/inference-labs-inc/subnet-2-circom/koukyosyumei_clamp_comparator_overflow",
+    "bugs/zkbugs/dataset/circom/inference-labs-inc/subnet-2-circom/koukyosyumei_subtract_unconstrained_multiplier",
+    ## Moonsong-Labs
+    "bugs/zkbugs/dataset/circom/Moonsong-Labs/zksync-social-login-circuit/openzeppelin_mismatched_base64url_decoding_may_break_completeness",
+    "bugs/zkbugs/dataset/circom/Moonsong-Labs/zksync-social-login-circuit/openzeppelin_non_determinism_of_some_inputs",
+    ## pantherfoundation
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_babyjubjub_suborder_constraints_not_applied_correctly",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_blacklist_states_not_representable_in_field",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_bypassing_internal_transfer_limits_via_swaps",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_data_escrow_encrypted_message_wrong_input",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_fortxreward_abstracted_away_in_reward_calc",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_kyt_signature_verification_fails_nonzero_hash",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_nullifier_verification_can_be_disabled",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_unsafe_num2bits_254_blacklist_leaf",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_zaccount_renewal_kyc_expiry_not_validated",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_zaccount_renewal_multiple_nullifiers_same_utxo",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_zone_id_inclusion_prover_bypass",
+    "bugs/zkbugs/dataset/circom/pantherfoundation/panther-core/veridise_zone_limits_bypass_zswapv1",
+    ## rarimo
+    "bugs/zkbugs/dataset/circom/rarimo/passport-zk-circuits/koukyosyumei_under_constrained_date_encoder",
+    ## Rate-Limiting-Nullifier
+    "bugs/zkbugs/dataset/circom/Rate-Limiting-Nullifier/circom-rln/veridise_spammers_may_slash_themselves",
+    ## sismo-core
+    "bugs/zkbugs/dataset/circom/sismo-core/hydra-s2-zkps/veridise_private_information_leakage",
+    ## siv-org
+    "bugs/zkbugs/dataset/circom/siv-org/verifiable-private-overrides/koukyosyumei_emitifinrange_lessthan_overflow",
+    "bugs/zkbugs/dataset/circom/siv-org/verifiable-private-overrides/koukyosyumei_extractstringfrompoint_shiftedfirstbyte_unconstrained",
+    ## worm-privacy
+    "bugs/zkbugs/dataset/circom/worm-privacy/proof-of-burn/koukyosyumei_spend_missing_range_check",
+    ## zkemail
+    "bugs/zkbugs/dataset/circom/zkemail/ether-email-auth/matterlabs_emailauth_fails_with_overlapping_invitation_code_regex",
+    "bugs/zkbugs/dataset/circom/zkemail/zk-email-verify/matterlabs_underconstrained_fpmul_circuit",
+    "bugs/zkbugs/dataset/circom/zkemail/zk-email-verify/zksecurity_sha256_templates_return_zero_on_arbitrary_inputs",
+    "bugs/zkbugs/dataset/circom/zkemail/zk-regex/matterlabs_email_spoofing_via_manipulated_from_header",
+    "bugs/zkbugs/dataset/circom/zkemail/zk-regex/matterlabs_fromaddrregex_allows_email_address_spoofing",
+]
+
+# List of unreproducible bugs (not present in the dataset)
+unreproducible_bugs = [
+    ## privacy-scaling-explorations
     "bugs/zkbugs/dataset/circom/privacy-scaling-explorations/maci/ProcessMessages_circuit_to_prevent_message_censorship_by_the_coordinator",
     # reclaimprotocol
     "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Potentially_Easy_to_Misuse_Interface",
-    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_Addition_Gadget",
-    "bugs/zkbugs/dataset/circom/reclaimprotocol/circom-chacha20/zksecurity_Unsound_XOR_gadget",
-    # zkopru-network
-    "bugs/zkbugs/dataset/circom/zkopru-network/zkopru/leastauthority_Circuit_Does_Not_Check_the_ERC_20_Sum_Correctly_",
 ]
 
 [pil]
