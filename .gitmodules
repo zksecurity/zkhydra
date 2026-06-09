@@ -51,3 +51,6 @@
 [submodule "helpers/rewriter"]
 	path = helpers/rewriter
 	url = https://github.com/mit-plv/rewriter.git
+[submodule "tools/conscs"]
+	path = tools/conscs
+	url = git@github.com:jinan789/ConsCS.git

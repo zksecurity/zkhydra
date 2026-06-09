@@ -40,7 +40,7 @@ from zkhydra.utils.zkbugs_loader import (
 )
 
 # Tools that consume R1CS (the shared pre-compile feeds these).
-ARTIFACT_TOOLS = frozenset({"ecneproject", "picus"})
+ARTIFACT_TOOLS = frozenset({"ecneproject", "picus", "conscs"})
 
 BASE_DIR = Path.cwd()
 
@@ -95,7 +95,14 @@ class Summary:
 
 # Available tools per DSL
 AVAILABLE_TOOLS = {
-    "circom": ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz"],
+    "circom": [
+        "circomspect",
+        "circom_civer",
+        "conscs",
+        "picus",
+        "ecneproject",
+        "zkfuzz",
+    ],
     "pil": ["pilspector"],
     "cairo": ["sierra-analyzer"],
 }
@@ -1004,7 +1011,7 @@ def zkbugs_mode(
             ensure_ascii=False,
         )
 
-    logging.info("\n" + "=" * 80)
+    logging.info("=" * 80)
     logging.info(
         "zkbugs mode completed: processed=%d errors=%d skipped=%d",
         len(runnable) - len(error_rows),

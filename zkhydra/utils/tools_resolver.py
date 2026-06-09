@@ -12,6 +12,7 @@ from zkhydra.tools.base import AbstractTool
 # Import all tool instances
 from zkhydra.tools.circom_civer import CircomCiver
 from zkhydra.tools.circomspect import Circomspect
+from zkhydra.tools.conscs import ConsCS
 from zkhydra.tools.ecneproject import EcneProject
 from zkhydra.tools.picus import Picus
 from zkhydra.tools.zkfuzz import ZkFuzz
@@ -23,6 +24,7 @@ type ToolsDict = dict[str, AbstractTool]
 TOOL_REGISTRY: ToolsDict = {
     "circomspect": Circomspect,
     "circom_civer": CircomCiver,
+    "conscs": ConsCS,
     "zkfuzz": ZkFuzz,
     "picus": Picus,
     "ecneproject": EcneProject,
