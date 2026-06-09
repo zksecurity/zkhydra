@@ -28,7 +28,8 @@ TOOLS = [
     "ecneproject",
     "zkfuzz",
     "conscs",
-    "circom_auditor",
+    "circom_auditor_claude",
+    "circom_auditor_codex",
 ]
 
 
