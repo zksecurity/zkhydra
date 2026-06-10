@@ -11,6 +11,7 @@ docs/
 __pycache__/
 *.py[codz]
 *$py.class
+tmp/
 
 # C extensions
 *.so
