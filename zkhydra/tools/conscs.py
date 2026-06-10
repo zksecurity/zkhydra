@@ -1,14 +1,12 @@
-import json
 import logging
-import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from .base import (
-    EXIT_CODES,
     AbstractTool,
     AnalysisStatus,
     Finding,
@@ -25,12 +23,12 @@ class ConsCSFinding:
 
     file: str  # e.g., "Edwards2Montgomery@montgomery.circom"
     type: str  # e.g., "UNDER-CONSTRAINED", "CONSTRAINED", "NOT SURE", "TIMEOUT"
-    time: Optional[float] = None  # Execution time for this finding
-    counter_example: Optional[str] = (
+    time: float | None = None  # Execution time for this finding
+    counter_example: str | None = (
         None  # String representation of counterexample
     )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         result = {
             "file": self.file,
@@ -55,11 +53,11 @@ class ConsCsParsed:
     # Execution time (in seconds)
     execution_time: float = 0.0
     # All findings found with full details
-    findings: List[ConsCSFinding] = field(default_factory=list)
+    findings: list[ConsCSFinding] = field(default_factory=list)
     # Statistics
     total_findings: int = 0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "status": self.status,
@@ -97,69 +95,48 @@ class ConsCS(AbstractTool):
     def _compile_circom_to_r1cs(
         self,
         circuit_file: Path,
-        link_flags: Optional[List[str]] = None,
-        timeout: int = 300,
-    ) -> Optional[Path]:
-        """Compile a Circom circuit to R1CS format.
+        link_flags: list[str],
+        timeout: int,
+        out_dir: Path,
+    ) -> tuple[Path | None, ToolOutput | None]:
+        """Compile a Circom circuit to R1CS format in a scratch directory.
 
         Args:
             circuit_file: Path to the .circom file
+            link_flags: circom `-l` flags from the bug contract
             timeout: Maximum compilation time in seconds
+            out_dir: Directory to write the .r1cs into (never the source dir)
 
         Returns:
-            Path to generated .r1cs file, or None if compilation failed
+            (r1cs_path, None) on success, (None, failure_output) otherwise.
+            A compile timeout keeps its TIMEOUT status so it is not
+            misreported as a generic failure.
         """
-        circuit_dir = circuit_file.parent
-        r1cs_file = circuit_dir / circuit_file.stem
-        r1cs_file = r1cs_file.with_suffix(".r1cs")
-
-        # If r1cs already exists, use it
-        if r1cs_file.exists():
-            logging.debug(f"Using existing R1CS file: {r1cs_file}")
-            return r1cs_file
-
-        # Compile circuit to r1cs
         logging.info(f"Compiling {circuit_file.name} to R1CS format...")
         cmd = [
             "circom",
-            str(circuit_file),
+            str(circuit_file.resolve()),
             "--r1cs",
             "-o",
-            str(circuit_dir),
+            str(out_dir),
+            *link_flags,
         ]
-        if link_flags:
-            cmd.extend(link_flags)
+        result = self.run_command(cmd, timeout, str(circuit_file))
 
-        try:
-            result = subprocess.run(
-                cmd,
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-                cwd=str(circuit_dir),
-            )
+        if result.status == OutputStatus.TIMEOUT:
+            return None, result
+        if result.status != OutputStatus.SUCCESS:
+            result.msg = f"[Circom compilation failed]\n{result.msg}"
+            return None, result
 
-            if result.returncode != 0:
-                logging.error(
-                    f"Circom compilation failed:\nstdout: {result.stdout}\nstderr: {result.stderr}"
-                )
-                return None
+        r1cs_file = next(iter(out_dir.glob("*.r1cs")), None)
+        if r1cs_file is None:
+            result.status = OutputStatus.FAIL
+            result.msg = f"[R1CS file not generated]\n{result.msg}"
+            return None, result
 
-            if not r1cs_file.exists():
-                logging.error(f"R1CS file not generated: {r1cs_file}")
-                return None
-
-            logging.info(f"Successfully compiled to: {r1cs_file}")
-            return r1cs_file
-
-        except subprocess.TimeoutExpired:
-            logging.error(
-                f"Circom compilation timed out after {timeout} seconds"
-            )
-            return None
-        except Exception as e:
-            logging.error(f"Circom compilation failed: {e}")
-            return None
+        logging.info(f"Successfully compiled to: {r1cs_file}")
+        return r1cs_file, None
 
     def _internal_execute(self, input_paths: Input, timeout: int) -> ToolOutput:
         """Run ConsCS on a given circuit.
@@ -172,77 +149,90 @@ class ConsCS(AbstractTool):
             ToolOutput object with execution results
         """
         circuit_file = Path(input_paths.circuit_file)
-        circuit_dir = Path(input_paths.circuit_dir)
 
-        # Compile circuit to R1CS if needed, then deduct elapsed time so the
-        # analysis step gets the remaining budget rather than another full timeout.
-        if input_paths.r1cs_file:
-            r1cs_file = Path(input_paths.r1cs_file)
-            compile_elapsed = 0.0
-        else:
-            t0 = time.monotonic()
-            r1cs_file = self._compile_circom_to_r1cs(
-                circuit_file, input_paths.link_flags, timeout
+        # Scratch space for the self-compiled R1CS and ConsCS log files, so
+        # the circuit/source directory is never polluted and a stale R1CS
+        # from an earlier run can never be picked up.
+        with tempfile.TemporaryDirectory(prefix="conscs_") as tmp_dir:
+            work_dir = Path(tmp_dir)
+
+            if input_paths.r1cs_file:
+                r1cs_file = Path(input_paths.r1cs_file)
+                analysis_timeout = timeout
+            elif input_paths.mode != "analyze":
+                # zkbugs mode always precompiles (conscs is in ARTIFACT_TOOLS);
+                # a missing r1cs_file means precompile_circuit already failed,
+                # so recompiling here would burn another full timeout on a
+                # known failure.
+                msg = (
+                    "[Precompiled R1CS unavailable: circom failed in the "
+                    "precompile step; see scratch/compile.log]"
+                )
+                return ToolOutput(
+                    status=OutputStatus.FAIL,
+                    stdout="",
+                    stderr=msg,
+                    return_code=1,
+                    msg=msg,
+                )
+            else:
+                # Compile, then deduct elapsed time so the analysis step gets
+                # the remaining budget rather than another full timeout.
+                t0 = time.monotonic()
+                r1cs_file, compile_failure = self._compile_circom_to_r1cs(
+                    circuit_file, input_paths.link_flags, timeout, work_dir
+                )
+                if compile_failure is not None:
+                    return compile_failure
+                analysis_timeout = max(1, timeout - int(time.monotonic() - t0))
+
+            base_name = circuit_file.stem
+            log_file = work_dir / f"{base_name}_conscs.log"
+            log_file_contributions = (
+                work_dir / f"{base_name}_conscs_contributions.log"
             )
-            compile_elapsed = time.monotonic() - t0
 
-        if not r1cs_file:
-            return ToolOutput(
-                status=OutputStatus.FAIL,
-                stdout="",
-                stderr="Failed to compile circuit to R1CS format",
-                return_code=1,
-                msg="Failed to compile circuit to R1CS format",
+            # Prepare ConsCS command
+            # Flags: "111" = all features enabled (SIMPLIFICATION=1, BPG=1, ASSUMPTION=1)
+            # Max depth: "4" (standard value)
+            flags = "111"
+            max_depth = "4"
+
+            cmd = [
+                sys.executable,
+                str(self.analyze_script),
+                str(r1cs_file),
+                str(log_file),
+                str(log_file_contributions),
+                flags,
+                max_depth,
+            ]
+
+            # Execute ConsCS with remaining budget after compilation
+            result = self.run_command(
+                cmd, analysis_timeout, input_paths.circuit_dir
             )
 
-        analysis_timeout = max(1, timeout - int(compile_elapsed))
+            # ConsCS writes its findings to the log file. Replace msg with log
+            # content so _helper_parse_output sees the structured log format.
+            # Skip when the process timed out — the TIMEOUT status is the signal;
+            # overwriting msg would erase the "[Timed out]" sentinel from raw.txt.
+            if result.status != OutputStatus.TIMEOUT:
+                if log_file.exists():
+                    try:
+                        with open(log_file, encoding="utf-8") as f:
+                            result.msg = f.read()
+                    except Exception as e:
+                        logging.debug(f"Could not read log file: {e}")
+                elif result.status == OutputStatus.SUCCESS:
+                    # ConsCS exited cleanly without writing its log: a tool
+                    # failure, which must not parse as a clean NO_BUGS run.
+                    result.status = OutputStatus.FAIL
+                    result.msg = (
+                        f"[ConsCS produced no log output]\n{result.msg}"
+                    )
 
-        # Prepare log file paths in the circuit directory
-        base_name = circuit_file.stem
-        log_file = circuit_dir / f"{base_name}_conscs.log"
-        log_file_contributions = (
-            circuit_dir / f"{base_name}_conscs_contributions.log"
-        )
-
-        # Clear old log files (ConsCS appends to them, so we need fresh logs)
-        for log in [log_file, log_file_contributions]:
-            if log.exists():
-                log.unlink()
-                logging.debug(f"Cleared old log file: {log}")
-
-        # Prepare ConsCS command
-        # Flags: "111" = all features enabled (SIMPLIFICATION=1, BPG=1, ASSUMPTION=1)
-        # Max depth: "4" (standard value)
-        flags = "111"
-        max_depth = "4"
-
-        cmd = [
-            sys.executable,
-            str(self.analyze_script),
-            str(r1cs_file),
-            str(log_file),
-            str(log_file_contributions),
-            flags,
-            max_depth,
-        ]
-
-        # Execute ConsCS with remaining budget after compilation
-        result = self.run_command(
-            cmd, analysis_timeout, input_paths.circuit_dir
-        )
-
-        # ConsCS writes its findings to the log file. Replace msg with log
-        # content so _helper_parse_output sees the structured log format.
-        # Skip when the process timed out — the TIMEOUT status is the signal;
-        # overwriting msg would erase the "[Timed out]" sentinel from raw.txt.
-        if result.status != OutputStatus.TIMEOUT and log_file.exists():
-            try:
-                with open(log_file, "r", encoding="utf-8") as f:
-                    result.msg = f.read()
-            except Exception as e:
-                logging.debug(f"Could not read log file: {e}")
-
-        return result
+            return result
 
     def _helper_parse_output(self, tool_result_raw: Path) -> ConsCsParsed:
         """Parse ConsCS output and extract all findings.
@@ -260,16 +250,16 @@ class ConsCS(AbstractTool):
             ConsCsParsed object with detailed structured data
         """
         if not tool_result_raw.exists():
-            logging.debug(f"Log file not found: {tool_result_raw}")
+            logging.error(f"ConsCS log output not found: {tool_result_raw}")
             return ConsCsParsed(
-                status="success",
+                status="error",
                 execution_time=0.0,
                 findings=[],
                 total_findings=0,
             )
 
         try:
-            with open(tool_result_raw, "r", encoding="utf-8") as f:
+            with open(tool_result_raw, encoding="utf-8") as f:
                 content = f.read()
         except Exception as e:
             logging.error(f"Failed to read ConsCS output: {e}")
@@ -289,13 +279,27 @@ class ConsCS(AbstractTool):
                 total_findings=0,
             )
 
+        # A valid ConsCS log always contains at least one "** filename:"
+        # entry (the main circuit); anything else is a crashed/garbled run
+        # and must not parse as a clean NO_BUGS result.
+        if "** filename:" not in content:
+            logging.error(
+                f"ConsCS output has no recognizable entries: {tool_result_raw}"
+            )
+            return ConsCsParsed(
+                status="error",
+                execution_time=0.0,
+                findings=[],
+                total_findings=0,
+            )
+
         # Parse findings from ConsCS log output
         # ConsCS format:
         # ** filename: <circuit_name>
         # ** result: <CONSTRAINED! | UNDER-CONSTRAINED! | NOT SURE | TIMEOUT>
         # ** time: <execution_time>
         # ** counterexample: <dict_representation>
-        findings: List[ConsCSFinding] = []
+        findings: list[ConsCSFinding] = []
         total_time = 0.0
 
         lines = content.split("\n")
@@ -353,17 +357,15 @@ class ConsCS(AbstractTool):
 
                     j += 1
 
-                # Create finding if we have a result
-                if result_type:
-                    # Only include findings that are not CONSTRAINED
-                    if result_type != "CONSTRAINED":
-                        finding = ConsCSFinding(
-                            file=filename,
-                            type=result_type,
-                            time=exec_time,
-                            counter_example=counterexample,
-                        )
-                        findings.append(finding)
+                # Create a finding for any result that is not CONSTRAINED
+                if result_type and result_type != "CONSTRAINED":
+                    finding = ConsCSFinding(
+                        file=filename,
+                        type=result_type,
+                        time=exec_time,
+                        counter_example=counterexample,
+                    )
+                    findings.append(finding)
 
                 # Move to the next section
                 i = j
@@ -382,7 +384,7 @@ class ConsCS(AbstractTool):
         self,
         parsed_output: ConsCsParsed,
         tool_output: ToolOutput,
-    ) -> Tuple[AnalysisStatus, List[Finding]]:
+    ) -> tuple[AnalysisStatus, list[Finding]]:
         """Generate uniform findings from parsed output.
 
         Args:
@@ -394,56 +396,74 @@ class ConsCS(AbstractTool):
         """
         findings = []
 
-        # Separate per-circuit TIMEOUT results from actual findings so they
-        # don't masquerade as BUGS_FOUND when no real bug was detected.
-        timeout_findings = [
-            f for f in parsed_output.findings if f.type.upper() == "TIMEOUT"
-        ]
-        real_findings = [
-            f for f in parsed_output.findings if f.type.upper() != "TIMEOUT"
-        ]
+        # Partition raw results. Only UNDER/OVER-CONSTRAINED verdicts are real
+        # findings. Per-circuit TIMEOUT and "canceled" (ConsCS's internal
+        # cancellation) mean the analysis was incomplete; NOT SURE means the
+        # solver finished without a verdict; anything else (e.g. "maximum
+        # recursion depth exceeded") is a crash inside ConsCS. None of those
+        # may masquerade as BUGS_FOUND or inflate findings_count — they stay
+        # visible in parsed.json only.
+        timeout_findings: list[ConsCSFinding] = []
+        not_sure_findings: list[ConsCSFinding] = []
+        crash_findings: list[ConsCSFinding] = []
+        real_findings: list[ConsCSFinding] = []
+        for conscs_finding in parsed_output.findings:
+            finding_type = conscs_finding.type.upper()
+            if finding_type == "TIMEOUT" or "CANCELED" in finding_type:
+                timeout_findings.append(conscs_finding)
+            elif "NOT SURE" in finding_type:
+                not_sure_findings.append(conscs_finding)
+            elif "UNDER" in finding_type or "OVER" in finding_type:
+                real_findings.append(conscs_finding)
+            else:
+                crash_findings.append(conscs_finding)
 
         # Determine analysis status
-        if parsed_output.status == "timeout" or (
-            timeout_findings and not real_findings
-        ):
+        if parsed_output.status == "error":
+            analysis_status = AnalysisStatus.ERROR
+        elif parsed_output.status == "timeout":
             analysis_status = AnalysisStatus.TIMEOUT
         elif real_findings:
             analysis_status = AnalysisStatus.BUGS_FOUND
+        elif crash_findings:
+            analysis_status = AnalysisStatus.ERROR
+        elif timeout_findings:
+            analysis_status = AnalysisStatus.TIMEOUT
         else:
+            # Includes NOT SURE-only runs: the solver completed but proved
+            # nothing, which evaluation counts as a miss.
             analysis_status = AnalysisStatus.NO_BUGS
 
-        # Map ConsCS findings to standardized findings (skip pure-timeout entries)
+        # Map confirmed ConsCS findings to standardized findings
         for conscs_finding in real_findings:
             # Map ConsCS finding type to standardized category
             finding_type = conscs_finding.type.upper()
             if "UNDER" in finding_type:
                 unified_title = StandardizedBugCategory.UNDER_CONSTRAINED
                 bug_title = "UnderConstrained"
-            elif "OVER" in finding_type:
+            else:
                 unified_title = StandardizedBugCategory.OVER_CONSTRAINED
                 bug_title = "OverConstrained"
-            elif "NOT SURE" in finding_type:
-                unified_title = StandardizedBugCategory.WARNING
-                bug_title = "NotSure"
-            else:
-                unified_title = StandardizedBugCategory.WARNING
-                bug_title = "Other"
 
             # Build description from finding info
             description = f"{conscs_finding.type}: {conscs_finding.file}"
 
-            # ConsCS reports filename as "ComponentName@circuit.circom"; extract
-            # the component name so evaluate_zkbugs_ground_truth can match it
-            # against the ground-truth location (same as circom_civer does).
+            # ConsCS reports "ComponentName@circuit.circom" for sub-components
+            # and a bare filename for the entrypoint; keep `file` a plain file
+            # name and put the component in position so
+            # evaluate_zkbugs_ground_truth can match it against the
+            # ground-truth location (same as circom_civer does).
             raw_file = conscs_finding.file
-            component = raw_file.split("@")[0] if "@" in raw_file else None
+            if "@" in raw_file:
+                component, file_name = raw_file.split("@", 1)
+            else:
+                component, file_name = None, raw_file
 
             finding = Finding(
                 bug_title=bug_title,
                 unified_bug_title=unified_title,
                 description=description,
-                file=raw_file,
+                file=file_name,
                 position={"component": component} if component else {},
                 metadata={},
             )
@@ -465,7 +485,7 @@ class ConsCS(AbstractTool):
         bug_name: str,
         ground_truth: Path,
         tool_result_path: Path,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Evaluate ConsCS results against ground truth.
 
         Args:
@@ -498,26 +518,38 @@ class ConsCS(AbstractTool):
                 "manual_analysis_reasoning": "N/A",
             }
 
-        # No findings → definitive miss
+        # No findings → definitive miss. Distinguish a clean CONSTRAINED run
+        # from NOT SURE results, which results.json omits (they are not
+        # findings) but parsed.json records.
         if not findings:
+            parsed = self.load_json_file(
+                tool_result_path.parent / "parsed.json"
+            )
+            not_sure_count = sum(
+                1
+                for f in parsed.get("findings", [])
+                if "NOT SURE" in str(f.get("type", "")).upper()
+            )
+            if not_sure_count:
+                # ConsCS finished but could not find a counterexample: the
+                # tool failed to detect the bug, which is a FalseNegative.
+                reason = (
+                    f"ConsCS reported NOT SURE for {not_sure_count} "
+                    "component(s), could not find a counterexample"
+                )
+            else:
+                reason = "Tool found no issues"
             return {
                 "status": "FalseNegative",
-                "reason": "Tool found no issues",
+                "reason": reason,
                 "need_manual_analysis": False,
                 "manual_analysis": "N/A",
                 "manual_analysis_reasoning": "N/A",
             }
 
-        # Separate confirmed under-constrained findings from NOT SURE ones
-        not_sure_findings = [
-            f for f in findings if f.get("bug_title") == "NotSure"
-        ]
-        confirmed_findings = [
-            f for f in findings if f.get("bug_title") != "NotSure"
-        ]
-
-        # Check confirmed findings first: match on vulnerability type + component
-        for finding in confirmed_findings:
+        # Findings are confirmed under/over-constrained results: match on
+        # vulnerability type + component
+        for finding in findings:
             unified_title = finding.get("unified_bug_title", "")
             component = finding.get("position", {}).get("component")
 
@@ -538,17 +570,6 @@ class ConsCS(AbstractTool):
                     "manual_analysis": "N/A",
                     "manual_analysis_reasoning": "N/A",
                 }
-
-        # NOT SURE means ConsCS finished but could not find a counterexample
-        # the tool failed to detect the bug, which is a FalseNegative.
-        if not_sure_findings:
-            return {
-                "status": "FalseNegative",
-                "reason": f"ConsCS reported NOT SURE for {len(not_sure_findings)} component(s), could not find a counterexample",
-                "need_manual_analysis": False,
-                "manual_analysis": "N/A",
-                "manual_analysis_reasoning": "N/A",
-            }
 
         # Found issues but none match the expected vulnerability
         return {
