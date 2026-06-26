@@ -102,6 +102,7 @@ AVAILABLE_TOOLS = {
         "picus",
         "ecneproject",
         "zkfuzz",
+        "zequal",
     ],
     "pil": ["pilspector"],
     "cairo": ["sierra-analyzer"],
@@ -184,7 +185,12 @@ def execute_tools(
 
 
 def analyze_mode(
-    circuit: Path, tools: list[str], dsl: str, timeout: int, output: Path
+    circuit: Path,
+    tools: list[str],
+    dsl: str,
+    timeout: int,
+    output: Path,
+    zequal_static: bool = False,
 ) -> None:
     """
     Analyze mode: Run tools on a circuit and report findings.
@@ -206,6 +212,7 @@ def analyze_mode(
 
     # Determine circuit paths
     input_paths = prepare_circuit_paths(circuit)
+    input_paths.zequal_static = zequal_static
     logging.info(f"Circuit directory: {input_paths.circuit_dir}")
     logging.info(f"Circuit file: {input_paths.circuit_file}")
 
@@ -661,6 +668,7 @@ def _zkbugs_both(
     random_bugs: int | None,
     random_seed: int | None,
     log_level: str,
+    zequal_static: bool = False,
 ) -> None:
     """Run direct for every bug, then original only for bugs with a
     distinct Original Entrypoint. Emits <output>/{direct,original}/
@@ -686,6 +694,7 @@ def _zkbugs_both(
         random_bugs=random_bugs,
         random_seed=random_seed,
         log_level=log_level,
+        zequal_static=zequal_static,
     )
 
     # Determine which of the processed bugs have a distinct original
@@ -745,6 +754,7 @@ def _zkbugs_both(
             random_bugs=None,
             random_seed=random_seed,
             log_level=log_level,
+            zequal_static=zequal_static,
         )
         original_summary_path = original_out / "summary.json"
         try:
@@ -809,6 +819,7 @@ def zkbugs_mode(
     random_bugs: int | None = None,
     random_seed: int | None = None,
     log_level: str = "INFO",
+    zequal_static: bool = False,
 ) -> None:
     """Evaluate tools against the refactored zkbugs dataset."""
     if mode == "both":
@@ -823,6 +834,7 @@ def zkbugs_mode(
             random_bugs,
             random_seed,
             log_level,
+            zequal_static,
         )
         return
 
@@ -853,6 +865,8 @@ def zkbugs_mode(
 
     runnable = [b for b in bugs if b["input"] is not None]
     skipped = [b for b in bugs if b["input"] is None]
+    for bug in runnable:
+        bug["input"].zequal_static = zequal_static
     logging.info(
         "Runnable: %d, skipped: %d/%d",
         len(runnable),

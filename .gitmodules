@@ -54,3 +54,6 @@
 [submodule "tools/conscs"]
 	path = tools/conscs
 	url = git@github.com:jinan789/ConsCS.git
+[submodule "tools/zequal"]
+	path = tools/zequal
+	url = https://github.com/utopia-group/zequal.git

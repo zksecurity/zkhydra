@@ -123,6 +123,14 @@ Examples:
         help="Whether to just process existing .raw files",
     )
     parser.add_argument(
+        "--zequal-static",
+        action="store_true",
+        help="Run zequal in static-analysis-only mode (--only-static-analysis): "
+        "skips the SMT phase, so it is fast and never times out, but a "
+        "NOT_VERIFIED becomes a candidate rather than a proven inconsistency "
+        "(over-approximates). No effect unless zequal is among --tools.",
+    )
+    parser.add_argument(
         "--zkbugs-mode",
         type=str,
         default="direct",

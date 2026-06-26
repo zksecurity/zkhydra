@@ -2,7 +2,7 @@ services:
   zkhydra:
     # Use published image (recommended)
     image: ghcr.io/zksecurity/zkhydra:latest
-    # image: zkhydra
+    #image: zkhydra
     # To build locally instead, comment out the image line and uncomment below:
     # build:
     #   context: .

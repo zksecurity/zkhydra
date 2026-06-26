@@ -15,6 +15,7 @@ from zkhydra.tools.circomspect import Circomspect
 from zkhydra.tools.conscs import ConsCS
 from zkhydra.tools.ecneproject import EcneProject
 from zkhydra.tools.picus import Picus
+from zkhydra.tools.zequal import Zequal
 from zkhydra.tools.zkfuzz import ZkFuzz
 
 # Type alias for tools dictionary (for clarity in type hints)
@@ -28,6 +29,7 @@ TOOL_REGISTRY: ToolsDict = {
     "zkfuzz": ZkFuzz,
     "picus": Picus,
     "ecneproject": EcneProject,
+    "zequal": Zequal,
     # Add other tools here as they are refactored
 }
 

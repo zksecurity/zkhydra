@@ -75,6 +75,7 @@ class Input:
     bug_dir: Optional[str] = None
     r1cs_file: Optional[str] = None
     sym_file: Optional[str] = None
+    zequal_static: bool = False
 
 
 class OutputStatus(Enum):
