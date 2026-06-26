@@ -237,6 +237,8 @@ uv run python -m zkhydra.main zkbugs \
 - **Picus** - Symbolic execution via Rosette
 - **EcneProject** - Julia-based circuit analysis
 - **zkFuzz** - Fuzzing-based bug detection
+- **ConsCS** - Constraint-solving under-constraint detection (R1CS)
+- **zequal** - Consistency verification (constraints vs. witness generator)
 
 ## Usage Modes
 
@@ -299,6 +301,8 @@ uv run python -m zkhydra.main zkbugs \
 --tools, -t        Tools to run (comma-separated or 'all')
 --output, -o       Output directory (default: output/)
 --timeout          Timeout per tool in seconds (default: 1800)
+--zequal-static    Run zequal in static-analysis-only mode (fast, no SMT/timeouts,
+                   but NOT_VERIFIED becomes a candidate not a proven inconsistency)
 --log-file         Enable file logging
 --log-level        Logging verbosity (default: INFO)
 --vanilla          Re-process existing raw output instead of running tools

@@ -119,7 +119,7 @@ def collect_results(
     bug_dirs = sorted([d for d in results_dir.iterdir() if d.is_dir()])
 
     # Tools to check
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
 
     for bug_dir in bug_dirs:
         bug_name = bug_dir.name
@@ -158,7 +158,7 @@ def print_tool_summary_table(tool_stats: dict[str, dict[str, int]], tool_times: 
 
     # Define columns and tools
     columns = ["TP", "FN", "Undecided", "Timeout", "Failure"]
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
 
     # Calculate column widths
     tool_width = max(len(tool) for tool in tools + ["TOTAL"])
@@ -225,7 +225,7 @@ def print_bug_tool_matrix(
         bug_tool_matrix: Dictionary mapping bug names to tool statuses (with asterisks)
         full_path: If True, print full bug names without truncation
     """
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
 
     # Calculate column widths
     bug_width = max(len(bug) for bug in bug_tool_matrix)
@@ -274,7 +274,7 @@ def print_execution_time_stats(
     print("EXECUTION TIME STATISTICS")
     print("=" * 100)
 
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
 
     # Calculate column widths
     tool_width = max(len(tool) for tool in tools)
@@ -357,7 +357,7 @@ def print_statistics(
         print(f"  Failures:        {total_failure:3d} ({total_failure/evaluated*100:5.1f}%)")
 
     # Bug-level detection statistics
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
     tools_without_ecne = ["circomspect", "circom_civer", "picus", "zkfuzz"]
 
     # Count bugs where at least one tool detected the vulnerability
@@ -403,7 +403,7 @@ def generate_latex_report(
     output_pdf: Path,
 ):
     """Generate LaTeX report with four tables."""
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
     columns = ["TP", "FN", "Timeout", "Failure"]
 
     # Create bug ID mapping
@@ -768,7 +768,7 @@ def compute_mode_comparison(direct_dir: Path, original_dir: Path) -> dict:
     """
     d_stats, d_matrix, _, _ = collect_results(direct_dir)
     o_stats, o_matrix, _, _ = collect_results(original_dir)
-    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
+    tools = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs", "zequal"]
 
     common = sorted(set(d_matrix) & set(o_matrix))
     tool_compare: dict[str, dict] = {}

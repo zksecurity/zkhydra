@@ -179,7 +179,37 @@ RUN git clone https://github.com/Koukyosyumei/zkFuzz.git && \
     ls -la target/release/zkfuzz
 
 # ============================================================================
-# Stage 7: Main zkhydra image
+# Stage 7: Build zequal from source
+# ============================================================================
+FROM ubuntu:24.04 AS zequal_builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CARGO_HOME=/root/.cargo
+ENV PATH=/root/.cargo/bin:$PATH
+
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+# Clone and build zequal. zequal.py invokes target/debug/verify, so build the
+# debug profile (no --release) to match the path it expects.
+RUN git clone https://github.com/utopia-group/zequal.git && \
+    cd zequal && \
+    . "$CARGO_HOME/env" && \
+    cargo build && \
+    ls -la target/debug/verify
+
+# ============================================================================
+# Stage 8: Main zkhydra image
 # ============================================================================
 FROM ubuntu:24.04
 
@@ -278,6 +308,16 @@ COPY helpers helpers/
 COPY setup setup/
 COPY tools tools/
 
+# zequal runs via its zequal.py driver plus the compiled `verify` binary, which
+# the driver expects at target/debug/verify. The `COPY tools` above brings the
+# submodule source (whose .git is a file) but target/ is dockerignored, so copy
+# the driver and binary straight from the builder. Targeting the two files (not
+# the whole tree) avoids clobbering the submodule's .git file with a directory.
+COPY --from=zequal_builder /build/zequal/zequal.py /zkhydra/tools/zequal/zequal.py
+COPY --from=zequal_builder /build/zequal/target/debug/verify /zkhydra/tools/zequal/target/debug/verify
+RUN test -x /zkhydra/tools/zequal/target/debug/verify && \
+    echo "zequal verifier installed to tools/zequal"
+
 # ============================================================================
 # Clone only repositories needed at runtime
 # ============================================================================
@@ -347,6 +387,7 @@ RUN echo "Verifying tool installations..." && \
     which circomspect && echo "circomspect: OK" && \
     which civer_circom && echo "civer_circom: OK" && \
     which zkfuzz && echo "zkfuzz: OK" && \
+    test -x tools/zequal/target/debug/verify && echo "zequal: OK" && \
     echo "All tools verified successfully!"
 
 # Set the default command

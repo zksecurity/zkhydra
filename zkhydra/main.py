@@ -63,6 +63,7 @@ def main() -> None:
                 random_bugs=args.random_bugs,
                 random_seed=args.random_seed,
                 log_level=args.log_level,
+                zequal_static=args.zequal_static,
             )
         elif args.mode == "analyze":
             is_tolm_file = args.input.suffix == ".tolm"
@@ -72,7 +73,12 @@ def main() -> None:
                 logging.error(f"Input file is not a circuit file: {args.input}")
                 sys.exit(1)
             analyze_mode(
-                args.input, tools_list, args.dsl, args.timeout, args.output
+                args.input,
+                tools_list,
+                args.dsl,
+                args.timeout,
+                args.output,
+                zequal_static=args.zequal_static,
             )
         else:  # evaluate mode
             is_tolm_file = args.input.suffix == ".tolm"
