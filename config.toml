@@ -26,6 +26,7 @@ summarize_tool_results = true
 tools = [
     "circom_civer",
     "circomspect",
+    "conscs",
     "EcneProject",
     "Picus",
     "zkFuzz"

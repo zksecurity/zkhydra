@@ -1,6 +1,6 @@
 # zkHydra
 
-A unified framework for running zero-knowledge circuit security analysis tools. zkHydra orchestrates multiple analysis tools (circomspect, circom_civer, Picus, EcneProject, zkFuzz) to detect vulnerabilities in Circom circuits.
+A unified framework for running zero-knowledge circuit security analysis tools. zkHydra orchestrates multiple analysis tools (Circomspect, Civer, Picus, Ecne, zkFuzz, ConsCS) to detect vulnerabilities in Circom circuits.
 
 ## Quick Start
 
@@ -232,11 +232,12 @@ uv run python -m zkhydra.main zkbugs \
 
 ## Supported Tools
 
-- **circomspect** - Static analyzer and linter
-- **circom_civer** - SMT-based verification with CVC5
+- **Circomspect** - Static analyzer and linter
+- **Civer** - SMT-based verification with CVC5
 - **Picus** - Symbolic execution via Rosette
-- **EcneProject** - Julia-based circuit analysis
+- **Ecne** - Julia-based circuit analysis
 - **zkFuzz** - Fuzzing-based bug detection
+- **ConsCS** - Verification via graph reasoning and SMT
 
 ## Usage Modes
 
