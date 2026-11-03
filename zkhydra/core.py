@@ -7,6 +7,7 @@ including tool execution, result collection, and summary generation.
 """
 
 import argparse
+import functools
 import json
 import logging
 import multiprocessing as mp
@@ -25,11 +26,13 @@ from zkhydra.printers import print_analyze_summary
 from zkhydra.tools.base import (
     AbstractTool,
     Input,
+    StandardizedBugCategory,
     ToolOutput,
     ToolResult,
     ToolStatus,
     ensure_dir,
 )
+from zkhydra.utils.fp_loader import FpLoaderError, load_fp_config, load_fp_input
 from zkhydra.utils.logger import setup_logging
 from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
 from zkhydra.utils.zkbugs_loader import (
@@ -1014,6 +1017,380 @@ def zkbugs_mode(
     logging.info("=" * 80)
     logging.info(
         "zkbugs mode completed: processed=%d errors=%d skipped=%d",
+        len(runnable) - len(error_rows),
+        len(error_rows),
+        len(skipped),
+    )
+    logging.info(f"Results written to: {output}")
+    logging.info("=" * 80)
+
+
+# False-positive (FP) experiment. Runs the tools over a corpus of clean/fixed
+# circuits where there is no ground truth: every finding is a candidate false
+# positive, split into soundness-class (the headline FP signal) and warnings
+# (circomspect lint, reported separately as review burden). fp_mode reuses the
+# zkbugs machinery but keeps its own dispatch helper so the RQ2 path is left
+# untouched.
+
+WARNING_CATEGORY = StandardizedBugCategory.WARNING.value
+
+
+def discover_fp_units(
+    dataset_dir: Path,
+    selectors: list[str] | None = None,
+) -> list[dict]:
+    """Discover clean/fixed units by walking fp_config.json files.
+
+    Mirrors discover_zkbugs. Each entry carries config_path, bug_dir (the unit
+    dir — key name kept so _sort_summary_rows and skip helpers are reused),
+    bug_name, config, source provenance, a populated Input, and skip_reason.
+    """
+    selectors = selectors or []
+    units: list[dict] = []
+    config_files = [
+        p
+        for p in dataset_dir.rglob("fp_config.json")
+        if not _is_excluded_config(p)
+        and _bug_matches_selectors(p.parent, dataset_dir, selectors)
+    ]
+
+    if selectors:
+        logging.info(
+            "Selectors %s matched %d unit(s)", selectors, len(config_files)
+        )
+    logging.info("Found %d fp_config.json files", len(config_files))
+
+    for config_path in config_files:
+        unit_dir = config_path.parent
+        unit_name = unit_dir.name
+        entry: dict = {
+            "config_path": config_path,
+            "bug_dir": unit_dir,
+            "bug_name": unit_name,
+            "config": None,
+            "source": None,
+            "input": None,
+            "skip_reason": None,
+        }
+
+        try:
+            config = load_fp_config(unit_dir)
+        except (OSError, FpLoaderError, ValueError) as exc:
+            entry["skip_reason"] = f"failed to read fp_config.json: {exc}"
+            units.append(entry)
+            continue
+        entry["config"] = config
+        entry["source"] = config.get("Source") or config.get("Origin")
+
+        if config.get("Compiled") is False:
+            entry["skip_reason"] = "Compiled=false"
+            units.append(entry)
+            continue
+
+        try:
+            inp = load_fp_input(unit_dir, dataset_dir)
+        except FpLoaderError as exc:
+            entry["skip_reason"] = f"loader error: {exc}"
+            units.append(entry)
+            continue
+
+        if (
+            inp.codebase
+            and not inp.codebase_exists
+            and _wrapper_needs_codebase(inp.circuit_file, unit_dir)
+        ):
+            entry["skip_reason"] = (
+                "codebase not available locally and wrapper needs it "
+                "(run the corpus builder, or source is private)"
+            )
+            units.append(entry)
+            continue
+
+        entry["input"] = inp
+        units.append(entry)
+
+    return units
+
+
+def _split_findings(findings: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Partition findings into (soundness-class, warning/style)."""
+    soundness = [
+        f for f in findings if f.get("unified_bug_title") != WARNING_CATEGORY
+    ]
+    warnings = [
+        f for f in findings if f.get("unified_bug_title") == WARNING_CATEGORY
+    ]
+    return soundness, warnings
+
+
+def _process_one_fp_unit(
+    unit: dict,
+    tools: list[str],
+    timeout: int,
+    output: Path,
+    needs_artifacts: bool,
+    in_worker: bool,
+    log_level: str,
+) -> dict:
+    """Run all tools against one clean/fixed unit and return its summary row.
+
+    Top-level (picklable) so it can be dispatched via ProcessPoolExecutor.
+    Unlike _process_one_bug there is no ground truth and no evaluation: every
+    finding is a candidate FP, written to <unit>/fp_candidates.json split into
+    soundness vs warning.
+    """
+    unit_output_dir = output / unit["bug_name"]
+    ensure_dir(unit_output_dir)
+
+    if in_worker:
+        setup_logging(
+            log_level,
+            unit_output_dir,
+            file_logging=True,
+            log_filename="run.log",
+            console=False,
+        )
+
+    logging.info("=" * 80)
+    logging.info("Processing unit: %s", unit["bug_name"])
+    logging.info("=" * 80)
+
+    input_paths: Input = unit["input"]
+
+    if needs_artifacts:
+        scratch_dir = unit_output_dir / "scratch"
+        compiled = precompile_circuit(input_paths, scratch_dir, timeout)
+        if compiled is not None:
+            input_paths = compiled
+        else:
+            logging.warning(
+                "Precompile failed for %s; ecneproject/picus/conscs will "
+                "report errors",
+                unit["bug_name"],
+            )
+
+    tool_registry = resolve_tools(tools)
+    results = execute_tools(
+        tool_registry, input_paths, unit_output_dir, timeout
+    )
+
+    candidates: dict = {
+        "unit": unit["bug_name"],
+        "source": unit.get("source"),
+        "provenance": unit.get("config"),
+        "tools": {},
+    }
+    tool_rows: dict = {}
+    for name, r in results.items():
+        soundness, warnings = _split_findings(r.findings or [])
+        candidates["tools"][name] = {
+            "status": r.status.value,
+            "soundness_count": len(soundness),
+            "warning_count": len(warnings),
+            "soundness": soundness,
+            "warnings": warnings,
+        }
+        tool_rows[name] = {
+            "status": r.status.value,
+            "findings_count": r.findings_count,
+            "soundness_count": len(soundness),
+            "warning_count": len(warnings),
+        }
+
+    with open(
+        unit_output_dir / "fp_candidates.json", "w", encoding="utf-8"
+    ) as f:
+        json.dump(candidates, f, indent=2, ensure_ascii=False)
+
+    return {
+        "bug_name": unit["bug_name"],
+        "status": "processed",
+        "mode": "fp",
+        "source": unit.get("source"),
+        "tools": tool_rows,
+    }
+
+
+def _run_units(
+    units: list[dict],
+    worker,
+    jobs: int,
+    extra_error_fields: dict | None = None,
+) -> tuple[list[dict], list[dict]]:
+    """Dispatch worker(unit, in_worker=...) over units, serial or parallel.
+
+    worker must be a top-level picklable callable (e.g. a functools.partial of a
+    module-level function) taking (unit, in_worker=bool) and returning a summary
+    row. Returns (summary_rows, error_rows). Kept separate from zkbugs_mode's
+    inline dispatch so the validated RQ2 path stays untouched.
+    """
+    extra = extra_error_fields or {}
+    summary_rows: list[dict] = []
+    error_rows: list[dict] = []
+
+    if jobs == 1:
+        for idx, unit in enumerate(units, 1):
+            name = unit["bug_name"]
+            logging.info("[%d/%d] %s", idx, len(units), name)
+            try:
+                summary_rows.append(worker(unit, in_worker=False))
+            except Exception as exc:  # noqa: BLE001
+                logging.exception(
+                    "[%d/%d] ✗ %s: %s", idx, len(units), name, exc
+                )
+                error_rows.append(
+                    {
+                        "bug_name": name,
+                        "status": "error",
+                        **extra,
+                        "error": str(exc),
+                    }
+                )
+    else:
+        logging.info("Dispatching %d units across %d workers", len(units), jobs)
+        ctx = mp.get_context("spawn")
+        with ProcessPoolExecutor(max_workers=jobs, mp_context=ctx) as ex:
+            futures = {
+                ex.submit(worker, unit, in_worker=True): unit for unit in units
+            }
+            for done, fut in enumerate(as_completed(futures), 1):
+                unit = futures[fut]
+                name = unit["bug_name"]
+                try:
+                    summary_rows.append(fut.result())
+                    logging.info("[%d/%d] ✓ %s", done, len(units), name)
+                except Exception as exc:  # noqa: BLE001
+                    logging.error(
+                        "[%d/%d] ✗ %s: %s", done, len(units), name, exc
+                    )
+                    error_rows.append(
+                        {
+                            "bug_name": name,
+                            "status": "error",
+                            **extra,
+                            "error": str(exc),
+                        }
+                    )
+    return summary_rows, error_rows
+
+
+def fp_mode(
+    dataset_dir: Path,
+    tools: list[str],
+    dsl: str,
+    timeout: int,
+    output: Path,
+    selectors: list[str] | None = None,
+    jobs: int = 1,
+    random_bugs: int | None = None,
+    random_seed: int | None = None,
+    log_level: str = "INFO",
+) -> None:
+    """Run tools over a clean/fixed corpus and record candidate false positives."""
+    logging.info("Running in FP mode")
+    logging.info(f"Corpus: {dataset_dir}")
+    logging.info(f"DSL: {dsl}")
+    logging.info(f"Tools: {tools}")
+    logging.info(f"Timeout: {timeout}s")
+    logging.info(f"Jobs: {jobs}")
+    if selectors:
+        logging.info("Unit selectors: %s", selectors)
+
+    units = discover_fp_units(dataset_dir, selectors)
+    logging.info("Total units discovered: %d", len(units))
+    if selectors and not units:
+        logging.error(
+            "No units matched selectors %s under %s", selectors, dataset_dir
+        )
+        sys.exit(1)
+
+    runnable = [u for u in units if u["input"] is not None]
+    skipped = [u for u in units if u["input"] is None]
+    logging.info(
+        "Runnable: %d, skipped: %d/%d", len(runnable), len(skipped), len(units)
+    )
+    for unit in skipped:
+        logging.info(
+            "  skip %s: %s",
+            unit["bug_name"],
+            unit.get("skip_reason", "unknown"),
+        )
+
+    if not runnable:
+        logging.error("No runnable units in %s", dataset_dir)
+        sys.exit(1)
+
+    tool_registry = resolve_tools(tools)
+    if not tool_registry:
+        logging.error("No tools loaded successfully")
+        sys.exit(1)
+    needs_artifacts = bool(set(tool_registry) & ARTIFACT_TOOLS)
+
+    if random_bugs is not None and random_bugs < len(runnable):
+        rng = random.Random(random_seed)
+        runnable = rng.sample(runnable, random_bugs)
+        logging.info(
+            "Random sampled %d/%d units (seed=%s)",
+            len(runnable),
+            len(units),
+            random_seed,
+        )
+    elif random_bugs is not None:
+        logging.info(
+            "--random-bugs=%d >= runnable=%d; using all runnable units",
+            random_bugs,
+            len(runnable),
+        )
+
+    ensure_dir(output)
+    logging.info(f"Output directory: {output}")
+
+    worker = functools.partial(
+        _process_one_fp_unit,
+        tools=tools,
+        timeout=timeout,
+        output=output,
+        needs_artifacts=needs_artifacts,
+        log_level=log_level,
+    )
+    summary_rows, error_rows = _run_units(
+        runnable, worker, jobs, extra_error_fields={"mode": "fp"}
+    )
+
+    for unit in skipped:
+        summary_rows.append(
+            {
+                "bug_name": unit["bug_name"],
+                "status": "skipped",
+                "reason": unit.get("skip_reason"),
+                "mode": "fp",
+            }
+        )
+
+    summary_rows.extend(error_rows)
+    summary_rows = _sort_summary_rows(summary_rows)
+
+    summary_path = output / "summary.json"
+    with open(summary_path, "w", encoding="utf-8") as f:
+        json.dump(
+            {
+                "mode": "fp",
+                "dataset": str(dataset_dir),
+                "total": len(units),
+                "processed": len(runnable) - len(error_rows),
+                "errors": len(error_rows),
+                "skipped": len(skipped),
+                "jobs": jobs,
+                "units": summary_rows,
+            },
+            f,
+            indent=2,
+            ensure_ascii=False,
+        )
+
+    logging.info("=" * 80)
+    logging.info(
+        "FP mode completed: processed=%d errors=%d skipped=%d",
         len(runnable) - len(error_rows),
         len(error_rows),
         len(skipped),

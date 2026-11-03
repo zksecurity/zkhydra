@@ -49,8 +49,10 @@ Examples:
     # Mode selection
     parser.add_argument(
         "mode",
-        choices=["analyze", "evaluate", "zkbugs"],
-        help="Mode: 'analyze' for single circuit, 'zkbugs' for dataset evaluation",
+        choices=["analyze", "evaluate", "zkbugs", "fp"],
+        help="Mode: 'analyze' for single circuit, 'zkbugs' for dataset "
+        "evaluation, 'fp' for the false-positive experiment over a clean/fixed "
+        "corpus",
     )
 
     # Input/Output
@@ -183,10 +185,10 @@ Examples:
         sys.exit(1)
 
     # Mode-specific validation
-    if args.mode == "zkbugs":
-        # zkbugs mode validation
+    if args.mode in ("zkbugs", "fp"):
+        # zkbugs / fp modes both evaluate a dataset/corpus directory
         if not args.dataset and not args.vanilla:
-            logging.error("--dataset is required for zkbugs mode")
+            logging.error(f"--dataset is required for {args.mode} mode")
             sys.exit(1)
         if not args.vanilla and not args.dataset.exists():
             logging.error(f"Dataset directory not found: {args.dataset}")

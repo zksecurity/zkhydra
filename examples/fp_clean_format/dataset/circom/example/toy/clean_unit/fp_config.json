@@ -1,0 +1,20 @@
+{
+    "Toy Clean Circuit": {
+        "Id": "example/toy/clean-1",
+        "Project": "https://example.invalid/toy",
+        "Commit": "abc",
+        "DSL": "Circom",
+        "Clean": true,
+        "Origin": "audited",
+        "Source": {
+            "Audit Report": {
+                "Source Link": "",
+                "Note": "Synthetic clean fixture used by zkhydra CI to exercise the fp mode (wrapper + codebase + link flags). ToyDouble is properly constrained, so a correct tool should raise no soundness alert."
+            }
+        },
+        "Codebase": "dataset/codebases/circom/example/toy/abc",
+        "Entrypoint": "circuit.circom",
+        "Input": "direct_input.json",
+        "Compiled": true
+    }
+}

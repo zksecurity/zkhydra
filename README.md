@@ -311,6 +311,10 @@ uv run python -m zkhydra.main zkbugs \
 |--------|---------|
 | `scripts/triage_zkbugs_run.py <run>` | Walk a run dir and collect every `Undecided` verdict; with `--auto` invoke the `triage-zkbugs-finding` skill per case; with `--update-evaluation` / `--update-summary` write verdicts back into `evaluation.json` and `summary.json`. |
 | `scripts/print_zkbugs_summary.py <run>` | Pretty-print a run's header, per-tool TP/FN/Undecided rollup, skipped/errored bugs, and the full per-(bug, tool) verdict table. Filters via `--tool` / `--filter`. |
+| `scripts/build_zkbugs_fixed_corpus.py` | Build the fixed-commit FP corpus from the zkbugs dataset (`--build` creates git worktrees at each `Fix Commit`). |
+| `scripts/clone_fp_sources.sh <out>` | Clone the audited-project FP tier and scaffold per-project unit skeletons. |
+| `scripts/triage_fp_run.py <run>` | Triage candidate false positives from an `fp` run via the `triage-fp-finding` skill; `--update-summary` rolls up `fp_counts` + `triage_effort`. |
+| `scripts/process_fp_results.py <run>` | Report per-tool FP rate / precision, review burden, triage effort, and the paired buggy→fixed analysis (`--rq2-run`). |
 
 ## Examples
 
@@ -399,6 +403,66 @@ output/zkbugs-run/
 ## Existing zkbugs analysis
 
 You can find a report of the zkbugs analysis in `output/zkbugs-report.pdf` and you can download a tar with all the results here: https://drive.google.com/file/d/1zTIrrVqy0MXMxC4tRiPoFMEfXv-2TLYY/view?usp=sharing.
+
+## Running the FP (false-positive) experiment
+
+RQ2 (`zkbugs` mode) measures whether tools detect *known bugs* (true positives).
+The **`fp` mode** complements it: run the same six Circom tools over
+**clean / fixed** circuits, where every finding is a *candidate false positive*,
+then triage each and report per-tool FP rates + review burden + triage effort.
+Framed as indicative, not a thorough FP-rate analysis.
+
+**What counts.** Soundness-class findings (Under/Over-Constrained,
+Computational-Issue) are the headline FP signal. circomspect `WARNING`/lint
+volume is reported separately as *review burden* (never a soundness FP).
+
+### Corpus: two sources, one `fp_config.json` unit format
+
+1. **Fixed-commit tier (maximal reuse of zkbugs).** For each zkbugs bug with a
+   `Fix Commit`, check out the patched project and run the tools — a tool that
+   still flags the fixed circuit is raising a false positive. Build it with:
+   ```bash
+   # dry run (lists eligible units, no git):
+   python3 scripts/build_zkbugs_fixed_corpus.py \
+     --dataset ../zkbugs/dataset/circom --out output/fp-corpus
+   # build (needs zkbugs codebases populated; run on Ubuntu):
+   python3 scripts/build_zkbugs_fixed_corpus.py \
+     --dataset ../zkbugs/dataset/circom --out output/fp-corpus --build
+   ```
+2. **Audited tier (battle-tested projects).** Clone audited Circom projects at a
+   post-audit commit, then wire one unit per entrypoint (see each unit's
+   `TODO_WIRING.md`):
+   ```bash
+   scripts/clone_fp_sources.sh output/fp-corpus      # prune the seed list first
+   ```
+
+### Run, triage, report
+
+```bash
+# 1. Run the tools over the corpus (same flags as zkbugs mode).
+uv run python -m zkhydra.main fp \
+  --dataset output/fp-corpus/dataset/circom \
+  --tools all --jobs 4 --timeout 600 \
+  --output output/fp-run
+
+# 2. Triage candidate false positives (auto, mirrors the zkbugs triage flow).
+python3 scripts/triage_fp_run.py output/fp-run \
+  --dataset output/fp-corpus/dataset/circom \
+  --auto --jobs 4 --update-summary
+
+# 3. Report: per-tool FP table, review burden, triage effort, and the paired
+#    buggy->fixed analysis (join against the RQ2 run).
+python3 scripts/process_fp_results.py output/fp-run \
+  --rq2-run output/zkbugs-run --json output/fp-metrics.json
+```
+
+Each unit's outputs land under `output/fp-run/<unit>/`: per-tool
+`results.json`/`parsed.json`/`raw.txt` plus `fp_candidates.json` (findings split
+into `soundness` vs `warnings`). Triage writes `<unit>/<tool>/fp_triage.json` and
+rolls `fp_counts` + `triage_effort` into `summary.json`.
+
+A self-contained toy corpus (`examples/fp_clean_format/`, a correct circuit)
+exercises the pipeline without the real corpus — see its README.
 
 ## Installation (Local Development)
 
