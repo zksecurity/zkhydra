@@ -15,6 +15,7 @@ from zkhydra.core import (
     AVAILABLE_TOOLS,
     analyze_mode,
     evaluate_mode,
+    fp_mode,
     load_bug_selectors,
     vanilla_mode,
     zkbugs_mode,
@@ -27,8 +28,8 @@ def main() -> None:
     args = parse_args()
 
     # Setup logging based on mode
-    if args.mode == "zkbugs":
-        # For zkbugs mode, use the output directory name directly (no timestamp)
+    if args.mode in ("zkbugs", "fp"):
+        # For zkbugs/fp modes, use the output directory name directly (no timestamp)
         output_dir = args.output
     else:
         output_dir = args.output / datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -58,6 +59,19 @@ def main() -> None:
                 args.timeout,
                 args.output,
                 mode=args.zkbugs_mode,
+                selectors=load_bug_selectors(args.bugs, args.bugs_file),
+                jobs=args.jobs,
+                random_bugs=args.random_bugs,
+                random_seed=args.random_seed,
+                log_level=args.log_level,
+            )
+        elif args.mode == "fp":
+            fp_mode(
+                args.dataset,
+                tools_list,
+                args.dsl,
+                args.timeout,
+                args.output,
                 selectors=load_bug_selectors(args.bugs, args.bugs_file),
                 jobs=args.jobs,
                 random_bugs=args.random_bugs,
