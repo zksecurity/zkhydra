@@ -32,6 +32,7 @@ from zkhydra.tools.base import (
     ToolStatus,
     ensure_dir,
 )
+from zkhydra.tools.circomspect import CS_MAPPING
 from zkhydra.utils.fp_loader import FpLoaderError, load_fp_config, load_fp_input
 from zkhydra.utils.logger import setup_logging
 from zkhydra.utils.tools_resolver import ToolsDict, resolve_tools
@@ -1034,6 +1035,25 @@ def zkbugs_mode(
 
 WARNING_CATEGORY = StandardizedBugCategory.WARNING.value
 
+# circomspect diagnostics that are not analysis findings: compiler-style
+# parser / type errors such as P1000 "failed to open file" or T2021. The shared
+# adapter maps unknown codes to Computational-Issue; in FP mode that would
+# count tool errors as false positives, so they mark the circomspect run as
+# failed instead. Analysis codes (CSxxxx / CAxx), including ones newer than
+# CS_MAPPING, stay findings. RQ2 (zkbugs mode) is unaffected.
+_CIRCOMSPECT_FINDING_NAMES = set(CS_MAPPING.values())
+_CIRCOMSPECT_ERROR_CODE = re.compile(r"^[A-Z]\d{3,4}$")
+
+
+def _circomspect_errors(findings: list[dict]) -> list[dict]:
+    return [
+        f
+        for f in findings
+        if f.get("bug_title") not in _CIRCOMSPECT_FINDING_NAMES
+        and _CIRCOMSPECT_ERROR_CODE.match(str(f.get("bug_title") or ""))
+        and not str(f.get("bug_title")).startswith(("CS", "CA"))
+    ]
+
 
 def discover_fp_units(
     dataset_dir: Path,
@@ -1182,17 +1202,32 @@ def _process_one_fp_unit(
     }
     tool_rows: dict = {}
     for name, r in results.items():
-        soundness, warnings = _split_findings(r.findings or [])
+        findings = r.findings or []
+        status = r.status.value
+        tool_errors: list[dict] = []
+        suppressed: list[dict] = []
+        if name == "circomspect":
+            tool_errors = _circomspect_errors(findings)
+            if tool_errors:
+                # analysis incomplete: the run counts as failed (a timeout
+                # stays a timeout); its findings are kept for reference only.
+                if status == ToolStatus.SUCCESS.value:
+                    status = ToolStatus.FAILED.value
+                suppressed = [f for f in findings if f not in tool_errors]
+                findings = []
+        soundness, warnings = _split_findings(findings)
         candidates["tools"][name] = {
-            "status": r.status.value,
+            "status": status,
             "soundness_count": len(soundness),
             "warning_count": len(warnings),
             "soundness": soundness,
             "warnings": warnings,
+            "tool_errors": tool_errors,
+            "suppressed_findings": suppressed,
         }
         tool_rows[name] = {
-            "status": r.status.value,
-            "findings_count": r.findings_count,
+            "status": status,
+            "findings_count": len(findings),
             "soundness_count": len(soundness),
             "warning_count": len(warnings),
         }

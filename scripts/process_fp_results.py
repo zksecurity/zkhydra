@@ -1,28 +1,32 @@
 #!/usr/bin/env python3
-"""Summarize a zkhydra `fp` (false-positive) run.
+"""Report the FP experiment: per-tool false positives on audited projects.
 
-Reads a run's `summary.json` (after `triage_fp_run.py --update-summary`) and
-reports, per tool:
+Inputs (all under the `zkhydra fp` run dir):
+- `summary.json` and `<unit>/fp_candidates.json` — per tool: run status,
+  soundness alerts, lint warnings;
+- `<unit>/<tool>/fp_triage.json` — per soundness alert: the AI proposal
+  (`triage`, from `triage_fp_run.py --auto`) and the author's final verdict
+  (`review`, from `review_fp_triage.py`).
 
-- **FP headline** — soundness-class candidates and their triaged verdicts
-  (FalsePositive / RealIssue / Undecided), the per-unit FP rate
-  (units with >=1 FalsePositive / units run) and per-alert precision
-  (RealIssue / (RealIssue + FalsePositive)).
-- **Review burden** — total alerts incl. warnings, warnings (circomspect lint),
-  and alerts per unit (median).
-- **Triage effort** — soundness candidates triaged + aggregate auto-triage time.
-- **Paired buggy -> fixed** (optional, `--rq2-run <dir>`) — for fixed-commit
-  units, whether the tool flagged the bug at the buggy commit (RQ2) yet went
-  silent at the fixed commit (correct) vs still flags it (false positive).
+Only author-reviewed verdicts count (a review belongs to one finding, matched by
+fingerprint, so re-runs cannot re-attach it to another alert). Alerts without a
+review are reported as `pending`, and the report is marked PRELIMINARY until
+none are left.
 
-Outputs a text report to stdout; `--json <path>` also writes machine-readable
-metrics, and `--latex <path.tex>` writes LaTeX tables (compiled with pdflatex
-when available).
+Per tool:
+- coverage: units where the tool completed vs timed out / failed. Only
+  completed runs enter the denominators (a timeout is not "no alert");
+- alerts: units with >=1 soundness alert, soundness alerts, lint warnings
+  (review burden, never counted as FPs);
+- verdicts: FalsePositive / RealIssue / Undecided, FP rate per unit (units with
+  >=1 FP / completed units), precision (Real / (Real + FP));
+- triage effort: author review time (total, median per alert), AI first-pass
+  wall time, and AI-author agreement.
+Also a per-project breakdown (alerts/FP per tool).
 
 Examples:
     python3 scripts/process_fp_results.py output/fp-run
-    python3 scripts/process_fp_results.py output/fp-run --rq2-run output/zkbugs-run
-    python3 scripts/process_fp_results.py output/fp-run --json output/fp-metrics.json
+    python3 scripts/process_fp_results.py output/fp-run --json output/fp-metrics.json --latex output/fp-table.tex
 """
 
 from __future__ import annotations
@@ -30,15 +34,25 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
-import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from triage_fp_run import finding_fingerprint, is_reviewed  # noqa: E402
+
 TOOLS = ["circomspect", "circom_civer", "picus", "ecneproject", "zkfuzz", "conscs"]
-WARNING_CATEGORY = "Warning (Other -- probably not a bug)"
+TOOL_LABEL = {
+    "circomspect": "Circomspect",
+    "circom_civer": "CIVER",
+    "picus": "Picus",
+    "ecneproject": "Ecne",
+    "zkfuzz": "zkFuzz",
+    "conscs": "ConsCS",
+}
+VERDICTS = ["FalsePositive", "RealIssue", "Undecided"]
 
 
-def _read_json(path: Path) -> dict | None:
+def _read_json(path: Path):
     if not path.is_file():
         return None
     try:
@@ -47,208 +61,203 @@ def _read_json(path: Path) -> dict | None:
         return None
 
 
-def _processed_units(summary: dict) -> list[dict]:
-    return [
-        u
-        for u in summary.get("units", [])
-        if u.get("status") == "processed"
-    ]
+def _ordered(present) -> list[str]:
+    return [t for t in TOOLS if t in present] + sorted(t for t in present if t not in TOOLS)
 
 
-def compute_metrics(summary: dict) -> dict:
-    """Per-tool FP + review-burden metrics from a (triaged) fp summary.json."""
-    units = _processed_units(summary)
-    tools: dict[str, dict] = {}
+def load_units(run_dir: Path) -> list[dict]:
+    units = []
+    for cand_path in sorted(run_dir.glob("*/fp_candidates.json")):
+        data = _read_json(cand_path) or {}
+        name = cand_path.parent.name
+        prov = data.get("provenance") or {}
+        rec = {
+            "unit": name,
+            "project": prov.get("ProjectName") or prov.get("Project") or "?",
+            "constraints": prov.get("Constraints"),
+            "tools": {},
+        }
+        for tool, entry in (data.get("tools") or {}).items():
+            cases = {
+                c.get("finding_index"): c
+                for c in (_read_json(run_dir / name / tool / "fp_triage.json") or [])
+                if isinstance(c, dict)
+            }
+            findings = entry.get("soundness") or []
+            snd = int(entry.get("soundness_count") or len(findings))
+            final = {v: 0 for v in VERDICTS}
+            pending = 0
+            review_s, ai_s, agree, compared = [], 0.0, 0, 0
+            for idx, finding in enumerate(findings):
+                c = cases.get(idx) or {}
+                rv = c.get("review") or {}
+                ai_s += float(c.get("elapsed_s") or 0.0)
+                if is_reviewed(c, finding_fingerprint(finding)):
+                    final[rv["status"]] += 1
+                    review_s.append(float(rv.get("seconds") or 0.0))
+                    # agreement as recorded at review time (None = no AI proposal then)
+                    if isinstance(rv.get("agrees_with_ai"), bool):
+                        compared += 1
+                        agree += int(rv["agrees_with_ai"])
+                else:
+                    pending += 1
+            rec["tools"][tool] = {
+                "status": entry.get("status"),
+                "soundness": snd,
+                "warnings": int(entry.get("warning_count") or 0),
+                "tool_errors": len(entry.get("tool_errors") or []),
+                **final,
+                "pending": pending,
+                "review_seconds": review_s,
+                "ai_seconds": round(ai_s, 1),
+                "ai_agree": agree,
+                "ai_compared": compared,
+            }
+        units.append(rec)
+    return units
 
-    for u in units:
-        for tool, entry in (u.get("tools") or {}).items():
-            t = tools.setdefault(
-                tool,
-                {
-                    "units_run": 0,
-                    "units_with_soundness": 0,
-                    "units_with_fp": 0,
-                    "soundness_alerts": 0,
-                    "warning_alerts": 0,
-                    "alerts_per_unit": [],
-                    "FalsePositive": 0,
-                    "RealIssue": 0,
-                    "Undecided": 0,
-                    "WarningStyle": 0,
-                },
-            )
-            t["units_run"] += 1
-            snd = int(entry.get("soundness_count") or 0)
-            warn = int(entry.get("warning_count") or 0)
-            t["soundness_alerts"] += snd
-            t["warning_alerts"] += warn
-            t["alerts_per_unit"].append(snd + warn)
-            if snd > 0:
-                t["units_with_soundness"] += 1
-            fp = entry.get("fp") or {}
-            t["FalsePositive"] += int(fp.get("FalsePositive") or 0)
-            t["RealIssue"] += int(fp.get("RealIssue") or 0)
-            t["Undecided"] += int(fp.get("Undecided") or 0)
-            t["WarningStyle"] += int(fp.get("Warning/Style") or 0)
-            if int(fp.get("FalsePositive") or 0) > 0:
-                t["units_with_fp"] += 1
 
-    for t in tools.values():
-        n = t["units_run"] or 1
-        t["per_unit_fp_rate"] = round(t["units_with_fp"] / n, 3)
-        denom = t["RealIssue"] + t["FalsePositive"]
-        t["per_alert_precision"] = (
-            round(t["RealIssue"] / denom, 3) if denom else None
-        )
-        apu = t.pop("alerts_per_unit")
-        t["median_alerts_per_unit"] = (
-            round(statistics.median(apu), 2) if apu else 0
-        )
+def tool_metrics(units: list[dict]) -> dict:
+    out = {}
+    for tool in _ordered({t for u in units for t in u["tools"]}):
+        cells = [u["tools"][tool] for u in units if tool in u["tools"]]
+        ok = [c for c in cells if c["status"] == "success"]
+        rs = [s for c in ok for s in c["review_seconds"]]
+        m = {
+            "units": len(cells),
+            "completed": len(ok),
+            "timeout": sum(1 for c in cells if c["status"] == "timeout"),
+            "failed": sum(1 for c in cells if c["status"] not in ("success", "timeout")),
+            "units_with_alert": sum(1 for c in ok if c["soundness"] > 0),
+            "alerts": sum(c["soundness"] for c in ok),
+            "warnings": sum(c["warnings"] for c in ok),
+            **{v: sum(c[v] for c in ok) for v in VERDICTS},
+            "pending": sum(c["pending"] for c in ok),
+            "units_with_fp": sum(1 for c in ok if c["FalsePositive"] > 0),
+            "review_seconds": round(sum(rs), 1),
+            "median_review_seconds": round(statistics.median(rs), 1) if rs else None,
+            "ai_seconds": round(sum(c["ai_seconds"] for c in ok), 1),
+            "ai_agree": sum(c["ai_agree"] for c in ok),
+            "ai_compared": sum(c["ai_compared"] for c in ok),
+        }
+        n = m["completed"]
+        m["fp_rate_per_unit"] = round(m["units_with_fp"] / n, 3) if n else None
+        denom = m["RealIssue"] + m["FalsePositive"]
+        m["precision"] = round(m["RealIssue"] / denom, 3) if denom else None
+        m["ai_agreement"] = round(m["ai_agree"] / m["ai_compared"], 3) if m["ai_compared"] else None
+        out[tool] = m
+    return out
 
+
+def compute(units: list[dict]) -> dict:
+    tools = tool_metrics(units)
+    projects = {}
+    for proj in sorted({u["project"] for u in units}):
+        pu = [u for u in units if u["project"] == proj]
+        projects[proj] = {
+            "units": len(pu),
+            "tools": {
+                t: {k: m[k] for k in ("completed", "units", "alerts", "FalsePositive", "RealIssue", "Undecided", "pending", "warnings")}
+                for t, m in tool_metrics(pu).items()
+            },
+        }
+    all_rs = [s for u in units for c in u["tools"].values() if c["status"] == "success" for s in c["review_seconds"]]
+    effort = {
+        "alerts": sum(m["alerts"] for m in tools.values()),
+        "reviewed": sum(m["alerts"] - m["pending"] for m in tools.values()),
+        "pending": sum(m["pending"] for m in tools.values()),
+        "author_review_minutes": round(sum(all_rs) / 60, 1),
+        "median_review_seconds_per_alert": round(statistics.median(all_rs), 1) if all_rs else None,
+        "ai_first_pass_minutes": round(sum(m["ai_seconds"] for m in tools.values()) / 60, 1),
+        "ai_author_agreement": (
+            round(sum(m["ai_agree"] for m in tools.values()) / sum(m["ai_compared"] for m in tools.values()), 3)
+            if sum(m["ai_compared"] for m in tools.values()) else None
+        ),
+    }
     return {
         "n_units": len(units),
+        "n_projects": len(projects),
+        "preliminary": effort["pending"] > 0,
         "tools": tools,
-        "triage_effort": summary.get("triage_effort"),
-        "fp_counts": summary.get("fp_counts"),
+        "projects": projects,
+        "triage_effort": effort,
     }
 
 
-def paired_buggy_fixed(run_dir: Path, rq2_run: Path) -> list[dict]:
-    """For fixed-commit units, cross-tab flagged@buggy (RQ2) vs flagged@fixed.
-
-    A unit is a fixed-commit unit when its fp_candidates.json provenance has
-    Origin containing "fixed" and a SourceBug. "flagged@fixed" = the tool had
-    >=1 soundness alert on the fixed circuit. "flagged@buggy" = the RQ2
-    evaluation for that bug+tool is TruePositive (or any soundness finding).
-    """
-    rows: list[dict] = []
-    for cand_path in sorted(run_dir.glob("*/fp_candidates.json")):
-        data = _read_json(cand_path) or {}
-        prov = data.get("provenance") or {}
-        origin = str(prov.get("Origin") or "")
-        source_bug = prov.get("SourceBug")
-        if "fixed" not in origin.lower() or not source_bug:
-            continue
-        for tool, entry in (data.get("tools") or {}).items():
-            flagged_fixed = int(entry.get("soundness_count") or 0) > 0
-            ev = _read_json(rq2_run / source_bug / tool / "evaluation.json")
-            flagged_buggy = bool(ev and ev.get("status") == "TruePositive")
-            rows.append(
-                {
-                    "unit": cand_path.parent.name,
-                    "source_bug": source_bug,
-                    "tool": tool,
-                    "flagged_buggy": flagged_buggy,
-                    "flagged_fixed": flagged_fixed,
-                    # ideal tool: flagged the bug, silent once fixed
-                    "false_positive_on_fixed": flagged_fixed,
-                    "clean_resolution": flagged_buggy and not flagged_fixed,
-                }
-            )
-    return rows
+def _f(x, fmt="{:.2f}", dash="-"):
+    return dash if x is None else fmt.format(x)
 
 
-def _ordered_tools(present) -> list[str]:
-    """Canonical tools first (those present), then any extras."""
-    return [t for t in TOOLS if t in present] + [
-        t for t in present if t not in TOOLS
-    ]
-
-
-def print_report(metrics: dict, paired: list[dict]) -> None:
-    print("=" * 78)
-    print(f"FP experiment — {metrics['n_units']} clean/fixed units")
-    print("=" * 78)
-    hdr = (
-        f"{'tool':<14}{'N':>4}{'snd':>5}{'FP':>4}{'Real':>5}{'Und':>4}"
-        f"{'FP/unit':>9}{'prec':>7}{'warn':>6}{'med/u':>7}"
-    )
+def print_report(metrics: dict, not_processed: list[dict]) -> None:
+    flag = "  [PRELIMINARY: unreviewed alerts remain]" if metrics["preliminary"] else ""
+    print("=" * 100)
+    print(f"FP experiment — {metrics['n_projects']} projects, {metrics['n_units']} units{flag}")
+    print("=" * 100)
+    hdr = (f"{'tool':<13}{'N':>4}{'ok':>4}{'TO':>4}{'err':>4}{'u+':>4}{'alerts':>7}{'FP':>5}{'Real':>5}"
+           f"{'Und':>5}{'pend':>5}{'FP/u':>6}{'prec':>6}{'warn':>6}{'rev.min':>8}{'agree':>6}")
     print(hdr)
     print("-" * len(hdr))
-    for tool in _ordered_tools(metrics["tools"]):
-        t = metrics["tools"].get(tool)
-        if not t:
-            continue
-        prec = "-" if t["per_alert_precision"] is None else f"{t['per_alert_precision']:.2f}"
-        print(
-            f"{tool:<14}{t['units_run']:>4}{t['soundness_alerts']:>5}"
-            f"{t['FalsePositive']:>4}{t['RealIssue']:>5}{t['Undecided']:>4}"
-            f"{t['per_unit_fp_rate']:>9.2f}{prec:>7}"
-            f"{t['warning_alerts']:>6}{t['median_alerts_per_unit']:>7}"
-        )
-    print()
-    print("Legend: N=units run, snd=soundness alerts, FP/Real/Und=triaged "
-          "verdicts,")
-    print("        FP/unit=units with >=1 FP / N, prec=Real/(Real+FP), "
-          "warn=lint burden,")
-    print("        med/u=median alerts (incl. warnings) per unit.")
-    if metrics.get("triage_effort"):
-        print()
-        print("Triage effort:", metrics["triage_effort"])
-
-    if paired:
-        print()
-        print("-" * 78)
-        print("Paired buggy -> fixed (fixed-commit units):")
-        res = (
-            f"{'tool':<14}{'cells':>6}{'clean_resolve':>15}"
-            f"{'FP_on_fixed':>13}"
-        )
-        print(res)
-        print("-" * len(res))
-        by_tool: dict[str, list[dict]] = {}
-        for r in paired:
-            by_tool.setdefault(r["tool"], []).append(r)
-        for tool in _ordered_tools(by_tool):
-            rows = by_tool.get(tool)
-            if not rows:
-                continue
-            clean = sum(1 for r in rows if r["clean_resolution"])
-            fp = sum(1 for r in rows if r["false_positive_on_fixed"])
-            print(f"{tool:<14}{len(rows):>6}{clean:>15}{fp:>13}")
-        print("clean_resolve = flagged the bug, silent once fixed (ideal).")
-        print("FP_on_fixed   = still flags the patched circuit "
-              "(false positive).")
+    for tool, t in metrics["tools"].items():
+        print(f"{tool:<13}{t['units']:>4}{t['completed']:>4}{t['timeout']:>4}{t['failed']:>4}"
+              f"{t['units_with_alert']:>4}{t['alerts']:>7}{t['FalsePositive']:>5}{t['RealIssue']:>5}"
+              f"{t['Undecided']:>5}{t['pending']:>5}{_f(t['fp_rate_per_unit']):>6}{_f(t['precision']):>6}"
+              f"{t['warnings']:>6}{t['review_seconds'] / 60:>8.1f}{_f(t['ai_agreement']):>6}")
+    print("\nN units · ok/TO/err completed/timeout/failed · u+ completed units with >=1 soundness alert ·\n"
+          "FP/Real/Und author-reviewed verdicts · pend not yet reviewed · FP/u units with >=1 FP / ok ·\n"
+          "prec Real/(Real+FP) · warn lint warnings (review burden) · rev.min author review minutes ·\n"
+          "agree share of AI proposals the author kept")
+    e = metrics["triage_effort"]
+    print(f"\nTriage effort: {e['reviewed']}/{e['alerts']} alerts reviewed, {e['author_review_minutes']} author-minutes "
+          f"(median {e['median_review_seconds_per_alert']}s/alert); AI first pass {e['ai_first_pass_minutes']} min; "
+          f"AI-author agreement {e['ai_author_agreement']}")
+    print("\nPer project (alerts/FP per tool; '-' = did not complete):")
+    tools = list(metrics["tools"])
+    print(f"{'project':<26}{'units':>6}" + "".join(f"{TOOL_LABEL.get(t, t)[:10]:>12}" for t in tools))
+    for proj, pd in metrics["projects"].items():
+        cells = []
+        for t in tools:
+            c = pd["tools"].get(t)
+            cells.append("-" if not c or not c["completed"] else f"{c['alerts']}/{c['FalsePositive']}")
+        print(f"{proj:<26}{pd['units']:>6}" + "".join(f"{x:>12}" for x in cells))
+    if not_processed:
+        print(f"\nNot processed ({len(not_processed)}):")
+        for s in not_processed:
+            print(f"  {s['status']:<8} {s['unit']}: {s['reason']}")
 
 
-def _latex(metrics: dict) -> str:
-    rows = []
-    for tool in TOOLS:
-        t = metrics["tools"].get(tool)
-        if not t:
-            continue
-        prec = "--" if t["per_alert_precision"] is None else f"{t['per_alert_precision']:.2f}"
+def latex_table(metrics: dict) -> str:
+    rows = [
+        "% Generated by scripts/process_fp_results.py -- do not edit by hand.",
+        f"% {metrics['n_projects']} projects, {metrics['n_units']} entrypoints"
+        + (" -- PRELIMINARY (unreviewed alerts remain)" if metrics["preliminary"] else ""),
+        "\\begin{tabular}{lrrrrrrrr}",
+        "\\toprule",
+        "Tool & Ran & Units w/ alert & Alerts & FP & Real & Und. & FP/unit & Warnings \\\\",
+        "\\midrule",
+    ]
+    for tool, t in metrics["tools"].items():
         rows.append(
-            f"{tool.replace('_', '\\_')} & {t['units_run']} & "
-            f"{t['soundness_alerts']} & {t['FalsePositive']} & "
-            f"{t['RealIssue']} & {t['Undecided']} & "
-            f"{t['per_unit_fp_rate']:.2f} & {prec} & {t['warning_alerts']} \\\\"
+            f"{TOOL_LABEL.get(tool, tool.replace('_', chr(92) + '_'))} & {t['completed']}/{t['units']} & "
+            f"{t['units_with_alert']} & {t['alerts']} & {t['FalsePositive']} & {t['RealIssue']} & "
+            f"{t['Undecided']} & {_f(t['fp_rate_per_unit'], dash='--')} & {t['warnings']} \\\\"
         )
-    body = "\n".join(rows)
-    return (
-        "\\documentclass{article}\n\\usepackage{booktabs}\n"
-        "\\begin{document}\n\\begin{table}[h]\\centering\n"
-        "\\caption{False positives on %d clean/fixed circuits (indicative).}\n"
-        "\\begin{tabular}{lrrrrrrrr}\n\\toprule\n"
-        "Tool & N & Snd & FP & Real & Und & FP/unit & Prec & Warn \\\\\n"
-        "\\midrule\n%s\n\\bottomrule\n\\end{tabular}\n\\end{table}\n"
-        "\\end{document}\n"
-    ) % (metrics["n_units"], body)
+    e = metrics["triage_effort"]
+    rows += [
+        "\\bottomrule",
+        "\\end{tabular}",
+        f"% triage effort: {e['author_review_minutes']} author-minutes for {e['reviewed']} alerts "
+        f"(median {e['median_review_seconds_per_alert']} s/alert); AI first pass {e['ai_first_pass_minutes']} min; "
+        f"AI-author agreement {e['ai_author_agreement']}",
+        "",
+    ]
+    return "\n".join(rows)
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description=__doc__)
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("run_dir", type=Path, help="zkhydra fp output dir")
-    p.add_argument(
-        "--rq2-run",
-        type=Path,
-        default=None,
-        help="RQ2 zkbugs run dir, for the paired buggy->fixed analysis.",
-    )
-    p.add_argument("--json", type=Path, default=None, help="Write metrics JSON.")
-    p.add_argument(
-        "--latex", type=Path, default=None, help="Write LaTeX table (.tex)."
-    )
+    p.add_argument("--json", type=Path, default=None, help="write all metrics as JSON")
+    p.add_argument("--latex", type=Path, default=None, help="write the per-tool LaTeX table fragment")
     args = p.parse_args()
 
     run_dir = args.run_dir.resolve()
@@ -256,35 +265,21 @@ def main() -> int:
     if summary is None:
         print(f"error: no summary.json under {run_dir}", file=sys.stderr)
         return 1
-
-    metrics = compute_metrics(summary)
-    paired = (
-        paired_buggy_fixed(run_dir, args.rq2_run.resolve())
-        if args.rq2_run
-        else []
-    )
-    print_report(metrics, paired)
-
+    not_processed = [
+        {"unit": r["bug_name"], "status": r["status"], "reason": r.get("reason") or r.get("error")}
+        for r in summary.get("units", [])
+        if r.get("status") != "processed"
+    ]
+    units = load_units(run_dir)
+    metrics = compute(units)
+    print_report(metrics, not_processed)
     if args.json:
-        out = {"metrics": metrics, "paired": paired}
-        args.json.write_text(
-            json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8"
-        )
+        args.json.write_text(json.dumps({"metrics": metrics, "not_processed": not_processed, "units": units},
+                                        indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"\nWrote metrics: {args.json}")
-
     if args.latex:
-        args.latex.write_text(_latex(metrics), encoding="utf-8")
-        print(f"Wrote LaTeX: {args.latex}")
-        try:
-            subprocess.run(
-                ["pdflatex", "-interaction=nonstopmode", args.latex.name],
-                cwd=args.latex.parent,
-                capture_output=True,
-                timeout=120,
-            )
-        except (FileNotFoundError, subprocess.TimeoutExpired):
-            print("(pdflatex unavailable; left .tex only)")
-
+        args.latex.write_text(latex_table(metrics), encoding="utf-8")
+        print(f"Wrote LaTeX table: {args.latex}")
     return 0
 
 
