@@ -1,27 +1,27 @@
 ---
 name: triage-fp-finding
-description: Triage one candidate false-positive from a zkhydra fp run. Given a single tool finding raised on a CLEAN or FIXED circuit (plus the circuit source and provenance), classify it as FalsePositive (spurious alarm on correct code), RealIssue (a genuine latent bug the audit/fix missed), Warning/Style (non-soundness lint), or Undecided. Invoked by scripts/triage_fp_run.py and usable directly on a single case.
+description: Propose a triage verdict for one candidate false positive from a zkhydra fp run. Given a single tool finding raised on an audited, battle-tested Circom project (plus the circuit source and provenance), classify it as FalsePositive (spurious alarm on correct code), RealIssue (a genuine bug — known-unfixed audit finding or new), Warning/Style (non-soundness lint), or Undecided. Invoked by scripts/triage_fp_run.py; an author verifies every proposal with scripts/review_fp_triage.py.
 ---
 
 # Triage `fp` candidate false positives
 
-The false-positive experiment runs the six Circom tools over a corpus of
-**clean / audited** projects and **fixed-commit** circuits (the patched version
-of a known zkbugs bug). There is no ground-truth vulnerability: **every finding
-is a candidate false positive**. This skill inspects one finding against the
-real circuit source and classifies it. The headline metric counts
-soundness-class false alarms, so a wrong classification biases the paper's FP
-numbers — **when in doubt, return `Undecided`.**
+The false-positive experiment runs the six Circom tools over battle-tested,
+audited Circom projects at their post-audit commit. There is no ground-truth
+vulnerability: **every finding is a candidate false positive**. This skill
+inspects one finding against the real circuit source and *proposes* a
+verdict; an author verifies every proposal before it is counted. The headline
+metric counts soundness-class false alarms, so a wrong classification biases
+the paper's FP numbers — **when in doubt, return `Undecided`.**
 
 ## Inputs
 
 A single case bundle. Either pass the paths and the skill reads them, or inline
 the contents:
 
-- `fp_config` / provenance — keys: `Project`, `Commit`, `Codebase`,
-  `Entrypoint`, `Origin` (`audited` | fixed-commit), `Source` (audit link, or
-  `"fixed-commit of <bug>"`). For a fixed-commit unit, the circuit is the
-  **patched** version — the original vulnerability should be gone.
+- `fp_config` / provenance — keys: `Project`, `ProjectName`, `Commit`
+  (post-audit), `Codebase`, `LinkPaths`, `Entrypoint`, `Origin` (`audited`),
+  `Source.Audits` (auditor, date, report URL), `KnownUnfixed` (audit findings
+  still present at this commit).
 - `results.json` — unified findings list (each has `bug_title`,
   `unified_bug_title`, `position`, `file`, `description`, `metadata`).
 - `parsed.json` — the tool's structured output (finer signals, e.g. Picus'
@@ -46,6 +46,18 @@ signal, field arithmetic, complexity, …), classify **`Warning/Style`** with
 burden**, never toward the soundness false-positive rate. No source reading
 needed.
 
+### Known unfixed audit finding → RealIssue  (decide second)
+
+An audited release may still ship findings the auditors marked acknowledged /
+won't fix. They are listed in `provenance.KnownUnfixed` (each with `id`,
+`title`, `location`, `status`). If the finding plausibly points at one of them
+(same template/function or file region, compatible category — a whole-circuit
+verdict from picus/ecne/conscs/civer counts when that template is instantiated
+by the circuit and is the only soundness issue that could explain it),
+classify **`RealIssue`** with reason `"known unfixed <id>"` and cite it. A
+correct alert on a known, unfixed issue is not a false positive. If you cannot
+tie it to a listed finding, continue with the rules below.
+
 ### FalsePositive
 
 Classify **`FalsePositive`** when the finding is soundness-class
@@ -55,8 +67,6 @@ constrained / safe** — i.e. the tool is wrong on correct code. Typical evidenc
 
 - Every output/intermediate signal the tool names is pinned by a `<==` or `===`
   constraint (not merely `<--`), so it cannot take two values.
-- For a fixed-commit unit: the patch that fixed the original bug is present at
-  the flagged location, yet the tool still reports the old category.
 - The tool's counterexample (Picus/zkfuzz/ConsCS) does not actually violate any
   constraint when traced through the source.
 
@@ -66,7 +76,7 @@ Classify **`RealIssue`** (a genuine latent bug the audit or fix missed) only
 with **strong, source-backed** evidence that the flagged signal/component is
 truly under/over-constrained or computes incorrectly — e.g. an output assigned
 with `<--` and never constrained, a missing range check the source confirms. Set
-this bar high: a clean/audited project flagged as `RealIssue` is a notable claim.
+this bar high: an audited project flagged as `RealIssue` is a notable claim.
 If you cannot confirm it from the source alone, use `Undecided`, not `RealIssue`.
 
 ### Undecided (keep — the safe default)

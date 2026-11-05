@@ -14,6 +14,9 @@ to a dict with:
     - ``Input``       input json, relative to the unit dir (default
       ``input.json``)
     - ``Codebase``    project source dir, relative to the corpus root
+    - ``LinkPaths``   optional list of circom ``-l`` dirs, relative to the
+      corpus root (or absolute); default is ``[Codebase,
+      dataset/circom/dependencies/circomlib]``
     - ``Ptau``        ptau file, relative to the corpus root
     - ``Compiled``    bool; false units are skipped by discovery
     - ``Source`` / ``Origin`` / ``Project`` / ``Commit``  free-form provenance
@@ -76,14 +79,22 @@ def load_fp_input(unit_dir: Path, dataset_dir: Path) -> Input:
         codebase_abs = (root / codebase_rel).resolve()
         codebase_abs_str = str(codebase_abs)
         codebase_exists = codebase_abs.is_dir()
-        link_flags += ["-l", str(codebase_abs)]
 
-    # Optional shared circomlib dependency, mirroring the zkbugs dataset layout.
-    circomlib_abs = (
-        root / "dataset" / "circom" / "dependencies" / "circomlib"
-    ).resolve()
-    if circomlib_abs.is_dir():
-        link_flags += ["-l", str(circomlib_abs)]
+    link_paths = config.get("LinkPaths")
+    if link_paths:
+        # Explicit per-unit -l paths (written by scripts/install_fp_projects.py
+        # from the project manifest's link_paths).
+        for lp in link_paths:
+            link_flags += ["-l", str((root / lp).resolve())]
+    else:
+        if codebase_abs_str:
+            link_flags += ["-l", codebase_abs_str]
+        # Optional shared circomlib dependency, mirroring the zkbugs layout.
+        circomlib_abs = (
+            root / "dataset" / "circom" / "dependencies" / "circomlib"
+        ).resolve()
+        if circomlib_abs.is_dir():
+            link_flags += ["-l", str(circomlib_abs)]
 
     ptau_rel = config.get("Ptau")
     ptau_abs = str((root / ptau_rel).resolve()) if ptau_rel else None

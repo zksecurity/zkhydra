@@ -1,37 +1,33 @@
 #!/usr/bin/env python3
-"""Triage candidate false positives from a zkhydra `fp` run.
+"""First-pass (AI-proposed) triage of candidate false positives from an `fp` run.
 
 Walks `<run>/<unit>/fp_candidates.json`. Every soundness-class finding is a
 candidate false positive; each is bundled with the tool's results/parsed/raw
-output, the unit provenance, and — when reachable — the circuit source at the
-finding's location, then either:
+output, the unit provenance (incl. the project's known-unfixed audit
+findings), and — when reachable — the circuit source at the finding's
+location, then either:
 
-- `--dry-run` (default): writes `<run>/fp_triage_queue.json` with all bundles.
-- `--auto`: shells out to `claude -p` per candidate, instructing Claude to use
-  the `triage-fp-finding` skill, and writes per-(unit,tool) `fp_triage.json`
-  plus a rolled-up `<run>/fp_triage_summary.json`. Per-case wall-time is
-  recorded so the report can show indicative triage effort.
+- dry run (default): writes `<run>/fp_triage_queue.json` with all bundles.
+- `--auto`: shells out to `claude -p` per candidate with the triage prompt and
+  writes per-(unit,tool) `fp_triage.json` plus `<run>/fp_triage_summary.json`.
+  Per-case wall time is recorded.
 
-Warning/Style findings (circomspect lint) are counted toward review burden
-without an LLM call — they are never soundness false positives.
-
-Mutating flag (opt-in, implies --auto):
-
-- `--update-summary`: patch the run's `summary.json` with an `fp_counts` rollup
-  {FalsePositive, RealIssue, Warning/Style, Undecided}, a `triage_effort`
-  object, and a per-(unit,tool) `fp` verdict breakdown.
+These verdicts are PROPOSALS. An author verifies every case with
+`review_fp_triage.py`, which stores the final verdict next to the proposal;
+re-running `--auto` keeps those reviews. Warnings (circomspect lint) are never
+sent for triage: they count toward review burden, not soundness FPs.
 
 Examples:
-    python3 scripts/triage_fp_run.py output/fp-run
-    python3 scripts/triage_fp_run.py output/fp-run --dataset path/to/corpus/dataset/circom
-    python3 scripts/triage_fp_run.py output/fp-run --auto --jobs 4 --update-summary
-    python3 scripts/triage_fp_run.py output/fp-run --tool picus
+    python3 scripts/triage_fp_run.py output/fp-run --dataset output/fp-corpus/dataset/circom
+    python3 scripts/triage_fp_run.py output/fp-run --dataset output/fp-corpus/dataset/circom --auto --jobs 4
+    python3 scripts/triage_fp_run.py output/fp-run --auto --tool picus
 """
 
 from __future__ import annotations
 
 import argparse
 import concurrent.futures as _cf
+import hashlib
 import json
 import logging
 import shutil
@@ -78,31 +74,82 @@ def _fp_corpus_root(dataset_dir: Path) -> Path:
     return cur.parent
 
 
+FINAL_VERDICTS = ("FalsePositive", "RealIssue", "Undecided")
+
+
+def finding_fingerprint(finding: dict) -> str:
+    """Stable id of a finding, so verdicts stay attached to the same finding
+    even if a re-run reorders or changes a tool's findings."""
+    blob = json.dumps(finding, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(blob.encode()).hexdigest()[:16]
+
+
+def is_reviewed(rec: dict | None, fingerprint: str) -> bool:
+    """A case counts as reviewed iff the author recorded a final soundness
+    verdict for exactly this finding. Shared by review and reporting."""
+    rv = (rec or {}).get("review") or {}
+    return rv.get("status") in FINAL_VERDICTS and rv.get("finding_fp") == fingerprint
+
+
+_UNIT_DIRS: dict[Path, dict[str, Path]] = {}
+
+
+def _corpus_unit_dir(dataset_dir: Path | None, unit: str) -> Path | None:
+    """Locate the corpus unit dir (holding fp_config.json) for a run unit.
+    The dataset is scanned once and cached."""
+    if dataset_dir is None:
+        return None
+    if dataset_dir not in _UNIT_DIRS:
+        _UNIT_DIRS[dataset_dir] = {
+            p.parent.name: p.parent for p in dataset_dir.rglob("fp_config.json")
+        }
+    return _UNIT_DIRS[dataset_dir].get(unit)
+
+
 def _resolve_finding_source(
-    provenance: dict | None, finding: dict, corpus_root: Path | None
+    provenance: dict | None,
+    finding: dict,
+    corpus_root: Path | None,
+    unit_corpus_dir: Path | None = None,
 ) -> tuple[str | None, str]:
-    """Best-effort: locate the flagged file under the unit's codebase and
-    return a numbered snippet around the finding's line. There is no ground
-    truth here, so we key off the finding's own file/position."""
+    """Best-effort: locate the flagged file (absolute, unit wrapper, codebase,
+    then link paths) and return a numbered snippet around the finding's line.
+    There is no ground truth here, so we key off the finding's own
+    file/position. A basename search is used only when it is unambiguous."""
     if corpus_root is None or not finding:
         return None, ""
-    codebase_rel = (provenance or {}).get("Codebase")
-    if not codebase_rel:
-        return None, ""
-    codebase_abs = (corpus_root / codebase_rel).resolve()
-    if not codebase_abs.is_dir():
-        return None, ""
-
     file_field = finding.get("file")
     if not file_field:
         return None, ""
-    candidate = codebase_abs / file_field
-    if not candidate.is_file():
-        # fall back to matching by basename anywhere under the codebase
-        matches = list(codebase_abs.rglob(Path(file_field).name))
-        if not matches:
-            return None, ""
-        candidate = matches[0]
+    prov = provenance or {}
+    roots: list[Path] = []
+    if unit_corpus_dir is not None:
+        roots.append(unit_corpus_dir)
+    if prov.get("Codebase"):
+        roots.append((corpus_root / prov["Codebase"]).resolve())
+    for lp in prov.get("LinkPaths") or []:
+        roots.append((corpus_root / lp).resolve())
+
+    candidate: Path | None = None
+    if Path(file_field).is_absolute() and Path(file_field).is_file():
+        candidate = Path(file_field)
+    for root in roots:
+        if candidate is not None:
+            break
+        if (root / file_field).is_file():
+            candidate = root / file_field
+    if candidate is None and prov.get("Codebase"):
+        codebase_abs = (corpus_root / prov["Codebase"]).resolve()
+        if codebase_abs.is_dir():
+            matches = [
+                m
+                for m in codebase_abs.rglob(Path(file_field).name)
+                if "node_modules" not in m.parts
+            ]
+            if len(matches) == 1:
+                candidate = matches[0]
+    if candidate is None:
+        return None, ""
 
     line = (finding.get("position") or {}).get("line")
     try:
@@ -119,9 +166,16 @@ def _resolve_finding_source(
     return str(candidate), numbered
 
 
-def _iter_candidates(run_dir: Path, tool_filter: str | None):
-    """Yield (unit_dir, tool_name, finding_index, finding, provenance) for
-    every soundness candidate, plus warning tallies per (unit, tool)."""
+def _collect_candidates(
+    run_dir: Path, tool_filter: str | None
+) -> tuple[list[tuple], dict[tuple[str, str], int]]:
+    """Return ([(unit_dir, tool, idx, finding, provenance)], warning_counts).
+
+    Every soundness finding is a candidate. Warnings are tallied for EVERY
+    (unit, tool) cell, including cells with no soundness finding.
+    """
+    candidates: list[tuple] = []
+    warning_counts: dict[tuple[str, str], int] = {}
     for cand_path in sorted(run_dir.glob("*/fp_candidates.json")):
         unit_dir = cand_path.parent
         data = _read_json(cand_path)
@@ -133,10 +187,13 @@ def _iter_candidates(run_dir: Path, tool_filter: str | None):
                 continue
             soundness = tool_entry.get("soundness") or []
             warnings = tool_entry.get("warnings") or []
+            if warnings:
+                warning_counts[(unit_dir.name, tool_name)] = len(warnings)
             for idx, finding in enumerate(soundness):
-                yield unit_dir, tool_name, idx, finding, provenance, len(
-                    warnings
+                candidates.append(
+                    (unit_dir, tool_name, idx, finding, provenance)
                 )
+    return candidates, warning_counts
 
 
 def build_bundle(
@@ -146,10 +203,14 @@ def build_bundle(
     finding: dict,
     provenance: dict,
     corpus_root: Path | None,
+    dataset_dir: Path | None = None,
 ) -> dict:
     tool_dir = unit_dir / tool_name
     source_path, source_snippet = _resolve_finding_source(
-        provenance, finding, corpus_root
+        provenance,
+        finding,
+        corpus_root,
+        _corpus_unit_dir(dataset_dir, unit_dir.name),
     )
     return {
         "unit": unit_dir.name,
@@ -168,7 +229,7 @@ def build_bundle(
 
 
 PROMPT_TEMPLATE = """Use the `triage-fp-finding` skill to triage this candidate \
-false positive raised on a clean/fixed circuit.
+false positive raised on an audited, battle-tested circuit.
 
 Return ONLY a JSON object matching the skill's output schema (no prose, no code
 fences). Here is the full case bundle:
@@ -254,76 +315,45 @@ def _process_case(args_tuple):
         "unit": bundle["unit"],
         "tool": bundle["tool"],
         "finding_index": bundle["finding_index"],
+        "finding_fp": finding_fingerprint(bundle["finding"]),
         "triage": verdict,
         "elapsed_s": elapsed,
     }
 
 
 def _write_per_tool_triage(run_dir: Path, verdicts: list[dict]) -> None:
-    """Group verdicts by (unit, tool) and write <unit>/<tool>/fp_triage.json."""
+    """Merge AI verdicts into <unit>/<tool>/fp_triage.json. An author `review`
+    is carried over only when it belongs to the same finding (fingerprint);
+    reviews of findings that changed are dropped so they cannot attach to a
+    different alert. The review keeps the AI status the author actually saw,
+    so agreement is not rewritten by a later AI pass."""
     by_tool: dict[tuple[str, str], list[dict]] = {}
     for v in verdicts:
         by_tool.setdefault((v["unit"], v["tool"]), []).append(v)
     for (unit, tool), rows in by_tool.items():
         out = run_dir / unit / tool / "fp_triage.json"
         out.parent.mkdir(parents=True, exist_ok=True)
+        existing = {
+            r.get("finding_index"): r for r in (_read_json(out) or []) if isinstance(r, dict)
+        }
+        for row in rows:
+            old = existing.get(row["finding_index"]) or {}
+            if is_reviewed(old, row["finding_fp"]):
+                row["review"] = old["review"]
+            elif old.get("review"):
+                logging.warning(
+                    "%s/%s #%d: finding changed since it was reviewed; review dropped",
+                    unit, tool, row["finding_index"],
+                )
+            existing[row["finding_index"]] = row
         out.write_text(
             json.dumps(
-                sorted(rows, key=lambda r: r["finding_index"]),
+                sorted(existing.values(), key=lambda r: r["finding_index"]),
                 indent=2,
                 ensure_ascii=False,
             ),
             encoding="utf-8",
         )
-
-
-def _update_run_summary(
-    run_dir: Path,
-    verdicts: list[dict],
-    warning_counts: dict[tuple[str, str], int],
-) -> None:
-    """Patch summary.json with fp_counts, triage_effort, and per-(unit,tool) fp."""
-    summary_path = run_dir / "summary.json"
-    data = _read_json(summary_path)
-    if data is None:
-        logging.warning("summary.json missing; cannot update")
-        return
-
-    counts = {s: 0 for s in VALID_STATUSES}
-    total_elapsed = 0.0
-    per_cell: dict[tuple[str, str], dict] = {}
-    for v in verdicts:
-        status = v["triage"].get("status", "Undecided")
-        counts[status] = counts.get(status, 0) + 1
-        total_elapsed += float(v.get("elapsed_s") or 0.0)
-        cell = per_cell.setdefault(
-            (v["unit"], v["tool"]),
-            {s: 0 for s in VALID_STATUSES},
-        )
-        cell[status] += 1
-    # warnings tallied without an LLM call
-    for (unit, tool), n in warning_counts.items():
-        counts["Warning/Style"] = counts.get("Warning/Style", 0) + n
-        cell = per_cell.setdefault((unit, tool), {s: 0 for s in VALID_STATUSES})
-        cell["Warning/Style"] += n
-
-    for row in data.get("units", []):
-        unit = row.get("bug_name")
-        for tool_name, tool_entry in (row.get("tools") or {}).items():
-            cell = per_cell.get((unit, tool_name))
-            if cell is not None:
-                tool_entry["fp"] = cell
-
-    data["fp_counts"] = counts
-    data["triage_effort"] = {
-        "soundness_candidates_triaged": len(verdicts),
-        "auto_triage_seconds": round(total_elapsed, 2),
-        "warnings_counted": sum(warning_counts.values()),
-    }
-    summary_path.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
-    )
-    logging.info("Updated summary.json fp_counts: %s", counts)
 
 
 def main() -> int:
@@ -349,11 +379,6 @@ def main() -> int:
     )
     p.add_argument("--timeout", type=int, default=180)
     p.add_argument(
-        "--update-summary",
-        action="store_true",
-        help="Patch summary.json with fp_counts, triage_effort, and per-cell fp.",
-    )
-    p.add_argument(
         "--log-level",
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
@@ -373,22 +398,14 @@ def main() -> int:
 
     corpus_root = _fp_corpus_root(args.dataset) if args.dataset else None
 
-    bundles: list[dict] = []
-    warning_counts: dict[tuple[str, str], int] = {}
-    for (
-        unit_dir,
-        tool_name,
-        idx,
-        finding,
-        provenance,
-        n_warn,
-    ) in _iter_candidates(run_dir, args.tool):
-        bundles.append(
-            build_bundle(
-                unit_dir, tool_name, idx, finding, provenance, corpus_root
-            )
+    candidates, warning_counts = _collect_candidates(run_dir, args.tool)
+    dataset_dir = args.dataset.resolve() if args.dataset else None
+    bundles: list[dict] = [
+        build_bundle(
+            unit_dir, tool_name, idx, finding, provenance, corpus_root, dataset_dir
         )
-        warning_counts[(unit_dir.name, tool_name)] = n_warn
+        for unit_dir, tool_name, idx, finding, provenance in candidates
+    ]
 
     if not bundles and not warning_counts:
         logging.info("No candidate findings under %s", run_dir)
@@ -407,7 +424,7 @@ def main() -> int:
     logging.info("Wrote %d bundle(s) to %s", len(bundles), queue_path)
 
     if not args.auto:
-        logging.info("--dry-run (default); skipping skill invocation")
+        logging.info("dry run (default); pass --auto to request AI proposals")
         return 0
 
     if (
@@ -482,11 +499,8 @@ def main() -> int:
     summary_path.write_text(
         json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    logging.info("FP triage summary: %s — %s", counts, summary_path)
-
-    if args.update_summary:
-        _update_run_summary(run_dir, verdicts, warning_counts)
-
+    logging.info("FP triage summary (AI proposals): %s — %s", counts, summary_path)
+    logging.info("Next: verify every case with scripts/review_fp_triage.py")
     return 0
 
 

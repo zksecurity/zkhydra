@@ -1,9 +1,11 @@
 # FP triage walk-throughs
 
 Concrete examples for the decision rules in `SKILL.md`. Every finding here is
-raised on a **clean / fixed** circuit, so the question is always "is the tool
-wrong (FalsePositive), right about a missed bug (RealIssue), just lint
-(Warning/Style), or undecidable?" Calibrate borderline cases against these.
+raised on an **audited, battle-tested** circuit at its post-audit commit, so the
+question is always "is the tool wrong (FalsePositive), right about a real bug
+(RealIssue — known-unfixed or new), just lint (Warning/Style), or
+undecidable?" The examples are illustrative, not results. Calibrate borderline
+cases against them.
 
 ## Example 1 — circomspect lint on correct code
 
@@ -29,17 +31,16 @@ Decision: **FalsePositive**, confidence `medium`.
 Reason: civer named the component, but the source constrains all its outputs;
 weak-safety verdict is spurious on this correct template.
 
-## Example 3 — fixed-commit unit, tool still flags the patched line
+## Example 3 — alert on a known-unfixed audit finding
 
-**Unit:** `fixed/iden3/circomlib/...decoder...` (Origin: fixed-commit of
-`veridise_decoder_accepting_bogus_output_signal`)
-**Finding:** `circomspect` `UnderConstrainedSignal` at `Decoder:86`.
-Source check: the fix added `success * (success - 1) === 0` and
-`out[i] * (...) === 0`; signal `success` is now constrained.
-Decision: **FalsePositive**, confidence `high`.
-Reason: the patch constrains the previously-free signal, yet circomspect still
-reports it — a false alarm on fixed code. (If instead the patch were absent or
-incomplete and the signal were still free, this would be `RealIssue`.)
+**Unit:** `audited/<library>/<entrypoint>`; `provenance.KnownUnfixed` lists
+`{id: "V-XYZ-007", title: "Underconstrained outputs in Window4",
+location: "circuits/pedersen.circom:Window4", status: "acknowledged"}`.
+**Finding:** `picus` reports two witnesses differing in an output of the
+`Window4` component instantiated by the circuit.
+Decision: **RealIssue**, reason `"known unfixed V-XYZ-007"`, confidence `medium`.
+Reason: the auditors documented this under-constraint and it was not fixed at
+the pinned commit; the tool is right. Count it as a real issue, not an FP.
 
 ## Example 4 — picus counterexample that violates a real constraint
 
@@ -81,9 +82,8 @@ when the source makes the under/over-constraint unambiguous.
 3. For the named signal, decide: is it pinned by `<==` / `===` (constrained) or
    only assigned by `<--` (computed, possibly free)? A free output that feeds a
    public/intermediate value is the signature of a real under-constraint.
-4. For a fixed-commit unit, compare against the original bug (named in
-   `Origin`): the fix should have added the missing constraint — confirm it is
-   present at the flagged location.
+4. Check `provenance.KnownUnfixed` before deciding: an alert on a documented,
+   unfixed audit finding is a `RealIssue`, not a false positive.
 
 ## Anti-patterns
 

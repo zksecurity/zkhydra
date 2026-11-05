@@ -1,0 +1,640 @@
+{
+  "snapshot_date": "2026-11-05",
+  "circomlib": {
+    "repo": "https://github.com/iden3/circomlib",
+    "commit": "cff5ab6288b55ef23602221694a6a38a0239dcc0",
+    "note": "v2.0.5; shared @circomlib dependency (same version the zkbugs dataset vendors)"
+  },
+  "projects": [
+    {
+      "name": "tornado-core",
+      "repo": "https://github.com/tornadocash/tornado-core",
+      "stars": 1680,
+      "audits": [
+        {
+          "auditor": "ABDK Consulting (D. Khovratovich, M. Vladimirov)",
+          "date": "2019-11-25",
+          "scope": "circom circuits (withdraw.circom, merkleTree.circom); fixes in commits 7193655, f8cd3fe, 07168f9, 9efab84",
+          "url": "https://github.com/abdk-consulting/audits/blob/main/tornado/Tornado_circuit_audit.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "Tornado.Cash pools on Ethereum mainnet since Dec 2019 (e.g. 0.1 ETH pool: 11k+ txs, ~645 ETH still locked); per CoinDesk (2020-05-18) the contracts were updated after the trusted-setup MPC ceremony completed 2020-05-10, which postdates the v2.1 circuit.",
+        "url": "https://etherscan.io/address/0x12D66f87A04A9E220743712cE6d9bB1B5616B8Fc"
+      },
+      "commit": "a533ad9ffb62163a42d4fa9a09984c5dd4e5c41d",
+      "commit_note": "Tag v2.1: last change to circuits/ (all later commits touch only contracts/CLI). Includes all ABDK fixes (merged 2019-11-25, first release v2.0 2019-12-17); v2.1 additionally re-adds 4 squaring constraints binding recipient/relayer/fee/refund. This is the circuit used in the May 2020 trusted-setup ceremony whose verifier is live on mainnet, hence chosen over v2.0 (diff v2.0..v2.1 in circuits/ is only those 4 extra constraints).",
+      "deps": [
+        {
+          "kind": "shell",
+          "cwd": ".",
+          "cmd": "mkdir -p node_modules && git clone https://github.com/tornadocash/circomlib node_modules/circomlib && git -C node_modules/circomlib checkout c372f14d324d57339c88451834bf2824e73bbdbc"
+        },
+        {
+          "kind": "patch",
+          "file": "tornado-core-circom2-port.patch"
+        }
+      ],
+      "link_paths": [
+        ""
+      ],
+      "known_unfixed": [
+        {
+          "id": "ABDK-2 (Remaining Minor Issue)",
+          "title": "pathIndices should be explicitly bit-checked in Withdraw rather than inside the low-level Selector/DualMux",
+          "location": "circuits/merkleTree.circom:DualMux / circuits/withdraw.circom:Withdraw",
+          "status": "acknowledged (authors declined: bit check is enforced in DualMux via s*(1-s)===0); architectural, not a soundness bug"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "withdraw",
+          "path": "circuits/withdraw.circom",
+          "constraints": 59009
+        }
+      ]
+    },
+    {
+      "name": "self",
+      "repo": "https://github.com/selfxyz/self",
+      "stars": 1267,
+      "audits": [
+        {
+          "auditor": "zkSecurity",
+          "date": "2025-01",
+          "scope": "core dependencies (RSA, RSA-PSS, ECDSA + big-int), protocol circuits (dsc/register/disclose) and contracts, TEE proof delegation (OpenPassport monorepo)",
+          "url": "https://reports.zksecurity.xyz/reports/celo-self-audit/"
+        },
+        {
+          "auditor": "zkSecurity",
+          "date": "2025-06",
+          "scope": "EU ID circuits (register_id, vc_and_disclose_id, disclose_id), all OFAC circuits, SMT non-inclusion (utils/crypto/merkle-trees/smt.circom), V2 contracts; at 4f18c75",
+          "url": "https://reports.zksecurity.xyz/reports/celo-self-audit-2/"
+        },
+        {
+          "auditor": "zkSecurity",
+          "date": "2025-09",
+          "scope": "Aadhaar circuits (REGISTER_AADHAAR, VC_AND_DISCLOSE_Aadhaar, pack.circom) at 3905a30a and FpPowGenericMod at 145cc894",
+          "url": "https://reports.zksecurity.xyz/reports/self-aadhaar-circuits/"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "Self (ex-OpenPassport) app in production on Celo mainnet; the official @selfxyz/contracts README lists per-circuit Groth16 verifiers, e.g. Verifier_dsc_sha256_rsa_65537_4096 at 0x711e655c43410fB985c4EDB48E9bCBdDb770368d, which has code on Celo mainnet (eth_getCode via forno.celo.org).",
+        "url": "https://cdn.jsdelivr.net/npm/@selfxyz/contracts@1.2.3/README.md"
+      },
+      "commit": "b50a2892be3d61017eb14d27e0f34dd388c5bca1",
+      "commit_note": "Squash-merge 'Feat/aadhaar (#949)' on main, same day as the third zkSecurity report (2025-09-09). The repo has no git tags/releases. It postdates the Jan-2025 audit fixes (PRs #331/#354/#358/#360 etc.) and the June-2025 fixes ('Circuit audit fixes (#644)' 22681b1f, 8801c6c, 49de549), and contains the Aadhaar fixes for #00 (AssertBytes in CountryNotInList), #02 (Num2Bits(7) on minimumAge) and #05 (dummy constraint removed). The individual Aadhaar fix commits cited in the report (60501d1, 285f0a9, ...) were squashed and do not exist in the history; Aadhaar circuit files are untouched on main after this commit.",
+      "deps": [
+        {
+          "kind": "npm",
+          "cwd": ".",
+          "cmd": "npm install --prefix .fpdeps --ignore-scripts --no-audit --no-fund --omit=dev circomlib@2.0.5 @openpassport/zk-email-circuits@6.1.2 @zk-email/circuits@6.3.4 circom-bigint@github:0xbok/circom-bigint#4f78084327e993136edb2a8f4bd52ffbb437ab78"
+        },
+        {
+          "kind": "shell",
+          "cwd": ".",
+          "cmd": "git clone -q https://github.com/Vishalkulkarni45/zk-kit.circom .fpdeps/zk-kit.circom && git -C .fpdeps/zk-kit.circom checkout -q 493c998927ae9b6605b3da6fac56e23989cc200b && mkdir -p .fpdeps/node_modules/@zk-kit && ln -sfn ../../zk-kit.circom/packages/binary-merkle-root .fpdeps/node_modules/@zk-kit/binary-merkle-root.circom"
+        },
+        {
+          "kind": "shell",
+          "cwd": ".",
+          "cmd": "git clone -q https://github.com/selfxyz/anon-aadhaar .fpdeps/anon-aadhaar && git -C .fpdeps/anon-aadhaar checkout -q 1b9efa501cff3cf25dc260b060bf611229e316a4 && ln -sfn ../anon-aadhaar/packages/circuits .fpdeps/node_modules/anon-aadhaar-circuits"
+        }
+      ],
+      "link_paths": [
+        "",
+        ".fpdeps/node_modules",
+        ".fpdeps/node_modules/@zk-kit/binary-merkle-root.circom/src",
+        ".fpdeps/node_modules/circomlib/circuits"
+      ],
+      "known_unfixed": [
+        {
+          "id": "zkSec-2025-01 #02",
+          "title": "Big Integer Zero-Check Is Not Sound (carry accumulation over native field) - client 'evaluating alternatives'; template unchanged in shape at pin",
+          "location": "circuits/circuits/utils/crypto/bigInt/bigIntComparators.circom:BigIntIsZero",
+          "status": "acknowledged"
+        },
+        {
+          "id": "zkSec-2025-01 #05",
+          "title": "Trusting the start offset of the public key inside the certificate may lead to signature forgery - only a heuristic mitigation (surrounding-byte check, PR #358), no DER parser",
+          "location": "circuits/circuits/dsc/dsc.circom (and register pubkey extraction)",
+          "status": "partially fixed"
+        },
+        {
+          "id": "zkSec-2025-01 #06",
+          "title": "The big integer library used for ECDSA verification is immature",
+          "location": "circuits/circuits/utils/crypto/bigInt/*",
+          "status": "acknowledged"
+        },
+        {
+          "id": "zkSec-2025-01 #0e",
+          "title": "Over-constraint in ECDSA for point duplication (forwarded to external library team)",
+          "location": "circuits/circuits/utils/crypto/signature/ecdsa/*",
+          "status": "acknowledged"
+        },
+        {
+          "id": "zkSec-2025-01 #0f",
+          "title": "Over-constraint in ECDSA for edge case in scalar multiplication (forwarded to external library team)",
+          "location": "circuits/circuits/utils/crypto/signature/ecdsa/*",
+          "status": "acknowledged"
+        },
+        {
+          "id": "zkSec-2025-06 #07",
+          "title": "The sparse Merkle tree stores truncated hashes instead of full hashes (collision risk)",
+          "location": "circuits/circuits/utils/crypto/merkle-trees/smt.circom",
+          "status": "acknowledged"
+        },
+        {
+          "id": "zkSec-2025-09 #01",
+          "title": "Invalid assumptions about Aadhaar name field formatting (nullifier/OFAC); only uppercase-normalisation mitigation",
+          "location": "circuits/circuits/register/register_aadhaar.circom, utils/aadhaar/*",
+          "status": "acknowledged"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "register-sha256-sha256-sha256-rsa-65537-4096",
+          "path": "circuits/circuits/register/instances/register_sha256_sha256_sha256_rsa_65537_4096.circom",
+          "constraints": 3314606
+        },
+        {
+          "name": "dsc-sha256-rsa-65537-4096",
+          "path": "circuits/circuits/dsc/instances/dsc_sha256_rsa_65537_4096.circom",
+          "constraints": 6436994
+        },
+        {
+          "name": "vc-and-disclose",
+          "path": "circuits/circuits/disclose/vc_and_disclose.circom",
+          "constraints": 225194
+        }
+      ]
+    },
+    {
+      "name": "semaphore",
+      "repo": "https://github.com/semaphore-protocol/semaphore",
+      "stars": 1095,
+      "audits": [
+        {
+          "auditor": "Veridise",
+          "date": "2023-01",
+          "scope": "circuits (semaphore.circom, tree.circom) + contracts, Semaphore v3 at commit 27320f1; report dated 2023-01-05 (review Dec 1-31 2022); includes formal verification of the circuit templates",
+          "url": "https://semaphore.pse.dev/Semaphore_3.0.0_Audit.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "Semaphore V3 (Semaphore.sol 0xc60E0Ee1a2770d5F619858C641f14FC4a6401520 + SemaphoreVerifier 0xCAbeED6cB96a287000aBd834b0B79c05e6Ea4d07) deployed on Arbitrum One mainnet and used as the identity/membership layer by many apps (Zupass, Unirep, etc.).",
+        "url": "https://docs.semaphore.pse.dev/V3/deployed-contracts"
+      },
+      "commit": "1bb57ca607afc21a85c73826c53fc768cbacc8a1",
+      "commit_note": "Tag v3.0.0: first stable release after the Veridise report (2023-01-05). The audited commit 27320f1 is not in the public history (rebased away); all circuit findings (V-SEM-VUL-009 nLevels comment) are marked Fixed in the report and the v3.0.0 circuit carries the nLevels 16..32 note. The repo's own main is Semaphore(20).",
+      "deps": [
+        {
+          "kind": "symlink",
+          "path": "packages/node_modules/circomlib",
+          "target": "@circomlib"
+        }
+      ],
+      "link_paths": [
+        ""
+      ],
+      "known_unfixed": [],
+      "entrypoints": [
+        {
+          "name": "semaphore-v3-20",
+          "path": "packages/circuits/semaphore.circom",
+          "constraints": 17689
+        }
+      ]
+    },
+    {
+      "name": "circomlib",
+      "repo": "https://github.com/iden3/circomlib",
+      "stars": 751,
+      "audits": [
+        {
+          "auditor": "Veridise + 0xPARC Community + Ethereum Foundation",
+          "date": "2022-11",
+          "scope": "Joint audit of circom-bigint and its dependency circomlib at commit cff5ab6 (= tag v2.0.5), Jul 28 to Nov 15, 2022. Picus (static analysis) was run over circomlib, and Coda (Coq) certified Num2Bits, Bits2Num, IsZero, IsEqual, LessThan, the gates and EscalarProduct. There were 10 circomlib findings, V-CIRCOMLIB-VUL-001..010, all with status 'Open'.",
+          "url": "https://veridise.com/wp-content/uploads/2024/11/VAR_EF_0xparc_Circom.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "The circomlib npm package has 25,762 downloads per week (2026-10-29..11-04) and is the standard dependency of deployed circuits such as Tornado Cash, Semaphore and iden3/Polygon ID.",
+        "url": "https://www.npmjs.com/package/circomlib"
+      },
+      "commit": "cff5ab6288b55ef23602221694a6a38a0239dcc0",
+      "commit_note": "This is tag v2.0.5, the audited commit and the latest npm release. No audit fixes were ever made: every Veridise finding is 'Open' and the report has no fix-review. circuits/ and test/circuits/ are byte-identical from v2.0.5 to HEAD 35e54ea (2025-04-03); 'git diff --stat cff5ab6 HEAD' touches only CI, LICENSE, README, package*.json and two JS tests. The older MiMC 'assigned but not constrained' bug (Kobi Gurkan, fix 109cdf4, 2019-09-17) is an ancestor of this commit, so it is fixed here.",
+      "deps": [],
+      "link_paths": [
+        ""
+      ],
+      "known_unfixed": [
+        {
+          "id": "V-CIRCOMLIB-VUL-001",
+          "title": "Decoder accepting bogus output signal (critical, underconstrained)",
+          "location": "circuits/multiplexer.circom:Decoder (L78)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-002",
+          "title": "Underconstrained points in Edwards2Montgomery (critical)",
+          "location": "circuits/montgomery.circom:Edwards2Montgomery (L30)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-003",
+          "title": "Underconstrained points in Montgomery2Edwards (critical)",
+          "location": "circuits/montgomery.circom:Montgomery2Edwards (L49)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-004",
+          "title": "Underconstrained points in MontgomeryAdd (critical)",
+          "location": "circuits/montgomery.circom:MontgomeryAdd (L89)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-005",
+          "title": "Underconstrained points in MontgomeryDouble (critical)",
+          "location": "circuits/montgomery.circom:MontgomeryDouble (L122)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-006",
+          "title": "Underconstrained outputs in BitElementMulAny (critical)",
+          "location": "circuits/escalarmulany.circom:BitElementMulAny (L34)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-007",
+          "title": "Underconstrained outputs in Window4 (critical)",
+          "location": "circuits/pedersen.circom:Window4 (L25)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-008",
+          "title": "Underconstrained outputs in WindowMulFix (critical)",
+          "location": "circuits/escalarmulfix.circom:WindowMulFix (L48)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-009",
+          "title": "Underconstrained outputs in Bits2Point (warning: empty template)",
+          "location": "circuits/pointbits.circom:Bits2Point (L73)",
+          "status": "open"
+        },
+        {
+          "id": "V-CIRCOMLIB-VUL-010",
+          "title": "Underconstrained outputs in Point2Bits (warning: empty template)",
+          "location": "circuits/pointbits.circom:Point2Bits (L129)",
+          "status": "open"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "poseidon3",
+          "path": "test/circuits/poseidon3_test.circom",
+          "constraints": 765
+        },
+        {
+          "name": "eddsaposeidon",
+          "path": "test/circuits/eddsaposeidon_test.circom",
+          "constraints": 21246
+        },
+        {
+          "name": "smtverifier10",
+          "path": "test/circuits/smtverifier10_test.circom",
+          "constraints": 12582
+        },
+        {
+          "name": "lessthan",
+          "path": "test/circuits/lessthan.circom",
+          "constraints": 36
+        },
+        {
+          "name": "pedersen2",
+          "path": "test/circuits/pedersen2_test.circom",
+          "constraints": 8127
+        },
+        {
+          "name": "babypbk",
+          "path": "test/circuits/babypbk_test.circom",
+          "constraints": 10114
+        }
+      ]
+    },
+    {
+      "name": "maci",
+      "repo": "https://github.com/privacy-ethereum/maci",
+      "stars": 596,
+      "audits": [
+        {
+          "auditor": "HashCloak",
+          "date": "2026-03",
+          "scope": "MACI v3: packages/circuits (all Circom), packages/contracts, excubiae policies; audited commit d79aaad297f0721bae2ec7c416dc989442b8d335 (2026-01-13); fix review on main at 3a64a2386bff4bcddc7dba5137476921db22959c; 18 findings (1 Critical, 3 High, 5 Medium, 3 Low, 6 Info), all Resolved",
+          "url": "https://maci.pse.dev/audit_reports/20260317_Hashcloak_audit_report.pdf"
+        },
+        {
+          "auditor": "HashCloak",
+          "date": "2022-09",
+          "scope": "MACI v1 circuits + contracts (older major version, fixes in v1.1.1)",
+          "url": "https://maci.pse.dev/audit_reports/202220930_Hashcloak_audit_report.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "MACI ran production QF rounds 2022-2024 (ETH Mexico, Devcon SEA, ETHPrague, ...) and the v3 docs list shared MACI contracts on Arbitrum One mainnet (Verifier 0x2427Ab201488Ac81Bec421F179B1Be23c55ebC27) and Optimism; repo now archived.",
+        "url": "https://maci.pse.dev/docs/supported-networks/deployed-contracts"
+      },
+      "commit": "4d0e3a35f9f0c0122101050903bfcb383f7aaaa4",
+      "commit_note": "Tag v3.0.0: first release tag containing the HashCloak fix-review commit 3a64a238 (2026-03-09). packages/circuits differs from the fix-review commit only in package.json/CHANGELOG.",
+      "deps": [
+        {
+          "kind": "npm",
+          "cwd": "packages/circuits",
+          "cmd": "npm install --ignore-scripts --no-audit --no-fund"
+        }
+      ],
+      "link_paths": [
+        "",
+        "packages/circuits/node_modules/circomlib/circuits",
+        "packages/circuits/node_modules/@zk-kit/circuits/circom"
+      ],
+      "known_unfixed": [],
+      "entrypoints": [
+        {
+          "name": "maci-polljoining-10",
+          "wrapper": "pragma circom 2.1.6;\ninclude \"packages/circuits/circom/voter/PollJoining.circom\";\ncomponent main {public [nullifier, stateRoot, pollPublicKey, pollId]} = PollJoining(10);\n",
+          "constraints": 23926
+        },
+        {
+          "name": "maci-messageprocessorqv-10-20-2",
+          "wrapper": "pragma circom 2.1.6;\ninclude \"packages/circuits/circom/coordinator/qv/MessageProcessor.circom\";\ncomponent main {public [totalSignups, index, batchEndIndex, currentSbCommitment, newSbCommitment, outputBatchHash, actualStateTreeDepth, coordinatorPublicKeyHash, voteOptions]} = MessageProcessorQv(10, 20, 2);\n",
+          "constraints": 2244412
+        },
+        {
+          "name": "maci-votetallyqv-10-1-2",
+          "wrapper": "pragma circom 2.1.6;\ninclude \"packages/circuits/circom/coordinator/qv/VoteTally.circom\";\ncomponent main {public [index, totalSignups, sbCommitment, currentTallyCommitment, newTallyCommitment]} = VoteTallyQv(10, 1, 2);\n",
+          "constraints": 100082
+        }
+      ]
+    },
+    {
+      "name": "zk-email-verify",
+      "repo": "https://github.com/zkemail/zk-email-verify",
+      "stars": 435,
+      "audits": [
+        {
+          "auditor": "yAcademy",
+          "date": "2023",
+          "scope": "circuits/helpers/*.circom at commit 1f28986 (base64, rsa, bigint helpers)",
+          "url": "https://docs.zk.email/files/yacademy-zkemail-audit-report.pdf"
+        },
+        {
+          "auditor": "zkSecurity",
+          "date": "2024-05",
+          "scope": "all circom templates in packages/circuits at f2fb77c (+ zk-regex compiler); fixes reviewed at 95cd90 (npm 6.1.1)",
+          "url": "https://docs.zk.email/files/zk_email_zksecurity_audit.pdf"
+        },
+        {
+          "auditor": "Matter Labs",
+          "date": "2024-10",
+          "scope": "all Circom files in packages/circuits at fc99497 (multi-repo ZK Email account-recovery review); fix commit 9ed3769",
+          "url": "https://docs.zk.email/files/matterlabs-zkemail-audit-report.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "Core library (@zk-email/circuits, ~2.4k npm downloads/month) underlying ZK Email's EmailAuth circuit, whose Groth16Verifier/EmailAuth contracts are deployed on Base mainnet and ZKsync Era (eth_getCode on Base mainnet for 0xa63e3640633Ac39457D6B3770659821d16CA11cE returns code).",
+        "url": "https://docs.zk.email/account-recovery/deployed-contracts"
+      },
+      "commit": "9ed3769dc3d96fb0d7c45f1f014dcd9bfb63675b",
+      "commit_note": "Tag v6.3.2. The Matter Labs report (Oct 2024, latest circuit audit) names 9ed3769 as the final zk-email-verify commit after fixes (FpMul r<p check, a6c3ecc / #226); it also contains the earlier zkSecurity fixes (v6.1.0/6.1.1). Version pins from yarn.lock: @zk-email/zk-regex-circom 2.3.1, circomlib 2.0.5.",
+      "deps": [
+        {
+          "kind": "npm",
+          "cwd": "packages/circuits",
+          "cmd": "npm install --no-save --ignore-scripts --no-audit --no-fund --omit=dev @zk-email/zk-regex-circom@2.3.1 circomlib@2.0.5"
+        }
+      ],
+      "link_paths": [
+        "",
+        "node_modules"
+      ],
+      "known_unfixed": [
+        {
+          "id": "zkSecurity-07",
+          "title": "Base64Decode does not distinguish between 'A' and '=' (padding char can replace 'A' with same output); client documented the behaviour instead of changing it (commit 27ccac)",
+          "location": "packages/circuits/lib/base64.circom:Base64Lookup/Base64Decode",
+          "status": "acknowledged"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "emailverifier",
+          "path": "packages/circuits/tests/test-circuits/email-verifier-test.circom",
+          "constraints": 5993156
+        },
+        {
+          "name": "rsaverifier65537-121-17",
+          "path": "packages/circuits/tests/test-circuits/rsa-test.circom",
+          "constraints": 208463
+        },
+        {
+          "name": "sha256bytes-640",
+          "path": "packages/circuits/tests/test-circuits/sha-test.circom",
+          "constraints": 2077273
+        },
+        {
+          "name": "selectregexreveal-34-8",
+          "path": "packages/circuits/tests/test-circuits/select-regex-reveal-test.circom",
+          "constraints": 1416
+        }
+      ]
+    },
+    {
+      "name": "privacy-pools-core",
+      "repo": "https://github.com/0xbow-io/privacy-pools-core",
+      "stars": 136,
+      "audits": [
+        {
+          "auditor": "Oxorio",
+          "date": "2025-02-21",
+          "scope": "packages/circuits/circuits/{commitment,merkleTree,withdraw}.circom (initial 56d5d48, final 8da36d5)",
+          "url": "https://github.com/0xbow-io/privacy-pools-core/blob/main/audit/circuits_audit_oxorio.md"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "0xbow Privacy Pools live on Ethereum mainnet since 2025: PrivacyPool ETH contract (Etherscan tag 'Privacy Pools: Simple') holds ~748 ETH; WithdrawalVerifier 0x0228...7d6d / RagequitVerifier 0xa45a...5ec6 listed in repo docs/deployments.md.",
+        "url": "https://etherscan.io/address/0xf241d57c6debae225c0f2e6ea1529373c9a9c9fb"
+      },
+      "commit": "8da36d5e2150ab3c567d85ca8a6b2eb6b51740cb",
+      "commit_note": "'fix: address circuits audit issues (#4)' on main = the 'Final commit' verified in the Oxorio report. packages/circuits/circuits/ is byte-identical from here through v0.1.0 (first release tag, 2025-05-25), the trusted-setup commit a3fa7ab and HEAD/v1.3.0, so this is also the deployed circuit.",
+      "deps": [
+        {
+          "kind": "symlink",
+          "path": "node_modules/circomlib/circuits",
+          "target": "@circomlib/circuits"
+        },
+        {
+          "kind": "patch",
+          "file": "privacy-pools-core-mains.patch"
+        }
+      ],
+      "link_paths": [
+        ""
+      ],
+      "known_unfixed": [
+        {
+          "id": "Oxorio WARNING-2",
+          "title": "Potential inclusion proof manipulation: actualDepth only range-checked (<= maxDepth), not enforced in the LeanIMT path computation (multiple valid proofs per leaf)",
+          "location": "packages/circuits/circuits/merkleTree.circom:LeanIMTInclusionProof",
+          "status": "acknowledged (auditor later judged it not exploitable here because leaves use Poseidon(3))"
+        },
+        {
+          "id": "Oxorio INFO-3",
+          "title": "Value range checks performed after computing remainingValue",
+          "location": "packages/circuits/circuits/withdraw.circom:Withdraw",
+          "status": "acknowledged (style)"
+        },
+        {
+          "id": "Oxorio INFO-4",
+          "title": "Use of non-anonymous components / `_ <==` discards",
+          "location": "packages/circuits/circuits/withdraw.circom:Withdraw",
+          "status": "acknowledged (style)"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "withdraw",
+          "path": "packages/circuits/circuits/main/withdraw.circom",
+          "constraints": 54878
+        },
+        {
+          "name": "commitment",
+          "path": "packages/circuits/circuits/main/commitment.circom",
+          "constraints": 2283
+        }
+      ]
+    },
+    {
+      "name": "iden3-circuits",
+      "repo": "https://github.com/iden3/circuits",
+      "stars": 94,
+      "audits": [
+        {
+          "auditor": "Trail of Bits",
+          "date": "2024-05",
+          "scope": "iden3/circuits Circom circuits at 7a1e04de (authV2, credentialAtomicQueryV3 on/off-chain, linkedMultiQuery10, stateTransition and lib); fix review of PR #131 in appendix C",
+          "url": "https://github.com/trailofbits/publications/blob/master/reviews/2024-05-polygonlabs-iden3circuits-securityreview.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "Core circuits of Polygon ID / Privado ID; Privado docs list them (incl. credentialAtomicQueryV3-beta.1, linkedMultiQuery10-beta.1) for production verifiers, and State (0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D) and VALIDATOR_V3 (0xd179f29d00Cd0E8978eb6eB847CaCF9E2A956336) have code on Polygon PoS mainnet (eth_getCode checked).",
+        "url": "https://docs.privado.id/docs/verifier/circuits/"
+      },
+      "commit": "62b65d3cca3c07efc8269f8da56b21fa7dec650a",
+      "commit_note": "Tag v2.0.0: the first release tag after the ToB audit (fixes merged in a135e48 'Audit fixes (#131)', 2024-04-17, fix-reviewed in the 2024-05-03 report; master then sat at f97118a until 2025). The repo has no tag between v1.0.0 (2023-02, pre-audit, the V2 ceremony version) and v2.0.0. Between f97118a and v2.0.0 the selected circuits only change cosmetically (signal tag, two dummy squaring constraints on public inputs in credentialAtomicQueryV3OffChain, StateTransition renamed StateTransitionV3); v2.0.0 also adds an unaudited credentialAtomicQueryV3Universal circuit, which is not selected.",
+      "deps": [
+        {
+          "kind": "npm",
+          "cwd": ".",
+          "cmd": "npm install --ignore-scripts --no-audit --no-fund --omit=dev"
+        }
+      ],
+      "link_paths": [
+        ""
+      ],
+      "known_unfixed": [
+        {
+          "id": "TOB-IDEN3-3",
+          "title": "Lack of domain separation in hash functions",
+          "location": "circuits/lib (claim/identity Poseidon hashing; e.g. lib/utils/claimUtils.circom, lib/utils/idUtils.circom)",
+          "status": "unresolved"
+        },
+        {
+          "id": "TOB-IDEN3-4",
+          "title": "SpongeHash is not a sponge hash",
+          "location": "circuits/lib/utils/spongeHash.circom:SpongeHash",
+          "status": "unresolved"
+        },
+        {
+          "id": "TOB-IDEN3-5",
+          "title": "Ambiguous padding in SpongeHash",
+          "location": "circuits/lib/utils/spongeHash.circom:SpongeHash",
+          "status": "unresolved"
+        },
+        {
+          "id": "TOB-IDEN3-6",
+          "title": "Signature challenge does not bind claim or query",
+          "location": "circuits/auth/authV3.circom:AuthV3 (audited as authV2)",
+          "status": "unresolved"
+        },
+        {
+          "id": "TOB-IDEN3-7",
+          "title": "Linked queries can prove expired or revoked claims",
+          "location": "circuits/linked/multiQuery.circom:LinkedMultiQuery",
+          "status": "unresolved"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "authv3-40-64",
+          "path": "circuits/authV3.circom",
+          "constraints": 164860
+        },
+        {
+          "name": "credentialatomicqueryv3offchain-40-32-64",
+          "path": "circuits/credentialAtomicQueryV3.circom",
+          "constraints": 196801
+        },
+        {
+          "name": "linkedmultiquery-10-32-64",
+          "path": "circuits/linkedMultiQuery10.circom",
+          "constraints": 644027
+        }
+      ]
+    },
+    {
+      "name": "nocturne",
+      "repo": "https://github.com/nocturne-xyz/protocol",
+      "stars": 81,
+      "audits": [
+        {
+          "auditor": "Zellic (M. Leip, K. Li, M. Sharma)",
+          "date": "2023-10-20",
+          "scope": "protocol repo @ bfcbfcfcb8cf1a2209c874700a43ecac28e18fe7: all 7 circuits (joinsplit, subtreeupdate, canonAddrSigCheck, lib, tree, bitifyBE, scalarMulWitGen) + contracts; PR27 re-reviewed",
+          "url": "https://github.com/Zellic/publications/blob/master/Nocturne%20-%20Zellic%20Audit%20Report.pdf"
+        }
+      ],
+      "battle_tested": {
+        "evidence": "Nocturne v1 ran on Ethereum mainnet from Nov 2023 (later sunset): Teller proxy (constructor 'NocturneTeller') has 810 txs; addresses from @nocturne-xyz/config mainnet.json.",
+        "url": "https://etherscan.io/address/0xA561492dFC1A90418Cc8b9577204d56C17CB32Ff"
+      },
+      "commit": "f66fd0274e96f4eb62663552ecd29fb86e5b4a04",
+      "commit_note": "'publish contracts 3.0.0 (#29)': the commit listed for circuits 3.0.0 / contracts 3.0.0 on Nocturne's security page (deployed version); after the Zellic fix commit 50fe52a and the re-reviewed PR27 (c9a4d4f) and final circuit artifacts (c2bcb2e). The .circom files are identical to the audited bfcbfcf.",
+      "deps": [],
+      "link_paths": [
+        ""
+      ],
+      "known_unfixed": [
+        {
+          "id": "Zellic 3.5",
+          "title": "Note encryption is unconstrained (note ciphertexts are free inputs, receiver may get an undecryptable/ mismatched note)",
+          "location": "packages/circuits/circuits/joinsplit.circom:JoinSplit",
+          "status": "acknowledged"
+        }
+      ],
+      "entrypoints": [
+        {
+          "name": "joinsplit",
+          "path": "packages/circuits/circuits/joinsplit.circom",
+          "constraints": 124892
+        },
+        {
+          "name": "canonaddrsigcheck",
+          "path": "packages/circuits/circuits/canonAddrSigCheck.circom",
+          "constraints": 35226
+        }
+      ]
+    }
+  ]
+}
