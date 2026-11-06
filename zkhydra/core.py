@@ -7,6 +7,7 @@ including tool execution, result collection, and summary generation.
 """
 
 import argparse
+import contextlib
 import functools
 import json
 import logging
@@ -1190,23 +1191,17 @@ def _fp_kill_leftovers(baseline: set[int]) -> int:
     """SIGKILL and reap processes a tool left behind; return how many ran."""
     killed: set[int] = set()
     for _ in range(100):  # killed processes hand their children to us
-        stray = {
-            p: s for p, s in _fp_children().items() if p not in baseline
-        }
+        stray = {p: s for p, s in _fp_children().items() if p not in baseline}
         if not stray:
             break
         for pid, state in stray.items():
             if state != "Z":
                 killed.add(pid)
-            try:
+            with contextlib.suppress(ProcessLookupError):
                 os.kill(pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
         for pid in stray:
-            try:
+            with contextlib.suppress(ChildProcessError):
                 os.waitpid(pid, 0)
-            except ChildProcessError:
-                pass
     return len(killed)
 
 
