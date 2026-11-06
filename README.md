@@ -311,6 +311,11 @@ uv run python -m zkhydra.main zkbugs \
 |--------|---------|
 | `scripts/triage_zkbugs_run.py <run>` | Walk a run dir and collect every `Undecided` verdict; with `--auto` invoke the `triage-zkbugs-finding` skill per case; with `--update-evaluation` / `--update-summary` write verdicts back into `evaluation.json` and `summary.json`. |
 | `scripts/print_zkbugs_summary.py <run>` | Pretty-print a run's header, per-tool TP/FN/Undecided rollup, skipped/errored bugs, and the full per-(bug, tool) verdict table. Filters via `--tool` / `--filter`. |
+| `scripts/install_fp_projects.py` | FP experiment: install the project corpus from `fp_experiment/projects.json` (clone at pinned commits, deps, units, compile check). |
+| `scripts/fp_docker.sh <cmd>` | Run a command inside the zkhydra image with this checkout mounted. |
+| `scripts/triage_fp_run.py <run>` | FP experiment: AI first-pass triage proposals per soundness alert (`--auto`). |
+| `scripts/review_fp_triage.py <run>` | FP experiment: author verification of every alert, with review time. |
+| `scripts/process_fp_results.py <run>` | FP experiment: per-tool FP table, per-project breakdown, triage effort, LaTeX. |
 
 ## Examples
 
@@ -399,6 +404,27 @@ output/zkbugs-run/
 ## Existing zkbugs analysis
 
 You can find a report of the zkbugs analysis in `output/zkbugs-report.pdf` and you can download a tar with all the results here: https://drive.google.com/file/d/1zTIrrVqy0MXMxC4tRiPoFMEfXv-2TLYY/view?usp=sharing.
+
+## Running the FP (false-positive) experiment
+
+RQ2 (`zkbugs` mode) measures whether tools detect *known bugs*. The **`fp`
+mode** runs the same six tools over **battle-tested, audited Circom projects**
+at their post-audit commit, where every soundness alert is a candidate false
+positive. Every alert is then triaged: an AI proposes a verdict and an author
+verifies it. The result is per-tool FPs plus the triage effort.
+
+Methodology, project selection, installation and the full run/triage/report
+workflow are documented in **[`fp_experiment/README.md`](fp_experiment/README.md)**.
+Quick start:
+
+```bash
+scripts/fp_docker.sh python3 scripts/install_fp_projects.py
+scripts/fp_docker.sh uv run python -m zkhydra.main fp --dataset output/fp-corpus/dataset/circom \
+    --tools all --timeout 1800 --jobs 4 --output output/fp-run
+```
+
+A self-contained toy unit (`examples/fp_clean_format/`, a correct circuit)
+smoke-tests `fp` mode without the real corpus. See its README.
 
 ## Installation (Local Development)
 
