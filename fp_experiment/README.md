@@ -35,8 +35,13 @@ at the pinned commit are listed per project (`known_unfixed`). An alert on one
 of them is a real issue, not a false positive.
 
 **Tools.** We use the same six tools and configuration as RQ2: 1,800 s timeout
-per tool per circuit, circom 2.2.3, and the zkhydra Docker image. Runs that time
-out or fail are reported separately and excluded from that tool's FP numbers.
+per tool per circuit, circom 2.2.3, and the zkhydra Docker image. Circuits run
+one at a time (`--jobs 1`) in a container capped at 24 GB of memory with no
+swap, so every tool run gets the same resources. A tool that exceeds the cap is
+killed and counted as failed. Each tool gets its own temp directory. When the
+tool returns, any process it left running is killed (for example Picus's solver
+after a timeout) and its temp files are deleted. Runs that time out or fail are
+reported separately and excluded from that tool's FP numbers.
 
 **Alerts.** Soundness alerts (under-constrained, over-constrained,
 computational) are the candidate false positives. Circomspect lint warnings are
@@ -87,7 +92,9 @@ circuits, and known unfixed findings.
 ## Running
 
 You need Docker, plus Python 3.10+ and git on the host. Step 3 also needs the
-`claude` CLI. Run everything from the zkhydra repo root.
+`claude` CLI. The tool run (step 2) needs at least 32 GB of RAM and about 40 GB
+of free disk, and takes one to two days. Run everything from the zkhydra repo
+root.
 `scripts/fp_docker.sh` runs a command inside the zkhydra image, which has all
 six tools, with this checkout mounted.
 
@@ -99,7 +106,7 @@ scripts/fp_docker.sh python3 scripts/install_fp_projects.py
 
 # 2. Run the six tools
 scripts/fp_docker.sh uv run python -m zkhydra.main fp --dataset output/fp-corpus/dataset/circom \
-    --tools all --timeout 1800 --jobs 4 --output output/fp-run
+    --tools all --timeout 1800 --jobs 1 --output output/fp-run
 
 # 3. AI proposals for every soundness alert
 python3 scripts/triage_fp_run.py output/fp-run --dataset output/fp-corpus/dataset/circom --auto --jobs 4

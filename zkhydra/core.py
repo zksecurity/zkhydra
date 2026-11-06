@@ -15,8 +15,11 @@ import os
 import random
 import re
 import shlex
+import shutil
+import signal
 import subprocess
 import sys
+import tempfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, replace
 from datetime import datetime
@@ -1143,6 +1146,105 @@ def _split_findings(findings: list[dict]) -> tuple[list[dict], list[dict]]:
     return soundness, warnings
 
 
+# FP mode runs each tool in isolation. Some tools start through a wrapper
+# script (run-picus -> racket); on a timeout the shared run_command kills only
+# the wrapper, so the solver would keep running, and keep writing scratch files,
+# while the next tools run. So FP mode makes this process the child subreaper
+# (orphans are re-parented to it), gives each tool a private TMPDIR, and after
+# the tool returns kills whatever it left running and deletes its temp files.
+# The RQ2 (zkbugs) path is unchanged.
+_PR_SET_CHILD_SUBREAPER = 36
+
+
+def _fp_become_subreaper() -> None:
+    try:
+        import ctypes
+
+        libc = ctypes.CDLL(None, use_errno=True)
+        if libc.prctl(_PR_SET_CHILD_SUBREAPER, 1, 0, 0, 0) != 0:
+            raise OSError(ctypes.get_errno(), "prctl(PR_SET_CHILD_SUBREAPER)")
+    except (OSError, AttributeError) as exc:
+        logging.warning(
+            "Cannot adopt orphaned tool processes (%s); they may outlive "
+            "the timeout",
+            exc,
+        )
+
+
+def _fp_children() -> dict[int, str]:
+    """{pid: state} of this process's children, read from /proc."""
+    me, children = os.getpid(), {}
+    for d in Path("/proc").iterdir():
+        if not d.name.isdigit():
+            continue
+        try:
+            fields = (d / "stat").read_text().rsplit(")", 1)[1].split()
+        except (OSError, IndexError):
+            continue
+        if int(fields[1]) == me:  # fields: state, ppid, ...
+            children[int(d.name)] = fields[0]
+    return children
+
+
+def _fp_kill_leftovers(baseline: set[int]) -> int:
+    """SIGKILL and reap processes a tool left behind; return how many ran."""
+    killed: set[int] = set()
+    for _ in range(100):  # killed processes hand their children to us
+        stray = {
+            p: s for p, s in _fp_children().items() if p not in baseline
+        }
+        if not stray:
+            break
+        for pid, state in stray.items():
+            if state != "Z":
+                killed.add(pid)
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        for pid in stray:
+            try:
+                os.waitpid(pid, 0)
+            except ChildProcessError:
+                pass
+    return len(killed)
+
+
+def _fp_execute_tools(
+    tool_registry: ToolsDict, input_paths: Input, output_dir: Path, timeout: int
+) -> dict[str, ToolResult]:
+    """execute_tools, one tool at a time with a private TMPDIR; afterwards
+    kill the tool's leftover processes and delete its temp files."""
+    _fp_become_subreaper()
+    results: dict[str, ToolResult] = {}
+    for name, tool in tool_registry.items():
+        baseline = set(_fp_children())
+        tmp = tempfile.mkdtemp(prefix=f"zkhydra-fp-{name}-")
+        saved_env, saved_tempdir = os.environ.get("TMPDIR"), tempfile.tempdir
+        os.environ["TMPDIR"] = tmp
+        tempfile.tempdir = tmp
+        try:
+            results.update(
+                execute_tools({name: tool}, input_paths, output_dir, timeout)
+            )
+        finally:
+            tempfile.tempdir = saved_tempdir
+            if saved_env is None:
+                os.environ.pop("TMPDIR", None)
+            else:
+                os.environ["TMPDIR"] = saved_env
+            killed = _fp_kill_leftovers(baseline)
+            if killed:
+                logging.warning(
+                    "%s: killed %d process(es) still running after the tool "
+                    "returned",
+                    name,
+                    killed,
+                )
+            shutil.rmtree(tmp, ignore_errors=True)
+    return results
+
+
 def _process_one_fp_unit(
     unit: dict,
     tools: list[str],
@@ -1190,7 +1292,7 @@ def _process_one_fp_unit(
             )
 
     tool_registry = resolve_tools(tools)
-    results = execute_tools(
+    results = _fp_execute_tools(
         tool_registry, input_paths, unit_output_dir, timeout
     )
 
