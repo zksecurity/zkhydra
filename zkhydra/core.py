@@ -1040,13 +1040,14 @@ def zkbugs_mode(
 WARNING_CATEGORY = StandardizedBugCategory.WARNING.value
 
 # circomspect diagnostics that are not analysis findings: compiler-style
-# parser / type errors such as P1000 "failed to open file" or T2021. The shared
-# adapter maps unknown codes to Computational-Issue; in FP mode that would
-# count tool errors as false positives, so they mark the circomspect run as
-# failed instead. Analysis codes (CSxxxx / CAxx), including ones newer than
-# CS_MAPPING, stay findings. RQ2 (zkbugs mode) is unaffected.
+# parser / type errors such as P1000 "failed to open file", T2021 or TAC01
+# "template does not exist". The shared adapter maps unknown codes to
+# Computational-Issue; in FP mode that would count tool errors as false
+# positives, so they mark the circomspect run as failed instead. Analysis
+# codes (CSxxxx / CAxx), including ones newer than CS_MAPPING, stay findings.
+# RQ2 (zkbugs mode) is unaffected.
 _CIRCOMSPECT_FINDING_NAMES = set(CS_MAPPING.values())
-_CIRCOMSPECT_ERROR_CODE = re.compile(r"^[A-Z]\d{3,4}$")
+_CIRCOMSPECT_ERROR_CODE = re.compile(r"^[A-Z]+\d{2,4}$")
 
 
 def _circomspect_errors(findings: list[dict]) -> list[dict]:
