@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """Pretty-print a zkhydra zkbugs run.
 
-Reads `<run>/summary.json` (optionally enriched by the triage
-script's `--update-summary`) and prints:
+Reads `<run>/summary.json` and the per-bug evaluation.json files and prints:
 
 1. Header  — mode, jobs, total/processed/skipped/errors.
-2. Evaluation rollup — TruePositive / FalseNegative / Undecided /
-   untriaged overall and per-tool (requires --update-summary, else
-   falls back to walking per-bug evaluation.json files).
-3. Per-bug table — one row per (bug, tool) with the final verdict,
-   confidence if triaged, and findings_count.
+2. Evaluation rollup — TruePositive / FalseNegative / Undecided overall
+   and per-tool.
+3. Per-bug table — one row per (bug, tool) with the verdict, the manual
+   analysis state (N/A, Pending, Done), and findings_count.
 
 Usage:
     python3 scripts/print_zkbugs_summary.py output/zkbugs-run
@@ -48,8 +46,7 @@ def _collect_evaluations(run_dir: Path) -> list[dict]:
                 "bug_name": bug,
                 "tool": tool,
                 "status": ev.get("status", "Undecided"),
-                "confidence": ev.get("confidence"),
-                "triaged": bool(ev.get("triaged_by")),
+                "manual": ev.get("manual_analysis") or "-",
                 "findings_count": len(findings),
                 "reason": ev.get("reason", "")[:60],
             }
@@ -59,19 +56,12 @@ def _collect_evaluations(run_dir: Path) -> list[dict]:
 
 def _rollup(rows: list[dict]) -> dict:
     overall = {s: 0 for s in STATUSES}
-    overall["untriaged"] = 0
     per_tool: dict[str, dict] = {}
     for r in rows:
         s = r["status"] if r["status"] in STATUSES else "Undecided"
         overall[s] = overall.get(s, 0) + 1
-        if s == "Undecided" and not r["triaged"]:
-            overall["untriaged"] += 1
-        t = per_tool.setdefault(
-            r["tool"], {s: 0 for s in STATUSES} | {"untriaged": 0}
-        )
+        t = per_tool.setdefault(r["tool"], {s: 0 for s in STATUSES})
         t[s] += 1
-        if s == "Undecided" and not r["triaged"]:
-            t["untriaged"] += 1
     return {"overall": overall, "per_tool": per_tool}
 
 
@@ -141,12 +131,11 @@ def main() -> int:
     print(
         f"  TruePositive : {overall.get('TruePositive', 0)}    "
         f"FalseNegative : {overall.get('FalseNegative', 0)}    "
-        f"Undecided : {overall.get('Undecided', 0)}    "
-        f"(untriaged : {overall.get('untriaged', 0)})"
+        f"Undecided : {overall.get('Undecided', 0)}"
     )
     print()
     print("Per-tool:")
-    tool_headers = ["tool", "TP", "FN", "Und", "untriaged"]
+    tool_headers = ["tool", "TP", "FN", "Und"]
     tool_rows = []
     for tool, counts in sorted(rollup["per_tool"].items()):
         tool_rows.append(
@@ -155,7 +144,6 @@ def main() -> int:
                 str(counts["TruePositive"]),
                 str(counts["FalseNegative"]),
                 str(counts["Undecided"]),
-                str(counts["untriaged"]),
             ]
         )
     if tool_rows:
@@ -192,14 +180,13 @@ def main() -> int:
 
     print()
     print(f"Per (bug, tool) — {len(rows)} row(s):")
-    headers = ["status", "conf", "t?", "tool", "n", "bug"]
+    headers = ["status", "manual", "tool", "n", "bug"]
     table_rows = []
     for r in rows:
         table_rows.append(
             [
                 r["status"],
-                r["confidence"] or "-",
-                "T" if r["triaged"] else "-",
+                r["manual"],
                 r["tool"],
                 str(r["findings_count"]),
                 r["bug_name"],
@@ -207,7 +194,7 @@ def main() -> int:
         )
     # Sort by status then tool then bug
     status_rank = {"TruePositive": 0, "FalseNegative": 1, "Undecided": 2}
-    table_rows.sort(key=lambda x: (status_rank.get(x[0], 99), x[3], x[5]))
+    table_rows.sort(key=lambda x: (status_rank.get(x[0], 99), x[2], x[4]))
     print(_fmt_table(table_rows, headers))
 
     return 0
