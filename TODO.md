@@ -11,7 +11,3 @@ Follow-ups for the zkbugs new-format migration (branch
   `--zkbugs-mode original` across all bugs, collect fresh results,
   and publish the updated evaluation alongside
   `output/zkbugs-report.pdf`.
-- [x] **Helper skills for validating tool findings against ground
-  truth**: shipped as `.claude/skills/triage-zkbugs-finding/` plus
-  `scripts/triage_zkbugs_run.py`. Run the script against a zkbugs
-  output dir with `--auto` to invoke Claude per Undecided case.

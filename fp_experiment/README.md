@@ -2,10 +2,10 @@
 
 RQ2 measures whether tools find known bugs. This experiment measures the other
 side: how often they raise alarms on correct code, and how much effort it takes
-to triage those alarms. We run the six Circom tools from RQ2 (Circomspect,
-CIVER, Picus, Ecne, zkFuzz, ConsCS), in the same configuration, on 9 audited,
+to triage those alarms. We run the five Circom tools from RQ2 (Circomspect,
+CIVER, Picus, zkFuzz, ConsCS), in the same configuration, on 9 audited,
 battle-tested projects (25 circuits). We triage every soundness alert and report
-per-tool false positives together with the triage effort. The results are
+per-tool false positives. The results are
 indicative, not a population estimate.
 
 ## Method
@@ -48,14 +48,11 @@ computational) are the candidate false positives. Circomspect lint warnings are
 reported as review burden only. Circomspect parser errors mark the run as
 failed.
 
-**Triage.** Triage happens in two passes:
-1. Claude proposes a verdict for each soundness alert (`triage_fp_run.py --auto`).
-2. An author reviews every alert, accepts or overrides the proposal, and the
-   review time is logged (`review_fp_triage.py`).
+**Triage.** The authors review every soundness alert against the circuit
+source and the project's known unfixed findings (`review_fp_triage.py`).
 
 Only the author's verdict counts. The verdicts are `FalsePositive`, `RealIssue`
-and `Undecided`. The triage effort is the authors' review time; the AI-author
-agreement is reported alongside it. The paper discloses the AI assistance.
+and `Undecided`.
 
 **Metrics per tool:**
 - runs completed / attempted
@@ -64,7 +61,6 @@ agreement is reported alongside it. The paper discloses the AI assistance.
 - FP / Real / Undecided
 - FP rate per circuit (circuits with ≥1 FP / completed runs)
 - lint warnings
-- triage time
 
 **Limitations.**
 - The sample is small and purposive, and stars measure popularity, not quality.
@@ -91,8 +87,8 @@ circuits, and known unfixed findings.
 
 ## Running
 
-You need Docker, plus Python 3.10+ and git on the host. Step 3 also needs the
-`claude` CLI. The tool run (step 2) needs at least 32 GB of RAM and about 40 GB
+You need Docker, plus Python 3.10+ and git on the host. The tool run (step 2)
+needs at least 32 GB of RAM and about 40 GB
 of free disk, and takes one to two days. Run everything from the zkhydra repo
 root.
 `scripts/fp_docker.sh` runs a command inside the zkhydra image, which has all
@@ -104,17 +100,14 @@ docker pull ghcr.io/zksecurity/zkhydra:latest
 # 1. Install: clone each project at its pinned commit, set up deps, compile-check every circuit
 scripts/fp_docker.sh python3 scripts/install_fp_projects.py
 
-# 2. Run the six tools
+# 2. Run the five tools
 scripts/fp_docker.sh uv run python -m zkhydra.main fp --dataset output/fp-corpus/dataset/circom \
-    --tools all --timeout 1800 --jobs 1 --output output/fp-run
+    --tools circomspect,circom_civer,picus,zkfuzz,conscs --timeout 1800 --jobs 1 --output output/fp-run
 
-# 3. AI proposals for every soundness alert
-python3 scripts/triage_fp_run.py output/fp-run --dataset output/fp-corpus/dataset/circom --auto --jobs 4
+# 3. Manual triage of every soundness alert (interactive, resumable; --status shows progress)
+python3 scripts/review_fp_triage.py output/fp-run --dataset output/fp-corpus/dataset/circom
 
-# 4. Author review of every alert (interactive, resumable; --status shows progress)
-python3 scripts/review_fp_triage.py output/fp-run --dataset output/fp-corpus/dataset/circom --reviewer <initials>
-
-# 5. Report (per tool and per project, triage effort, LaTeX table)
+# 4. Report (per tool and per project, LaTeX table)
 python3 scripts/process_fp_results.py output/fp-run --json output/fp-metrics.json --latex output/fp-table.tex
 ```
 
@@ -123,5 +116,5 @@ Outputs:
   and `corpus.json` with the install and compile outcome of each circuit.
 - `output/fp-run/<unit>/` holds `fp_candidates.json`, with alerts split into
   soundness / warnings / tool errors. Each `<tool>/` subfolder holds the raw and
-  parsed tool output plus `fp_triage.json`, which contains the AI proposal and
-  the author's verdict.
+  parsed tool output plus `fp_triage.json`, which holds the authors' verdict for
+  each soundness alert.
