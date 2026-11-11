@@ -104,3 +104,5 @@ Outputs:
 - `output/fp-corpus/` holds the clones, one unit per circuit (`fp_config.json`), and `corpus.json` with the install and compile outcome of each circuit.
 - `output/fp-run/<unit>/` holds `fp_candidates.json`, with alerts split into soundness / warnings / tool errors.
   Each `<tool>/` subfolder holds the raw and parsed tool output plus `fp_triage.json`, which holds the authors' verdict for each soundness alert.
+
+The results of our run, including the authors' verdicts, are in the [zkp-security-tools](https://github.com/t-sorger/zkp-security-tools) repository, under [`experiments/results/fp/`](https://github.com/t-sorger/zkp-security-tools/tree/main/experiments/results/fp).

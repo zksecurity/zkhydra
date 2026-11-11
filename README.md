@@ -378,9 +378,10 @@ output/zkbugs-run/
 └── summary.json                 # processed + skipped rows with reasons, per-mode totals
 ```
 
-## Existing zkbugs analysis
+## Results of our runs
 
-You can find a report of the zkbugs analysis in `output/zkbugs-report.pdf` and you can download a tar with all the results here: https://drive.google.com/file/d/1zTIrrVqy0MXMxC4tRiPoFMEfXv-2TLYY/view?usp=sharing.
+The results of our runs, on the zkbugs dataset and on the audited projects of the FP experiment, are in the [zkp-security-tools](https://github.com/t-sorger/zkp-security-tools) repository, under [`experiments/results/`](https://github.com/t-sorger/zkp-security-tools/tree/main/experiments/results).
+They contain the raw output of every tool run and the authors' verdicts; [`experiments/README.md`](https://github.com/t-sorger/zkp-security-tools/blob/main/experiments/README.md) describes the files.
 
 ## Running the FP (false-positive) experiment
 
